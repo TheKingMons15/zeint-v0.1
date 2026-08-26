@@ -1,16 +1,17 @@
-// Catálogo oficial verificado de alimentos e insumos para Zenit
+// Catálogo oficial verificado de alimentos e insumos para Inventario Zenit, Cocina
 // Todos los productos inician en stock 0.0 para ingreso real diario
 export const ZENIT_INITIAL_PRODUCTS = [
   // 1. Proteínas (Carnes, Aves, Mariscos)
   { name: 'Carne molida de res', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Carne de res suave', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Filete de res', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
   { name: 'Tomahawk', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 3 },
-  { name: 'Carne de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Filete de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
   { name: 'Costilla de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 4 },
-  { name: 'Pollos - Pechugas', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Filete de pechuga de pollo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
   { name: 'Chinchulines', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Camarón limpio', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Chorizo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Camarón limpio (Porciones)', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Chorizo Rojo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Chorizo Blanco', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
   { name: 'Cuy', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 2 },
   { name: 'Cuerito', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
 
@@ -24,6 +25,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
   { name: 'Arepas pequeñas', category: 'Papas y carbohidratos', unit: 'unidad', initialStock: 0, minStock: 15 },
 
   // 3. Verduras y Legumbres
+  { name: 'Plátano Verde', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 8 },
   { name: 'Tomate riñón', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
   { name: 'Cebolla blanca/perla', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
   { name: 'Cebolla colorada', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
@@ -44,6 +46,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
 
   // 5. Lácteos
   { name: 'Queso mozzarella', category: 'Lácteos', unit: 'kg', initialStock: 0, minStock: 4 },
+  { name: 'Queso amasado', category: 'Lácteos', unit: 'kg', initialStock: 0, minStock: 4 },
   { name: 'Leche', category: 'Lácteos', unit: 'litro', initialStock: 0, minStock: 5 },
 
   // 6. Aceites y Grasas
@@ -57,6 +60,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
   { name: 'Mostaza', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 2 },
 
   // 8. Secos y Condimentos
+  { name: 'Aliño completo en polvo', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 2 },
   { name: 'Maní en pasta', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 3 },
   { name: 'Achiote', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 2 },
   { name: 'Sal', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 5 },

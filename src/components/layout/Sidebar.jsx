@@ -150,8 +150,8 @@ export const Sidebar = () => {
 
       {/* Footer Info */}
       <div className="pt-4 mt-2 border-t border-slate-800/60 text-center">
-        <p className="text-[10px] text-slate-400 font-bold">Zenit Alimentos</p>
-        <p className="text-[9px] text-slate-600">Sistema Online • Firebase</p>
+        <p className="text-[11px] text-slate-300 font-bold">Inventario Zenit, Cocina</p>
+        <p className="text-[9px] text-emerald-400/90 font-medium">Desarrollado por Wladimir Almeida</p>
       </div>
 
     </aside>

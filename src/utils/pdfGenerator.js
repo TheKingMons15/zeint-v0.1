@@ -47,12 +47,12 @@ export const generateDailyInventoryPDF = ({
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
   doc.setTextColor(...darkColor);
-  doc.text(company.name || 'CONTROL DIARIO DE INVENTARIO', margin + 8, currentY + 6);
+  doc.text('INVENTARIO ZENIT, COCINA', margin + 8, currentY + 6);
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
+  doc.setFontSize(9.5);
   doc.setTextColor(...grayColor);
-  doc.text('Informe Oficial de Movimientos y Balance de Stock de Alimentos', margin + 8, currentY + 12);
+  doc.text('Informe Oficial de Control Diario • Desarrollado por Wladimir Almeida', margin + 8, currentY + 12);
 
   // Fecha y Datos de emisión en la esquina superior derecha
   doc.setFontSize(9);
@@ -272,7 +272,7 @@ export const generateDailyInventoryPDF = ({
     doc.setFontSize(7.5);
     doc.setTextColor(...grayColor);
     doc.text(
-      `Página ${i} de ${totalPages} • Control de Inventario PWA • ${company.name}`,
+      `Página ${i} de ${totalPages} • Inventario Zenit, Cocina • Desarrollado por Wladimir Almeida`,
       pageWidth / 2,
       pageHeight - 8,
       { align: 'center' }

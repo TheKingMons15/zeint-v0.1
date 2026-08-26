@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'pwa-192x192.png', 'pwa-512x512.png', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Control Diario de Inventario',
-        short_name: 'Inventario',
-        description: 'Sistema PWA para control diario de inventario de alimentos y movimientos de stock',
+        name: 'Inventario Zenit, Cocina',
+        short_name: 'Zenit Cocina',
+        description: 'Control Diario de Inventario para Zenit Cocina - Desarrollado por Wladimir Almeida',
         theme_color: '#059669',
         background_color: '#0f172a',
         display: 'standalone',
