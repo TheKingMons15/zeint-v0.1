@@ -8,11 +8,16 @@ import {
   Plus, 
   ArrowDownLeft, 
   ArrowUpRight,
-  ArrowLeftRight
+  ShieldCheck,
+  Crown
 } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 export const BottomNav = ({ onOpenMovementModal }) => {
+  const { user } = useAuth();
   const [showQuickActions, setShowQuickActions] = useState(false);
+
+  const isSuperAdmin = user?.role === 'superadmin' || user?.isSuperAdmin || user?.email === 'master@zenit.com';
 
   return (
     <>
@@ -63,26 +68,26 @@ export const BottomNav = ({ onOpenMovementModal }) => {
             to="/"
             end
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
+              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
                 isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
             <LayoutDashboard className="w-5 h-5" />
-            <span className="text-[10px] mt-1">Inicio</span>
+            <span className="text-[9px] mt-0.5">Inicio</span>
           </NavLink>
 
-          {/* Productos */}
+          {/* Inventario */}
           <NavLink
-            to="/productos"
+            to="/inventario"
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
+              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
                 isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
-            <Package className="w-5 h-5" />
-            <span className="text-[10px] mt-1">Productos</span>
+            <Boxes className="w-5 h-5" />
+            <span className="text-[9px] mt-0.5">Inventario</span>
           </NavLink>
 
           {/* Botón Central Flotante de Movimientos Rápidos */}
@@ -100,31 +105,45 @@ export const BottomNav = ({ onOpenMovementModal }) => {
             </button>
           </div>
 
-          {/* Inventario */}
+          {/* Auditoría / Cambios */}
           <NavLink
-            to="/inventario"
+            to="/auditoria"
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
+              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
                 isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
-            <Boxes className="w-5 h-5" />
-            <span className="text-[10px] mt-1">Inventario</span>
+            <ShieldCheck className="w-5 h-5" />
+            <span className="text-[9px] mt-0.5">Auditoría</span>
           </NavLink>
 
-          {/* Reporte */}
-          <NavLink
-            to="/reportes"
-            className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
-                isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
-              }`
-            }
-          >
-            <FileText className="w-5 h-5" />
-            <span className="text-[10px] mt-1">Reporte</span>
-          </NavLink>
+          {/* Si es Super Admin -> Consola Director; si no -> Reportes */}
+          {isSuperAdmin ? (
+            <NavLink
+              to="/super-admin"
+              className={({ isActive }) =>
+                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+                  isActive ? 'text-amber-300 font-bold' : 'text-amber-400/80 hover:text-amber-300'
+                }`
+              }
+            >
+              <Crown className="w-5 h-5 text-amber-400" />
+              <span className="text-[9px] mt-0.5 font-bold">Director</span>
+            </NavLink>
+          ) : (
+            <NavLink
+              to="/reportes"
+              className={({ isActive }) =>
+                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+                  isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                }`
+              }
+            >
+              <FileText className="w-5 h-5" />
+              <span className="text-[9px] mt-0.5">Reporte</span>
+            </NavLink>
+          )}
 
         </div>
       </nav>
