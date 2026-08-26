@@ -131,9 +131,11 @@ export const MOVEMENT_REASONS = {
   ]
 };
 
-// Roles de usuario (Preparado para V2)
+// Roles de usuario del Restaurante Zénit
 export const USER_ROLES = {
+  SUPERADMIN: 'superadmin',
   ADMIN: 'admin',
   SUPERVISOR: 'supervisor',
-  OPERATOR: 'operator'
+  OPERATOR: 'operator',
+  MESERO: 'MESERO'
 };

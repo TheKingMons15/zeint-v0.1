@@ -7,31 +7,87 @@ import {
   Boxes, 
   FileText, 
   Settings, 
-  AlertTriangle,
-  Layers,
-  ChevronRight,
-  ShieldCheck,
-  Crown
+  AlertTriangle, 
+  Layers, 
+  ShieldCheck, 
+  Crown,
+  UtensilsCrossed,
+  ChefHat,
+  FileSpreadsheet
 } from 'lucide-react';
 import { useInventory } from '../../hooks/useInventory';
 import { useAuth } from '../../hooks/useAuth';
 import { FOOD_CATEGORIES } from '../../utils/constants';
 
-const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-  { to: '/productos', label: 'Gestión Productos', icon: Package },
-  { to: '/movimientos', label: 'Movimientos', icon: ArrowLeftRight },
-  { to: '/inventario', label: 'Vista Inventario', icon: Boxes },
-  { to: '/reportes', label: 'Reporte Diario PDF', icon: FileText },
-  { to: '/auditoria', label: 'Auditoría y Cambios', icon: ShieldCheck },
-  { to: '/configuracion', label: 'Configuración', icon: Settings },
-];
-
 export const Sidebar = () => {
   const { stats, selectedCategory, setSelectedCategory } = useInventory();
   const { user } = useAuth();
 
+  const isWaiter = user?.role === 'MESERO' || user?.role === 'mesero';
   const isSuperAdmin = user?.role === 'superadmin' || user?.isSuperAdmin || user?.email === 'master@zenit.com';
+
+  // Menú exclusivo para meseros
+  if (isWaiter) {
+    return (
+      <aside className="hidden lg:flex flex-col w-64 bg-slate-900/60 border-r border-slate-800/80 p-4 shrink-0 min-h-[calc(100vh-65px)]">
+        <div className="space-y-1">
+          <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+            Módulo de Sala
+          </p>
+          <NavLink
+            to="/mesero"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                isActive
+                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`
+            }
+          >
+            <div className="flex items-center gap-3">
+              <UtensilsCrossed className="w-4 h-4 text-emerald-400" />
+              <span>Pedidos / Menú Zénit</span>
+            </div>
+          </NavLink>
+
+          <NavLink
+            to="/cocina"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                isActive
+                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`
+            }
+          >
+            <div className="flex items-center gap-3">
+              <ChefHat className="w-4 h-4 text-amber-400" />
+              <span>Pantalla de Cocina</span>
+            </div>
+          </NavLink>
+        </div>
+
+        <div className="mt-auto pt-4 border-t border-slate-800/60 text-center">
+          <p className="text-[11px] text-slate-300 font-bold">Inventario Zenit, Cocina</p>
+          <p className="text-[9px] text-emerald-400/90 font-medium">Turno de Sala • Meseros</p>
+        </div>
+      </aside>
+    );
+  }
+
+  // Menú completo para Administradores, Supervisores y Dirección
+  const navItems = [
+    { to: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+    { to: '/mesero', label: 'Toma de Pedidos (Sala)', icon: UtensilsCrossed },
+    { to: '/cocina', label: 'Pantalla Cocina KDS', icon: ChefHat },
+    { to: '/reporte-consumo', label: 'Consumo por Recetas', icon: FileSpreadsheet },
+    { to: '/productos', label: 'Gestión Productos', icon: Package },
+    { to: '/movimientos', label: 'Movimientos', icon: ArrowLeftRight },
+    { to: '/inventario', label: 'Vista Inventario', icon: Boxes },
+    { to: '/reportes', label: 'Reporte Diario PDF', icon: FileText },
+    { to: '/auditoria', label: 'Auditoría y Cambios', icon: ShieldCheck },
+    { to: '/configuracion', label: 'Configuración', icon: Settings },
+  ];
 
   return (
     <aside className="hidden lg:flex flex-col w-64 bg-slate-900/60 border-r border-slate-800/80 p-4 shrink-0 min-h-[calc(100vh-65px)]">
@@ -104,7 +160,7 @@ export const Sidebar = () => {
           </p>
           <Layers className="w-3.5 h-3.5 text-slate-500" />
         </div>
-        <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
+        <div className="space-y-1 max-h-40 overflow-y-auto pr-1">
           <button
             onClick={() => setSelectedCategory('ALL')}
             className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${

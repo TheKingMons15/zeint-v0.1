@@ -32,7 +32,7 @@ const firebaseConfig = {
 };
 
 const USERS_TO_CREATE = [
-  // SUPER ADMIN SECRETO (SOLO PARA TI)
+  // SUPER ADMIN SECRETO (DIRECTOR)
   {
     email: 'master@zenit.com',
     password: 'ZenitMaster2026#Secret!',
@@ -63,6 +63,14 @@ const USERS_TO_CREATE = [
     displayName: 'Hernán (Operador)',
     role: 'operator',
     isSuperAdmin: false
+  },
+  // CAROLINA (MESERO DE SALA)
+  {
+    email: 'carolina@zenitmesero.com',
+    password: 'CarolinaZenit2026!',
+    displayName: 'Carolina (Mesero)',
+    role: 'MESERO',
+    isSuperAdmin: false
   }
 ];
 
@@ -85,7 +93,7 @@ async function createAllUsers() {
         email: u.email,
         displayName: u.displayName,
         role: u.role,
-        isSuperAdmin: u.isSuperAdmin,
+        isSuperAdmin: Boolean(u.isSuperAdmin),
         companyId: 'default_company',
         createdAt: serverTimestamp(),
         active: true
@@ -101,7 +109,7 @@ async function createAllUsers() {
     }
   }
 
-  console.log("\n🎉 ¡Proceso finalizado! Las 4 cuentas (incluyendo tu Super Admin) están listas en Firebase.");
+  console.log("\n🎉 ¡Proceso finalizado! Las cuentas están listas en Firebase.");
   process.exit(0);
 }
 

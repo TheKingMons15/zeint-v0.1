@@ -10,6 +10,9 @@ import { InventoryPage } from '../pages/InventoryPage';
 import { ReportsPage } from '../pages/ReportsPage';
 import { AuditPage } from '../pages/AuditPage';
 import { SuperAdminPage } from '../pages/SuperAdminPage';
+import { WaiterPage } from '../pages/WaiterPage';
+import { KitchenPage } from '../pages/KitchenPage';
+import { ConsumptionReportPage } from '../pages/ConsumptionReportPage';
 import { SettingsPage } from '../pages/SettingsPage';
 
 export const AppRoutes = () => {
@@ -27,14 +30,101 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<DashboardPage />} />
-        <Route path="productos" element={<ProductsPage />} />
-        <Route path="movimientos" element={<MovementsPage />} />
-        <Route path="inventario" element={<InventoryPage />} />
-        <Route path="reportes" element={<ReportsPage />} />
-        <Route path="auditoria" element={<AuditPage />} />
-        <Route path="super-admin" element={<SuperAdminPage />} />
-        <Route path="configuracion" element={<SettingsPage />} />
+        {/* Módulo de Meseros (Sala y Comandas) */}
+        <Route path="mesero" element={<WaiterPage />} />
+
+        {/* Módulo de Cocina KDS */}
+        <Route path="cocina" element={<KitchenPage />} />
+
+        {/* Reporte de Consumo por Ficha Técnica */}
+        <Route
+          path="reporte-consumo"
+          element={
+            <ProtectedRoute blockWaiters>
+              <ConsumptionReportPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Dashboard Administrativo (Bloqueado para meseros) */}
+        <Route
+          index
+          element={
+            <ProtectedRoute blockWaiters>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Gestión de Productos (Bloqueado para meseros) */}
+        <Route
+          path="productos"
+          element={
+            <ProtectedRoute blockWaiters>
+              <ProductsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Movimientos (Bloqueado para meseros) */}
+        <Route
+          path="movimientos"
+          element={
+            <ProtectedRoute blockWaiters>
+              <MovementsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Inventario (Bloqueado para meseros) */}
+        <Route
+          path="inventario"
+          element={
+            <ProtectedRoute blockWaiters>
+              <InventoryPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Reportes Diarios en PDF (Bloqueado para meseros) */}
+        <Route
+          path="reportes"
+          element={
+            <ProtectedRoute blockWaiters>
+              <ReportsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Auditoría (Bloqueado para meseros) */}
+        <Route
+          path="auditoria"
+          element={
+            <ProtectedRoute blockWaiters>
+              <AuditPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Consola Director (Bloqueado para meseros y operadores) */}
+        <Route
+          path="super-admin"
+          element={
+            <ProtectedRoute allowedRoles={['superadmin']}>
+              <SuperAdminPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Configuración (Bloqueado para meseros) */}
+        <Route
+          path="configuracion"
+          element={
+            <ProtectedRoute blockWaiters>
+              <SettingsPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
       {/* Redirección por defecto */}

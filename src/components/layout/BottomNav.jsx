@@ -9,7 +9,9 @@ import {
   ArrowDownLeft, 
   ArrowUpRight,
   ShieldCheck,
-  Crown
+  Crown,
+  UtensilsCrossed,
+  ChefHat
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -17,7 +19,41 @@ export const BottomNav = ({ onOpenMovementModal }) => {
   const { user } = useAuth();
   const [showQuickActions, setShowQuickActions] = useState(false);
 
+  const isWaiter = user?.role === 'MESERO' || user?.role === 'mesero';
   const isSuperAdmin = user?.role === 'superadmin' || user?.isSuperAdmin || user?.email === 'master@zenit.com';
+
+  // Barra inferior para Meseros
+  if (isWaiter) {
+    return (
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 lg:hidden px-4 py-2 shadow-2xl">
+        <div className="flex items-center justify-around max-w-md mx-auto">
+          <NavLink
+            to="/mesero"
+            className={({ isActive }) =>
+              `flex flex-col items-center py-1 px-4 rounded-xl transition-all ${
+                isActive ? 'text-emerald-400 font-bold bg-emerald-500/10' : 'text-slate-400 hover:text-slate-200'
+              }`
+            }
+          >
+            <UtensilsCrossed className="w-6 h-6" />
+            <span className="text-[10px] mt-1">Toma de Pedidos</span>
+          </NavLink>
+
+          <NavLink
+            to="/cocina"
+            className={({ isActive }) =>
+              `flex flex-col items-center py-1 px-4 rounded-xl transition-all ${
+                isActive ? 'text-amber-300 font-bold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
+              }`
+            }
+          >
+            <ChefHat className="w-6 h-6" />
+            <span className="text-[10px] mt-1">Estado en Cocina</span>
+          </NavLink>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <>
@@ -59,7 +95,7 @@ export const BottomNav = ({ onOpenMovementModal }) => {
         </div>
       )}
 
-      {/* Bottom Navigation Bar */}
+      {/* Bottom Navigation Bar para Admin / Super Admin */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 lg:hidden px-2 py-1.5 shadow-2xl">
         <div className="flex items-center justify-around max-w-md mx-auto">
           
@@ -68,7 +104,7 @@ export const BottomNav = ({ onOpenMovementModal }) => {
             to="/"
             end
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+              `flex flex-col items-center py-1 px-2 rounded-xl transition-all ${
                 isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
               }`
             }
@@ -77,17 +113,17 @@ export const BottomNav = ({ onOpenMovementModal }) => {
             <span className="text-[9px] mt-0.5">Inicio</span>
           </NavLink>
 
-          {/* Inventario */}
+          {/* Sala / Mesero */}
           <NavLink
-            to="/inventario"
+            to="/mesero"
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+              `flex flex-col items-center py-1 px-2 rounded-xl transition-all ${
                 isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
-            <Boxes className="w-5 h-5" />
-            <span className="text-[9px] mt-0.5">Inventario</span>
+            <UtensilsCrossed className="w-5 h-5" />
+            <span className="text-[9px] mt-0.5">Sala</span>
           </NavLink>
 
           {/* Botón Central Flotante de Movimientos Rápidos */}
@@ -105,25 +141,25 @@ export const BottomNav = ({ onOpenMovementModal }) => {
             </button>
           </div>
 
-          {/* Auditoría / Cambios */}
+          {/* Cocina KDS */}
           <NavLink
-            to="/auditoria"
+            to="/cocina"
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
-                isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center py-1 px-2 rounded-xl transition-all ${
+                isActive ? 'text-amber-300 font-bold' : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
-            <ShieldCheck className="w-5 h-5" />
-            <span className="text-[9px] mt-0.5">Auditoría</span>
+            <ChefHat className="w-5 h-5" />
+            <span className="text-[9px] mt-0.5">Cocina</span>
           </NavLink>
 
-          {/* Si es Super Admin -> Consola Director; si no -> Reportes */}
+          {/* Si es Super Admin -> Consola Director; si no -> Auditoría */}
           {isSuperAdmin ? (
             <NavLink
               to="/super-admin"
               className={({ isActive }) =>
-                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+                `flex flex-col items-center py-1 px-2 rounded-xl transition-all ${
                   isActive ? 'text-amber-300 font-bold' : 'text-amber-400/80 hover:text-amber-300'
                 }`
               }
@@ -133,15 +169,15 @@ export const BottomNav = ({ onOpenMovementModal }) => {
             </NavLink>
           ) : (
             <NavLink
-              to="/reportes"
+              to="/auditoria"
               className={({ isActive }) =>
-                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+                `flex flex-col items-center py-1 px-2 rounded-xl transition-all ${
                   isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
                 }`
               }
             >
-              <FileText className="w-5 h-5" />
-              <span className="text-[9px] mt-0.5">Reporte</span>
+              <ShieldCheck className="w-5 h-5" />
+              <span className="text-[9px] mt-0.5">Auditoría</span>
             </NavLink>
           )}
 
