@@ -93,21 +93,34 @@ export const auditService = {
       return () => window.removeEventListener('demo_audit_updated', handleStorage);
     }
 
-    const q = query(
-      collection(db, 'audit_logs'),
-      where('companyId', '==', companyId),
-      orderBy('createdAt', 'desc'),
-      limit(150)
-    );
+    try {
+      const q = query(
+        collection(db, 'audit_logs'),
+        where('companyId', '==', companyId)
+      );
 
-    return onSnapshot(q, (snapshot) => {
-      const logs = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      callback(logs);
-    }, (error) => {
-      console.error("Error subscribing to audit logs:", error);
-    });
+      return onSnapshot(q, (snapshot) => {
+        const logs = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
+        // Ordenamiento seguro en memoria
+        logs.sort((a, b) => {
+          const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || a.timestamp || 0);
+          const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || b.timestamp || 0);
+          return dateB - dateA;
+        });
+
+        callback(logs);
+      }, (error) => {
+        console.error("Error subscribing to audit logs in Firestore:", error);
+        callback([]);
+      });
+    } catch (e) {
+      console.error("Exception in auditService.subscribe:", e);
+      callback([]);
+      return () => {};
+    }
   }
 };

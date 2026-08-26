@@ -57,22 +57,35 @@ export const movementService = {
       return () => window.removeEventListener('demo_movements_updated', handleStorage);
     }
 
-    const q = query(
-      collection(db, 'movements'),
-      where('companyId', '==', companyId),
-      orderBy('createdAt', 'desc'),
-      limit(100)
-    );
+    try {
+      const q = query(
+        collection(db, 'movements'),
+        where('companyId', '==', companyId)
+      );
 
-    return onSnapshot(q, (snapshot) => {
-      const movements = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      callback(movements);
-    }, (error) => {
-      console.error("Error subscribing to movements:", error);
-    });
+      return onSnapshot(q, (snapshot) => {
+        const movements = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
+        // Ordenamiento seguro en memoria por fecha descendente
+        movements.sort((a, b) => {
+          const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || a.date || 0);
+          const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || b.date || 0);
+          return dateB - dateA;
+        });
+
+        callback(movements);
+      }, (error) => {
+        console.error("Error subscribing to movements in Firestore:", error);
+        callback([]);
+      });
+    } catch (e) {
+      console.error("Exception in movementService.subscribe:", e);
+      callback([]);
+      return () => {};
+    }
   },
 
   // Registrar movimiento (Entrada o Salida) con transacción atómica y auditoría

@@ -25,10 +25,16 @@ export const InventoryProvider = ({ children }) => {
     let unsubProducts = () => {};
     let unsubMovements = () => {};
 
+    // Temporizador de seguridad: Si Firestore tarda, liberar loading tras 1.5 segundos
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
     try {
       unsubProducts = productService.subscribe(companyId, (items) => {
         setProducts(items);
         setLoading(false);
+        clearTimeout(timer);
       });
 
       unsubMovements = movementService.subscribe(companyId, (items) => {
@@ -37,9 +43,11 @@ export const InventoryProvider = ({ children }) => {
     } catch (error) {
       console.error("Error setting up Firestore subscriptions:", error);
       setLoading(false);
+      clearTimeout(timer);
     }
 
     return () => {
+      clearTimeout(timer);
       unsubProducts();
       unsubMovements();
     };

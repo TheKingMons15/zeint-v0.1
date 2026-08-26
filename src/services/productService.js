@@ -7,7 +7,6 @@ import {
   onSnapshot, 
   query, 
   where, 
-  orderBy, 
   serverTimestamp,
   getDocs,
   writeBatch
@@ -19,7 +18,7 @@ import { auditService } from './auditService';
 const DEMO_PRODUCTS_KEY = 'inventario_demo_products';
 
 export const productService = {
-  // Suscripción en tiempo real a productos
+  // Suscripción en tiempo real a productos (con ordenamiento client-side para evitar requerir índices compuestos)
   subscribe(companyId = DEFAULT_COMPANY_ID, callback) {
     if (isDemoMode) {
       let stored = localStorage.getItem(DEMO_PRODUCTS_KEY);
@@ -43,21 +42,32 @@ export const productService = {
       return () => window.removeEventListener('demo_products_updated', handleStorage);
     }
 
-    const q = query(
-      collection(db, 'products'),
-      where('companyId', '==', companyId),
-      orderBy('name', 'asc')
-    );
+    try {
+      const q = query(
+        collection(db, 'products'),
+        where('companyId', '==', companyId)
+      );
 
-    return onSnapshot(q, (snapshot) => {
-      const products = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      callback(products);
-    }, (error) => {
-      console.error("Error subscribing to products:", error);
-    });
+      return onSnapshot(q, (snapshot) => {
+        const products = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
+        // Ordenamiento seguro en memoria
+        products.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+        callback(products);
+      }, (error) => {
+        console.error("Error subscribing to products in Firestore:", error);
+        // Fallback para no bloquear la UI
+        callback([]);
+      });
+    } catch (e) {
+      console.error("Exception in productService.subscribe:", e);
+      callback([]);
+      return () => {};
+    }
   },
 
   // Crear producto
