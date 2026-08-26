@@ -2,29 +2,25 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { 
   getFirestore, 
-  enableIndexedDbPersistence, 
   initializeFirestore, 
   persistentLocalCache, 
   persistentMultipleTabManager 
 } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-// Configuración de variables de entorno de Vite
+// Configuración oficial de Firebase Online de Zenit
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-api-key",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "inventario-demo.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "inventario-demo",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "inventario-demo.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1234567890",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1234567890:web:abcdef123456"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDmsy4pvHef8hftz_LcFstcps1R8dexFuw",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "zenit-1bbc3.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "zenit-1bbc3",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "zenit-1bbc3.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1084151887776",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1084151887776:web:7ad06eaa8f2b9cebdad6c5"
 };
 
-// Validar si las credenciales de Firebase son reales o están en modo demo
-export const isDemoMode = !import.meta.env.VITE_FIREBASE_API_KEY || 
-  import.meta.env.VITE_FIREBASE_API_KEY === "tu_api_key_aqui" ||
-  import.meta.env.VITE_FIREBASE_API_KEY === "demo-api-key";
+export const isDemoMode = false;
 
-// Inicialización de la aplicación Firebase
+// Inicialización de Firebase
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 // Inicializar Auth
@@ -39,7 +35,6 @@ try {
     })
   });
 } catch (e) {
-  // Fallback si ya fue inicializado o en entornos limitados
   db = getFirestore(app);
 }
 
