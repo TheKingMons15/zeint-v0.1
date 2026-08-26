@@ -1,51 +1,79 @@
-// Categorías de alimentos para la Versión 1
+// Categorías de alimentos configuradas para el negocio
 export const FOOD_CATEGORIES = [
-  'Vegetales',
-  'Carnes',
-  'Quesos',
-  'Yogures',
-  'Crema de leche',
+  'Proteínas',
   'Lácteos',
+  'Embutidos',
+  'Verduras',
+  'Papas y carbohidratos',
+  'Frutas',
+  'Salsas',
+  'Secos y condimentos',
+  'Aceites y grasas',
+  'Bebidas',
   'Otros'
 ];
 
-// Metadatos de categorías (colores y estilos para badges)
+// Metadatos de categorías (colores y badges)
 export const CATEGORY_META = {
-  'Vegetales': {
-    color: 'emerald',
-    bgClass: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-    dotClass: 'bg-emerald-400',
-    icon: 'Carrot'
-  },
-  'Carnes': {
+  'Proteínas': {
     color: 'rose',
     bgClass: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
     dotClass: 'bg-rose-400',
     icon: 'Beef'
-  },
-  'Quesos': {
-    color: 'amber',
-    bgClass: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-    dotClass: 'bg-amber-400',
-    icon: 'Cookie'
-  },
-  'Yogures': {
-    color: 'purple',
-    bgClass: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
-    dotClass: 'bg-purple-400',
-    icon: 'Milk'
-  },
-  'Crema de leche': {
-    color: 'sky',
-    bgClass: 'bg-sky-500/10 text-sky-400 border-sky-500/30',
-    dotClass: 'bg-sky-400',
-    icon: 'IceCream'
   },
   'Lácteos': {
     color: 'blue',
     bgClass: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
     dotClass: 'bg-blue-400',
     icon: 'Milk'
+  },
+  'Embutidos': {
+    color: 'orange',
+    bgClass: 'bg-orange-500/10 text-orange-400 border-orange-500/30',
+    dotClass: 'bg-orange-400',
+    icon: 'Flame'
+  },
+  'Verduras': {
+    color: 'emerald',
+    bgClass: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+    dotClass: 'bg-emerald-400',
+    icon: 'Carrot'
+  },
+  'Papas y carbohidratos': {
+    color: 'amber',
+    bgClass: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+    dotClass: 'bg-amber-400',
+    icon: 'Wheat'
+  },
+  'Frutas': {
+    color: 'lime',
+    bgClass: 'bg-lime-500/10 text-lime-400 border-lime-500/30',
+    dotClass: 'bg-lime-400',
+    icon: 'Apple'
+  },
+  'Salsas': {
+    color: 'red',
+    bgClass: 'bg-red-500/10 text-red-400 border-red-500/30',
+    dotClass: 'bg-red-400',
+    icon: 'Soup'
+  },
+  'Secos y condimentos': {
+    color: 'yellow',
+    bgClass: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30',
+    dotClass: 'bg-yellow-400',
+    icon: 'Sparkles'
+  },
+  'Aceites y grasas': {
+    color: 'teal',
+    bgClass: 'bg-teal-500/10 text-teal-400 border-teal-500/30',
+    dotClass: 'bg-teal-400',
+    icon: 'Droplet'
+  },
+  'Bebidas': {
+    color: 'purple',
+    bgClass: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+    dotClass: 'bg-purple-400',
+    icon: 'Coffee'
   },
   'Otros': {
     color: 'slate',
@@ -55,16 +83,16 @@ export const CATEGORY_META = {
   }
 };
 
-// Unidades de medida estándar para alimentos
+// Unidades de medida estándar para el negocio
 export const MEASUREMENT_UNITS = [
   { value: 'kg', label: 'Kilogramos (kg)', isDecimal: true },
+  { value: 'UND', label: 'Unidades (UND)', isDecimal: false },
+  { value: 'litro', label: 'Litros (litro)', isDecimal: true },
   { value: 'g', label: 'Gramos (g)', isDecimal: false },
-  { value: 'l', label: 'Litros (L)', isDecimal: true },
   { value: 'ml', label: 'Mililitros (ml)', isDecimal: false },
   { value: 'unidad', label: 'Unidades (und)', isDecimal: false },
   { value: 'paquete', label: 'Paquetes (paq)', isDecimal: false },
-  { value: 'caja', label: 'Cajas (cj)', isDecimal: false },
-  { value: 'bolsa', label: 'Bolsas (bls)', isDecimal: false }
+  { value: 'caja', label: 'Cajas (cj)', isDecimal: false }
 ];
 
 // Tipos de movimiento y motivos estándar
@@ -90,14 +118,14 @@ export const MOVEMENT_REASONS = {
     'Compra a Proveedor',
     'Devolución de Cliente',
     'Ajuste de Inventario (Sobrante)',
-    'Producción Interna',
+    'Producción Interna / Cocina',
     'Otro Ingreso'
   ],
   EXIT: [
-    'Venta / Despacho',
+    'Venta / Despacho a Mesa',
     'Consumo en Cocina / Preparación',
     'Merma / Vencimiento',
-    'Producto Dañado / Devolución a Proveedor',
+    'Producto Dañado / Devolución',
     'Ajuste de Inventario (Faltante)',
     'Otra Salida'
   ]

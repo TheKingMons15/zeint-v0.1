@@ -9,136 +9,13 @@ import {
   where, 
   orderBy, 
   serverTimestamp,
-  getDocs
+  getDocs,
+  writeBatch
 } from 'firebase/firestore';
 import { db, isDemoMode, DEFAULT_COMPANY_ID } from '../firebase/config';
+import { ZENIT_INITIAL_PRODUCTS } from '../data/initialProducts';
 
 const DEMO_PRODUCTS_KEY = 'inventario_demo_products';
-
-// Datos iniciales de demostración con las categorías solicitadas
-const INITIAL_DEMO_PRODUCTS = [
-  {
-    id: 'prod_1',
-    name: 'Tomate Chonto',
-    category: 'Vegetales',
-    unit: 'kg',
-    currentStock: 35.5,
-    minStock: 10.0,
-    initialStock: 40.0,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_2',
-    name: 'Cebolla Cabezona',
-    category: 'Vegetales',
-    unit: 'kg',
-    currentStock: 8.0, // Stock bajo
-    minStock: 15.0,
-    initialStock: 25.0,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_3',
-    name: 'Pechuga de Pollo Fresca',
-    category: 'Carnes',
-    unit: 'kg',
-    currentStock: 48.0,
-    minStock: 12.0,
-    initialStock: 50.0,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_4',
-    name: 'Carne Molida Especial',
-    category: 'Carnes',
-    unit: 'kg',
-    currentStock: 5.0, // Stock bajo
-    minStock: 10.0,
-    initialStock: 20.0,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_5',
-    name: 'Queso Mozzarella Bloque',
-    category: 'Quesos',
-    unit: 'kg',
-    currentStock: 22.0,
-    minStock: 8.0,
-    initialStock: 25.0,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_6',
-    name: 'Queso Campesino Fresco',
-    category: 'Quesos',
-    unit: 'kg',
-    currentStock: 3.5, // Stock bajo
-    minStock: 6.0,
-    initialStock: 15.0,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_7',
-    name: 'Yogurt Griego Natural',
-    category: 'Yogures',
-    unit: 'l',
-    currentStock: 18.0,
-    minStock: 5.0,
-    initialStock: 20.0,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_8',
-    name: 'Yogurt Fresa 1L',
-    category: 'Yogures',
-    unit: 'unidad',
-    currentStock: 24,
-    minStock: 10,
-    initialStock: 30,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_9',
-    name: 'Crema de Leche Pastelera',
-    category: 'Crema de leche',
-    unit: 'l',
-    currentStock: 14.5,
-    minStock: 6.0,
-    initialStock: 18.0,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_10',
-    name: 'Leche Entera UHT',
-    category: 'Lácteos',
-    unit: 'l',
-    currentStock: 60.0,
-    minStock: 20.0,
-    initialStock: 80.0,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'prod_11',
-    name: 'Aceite Vegetal 5L',
-    category: 'Otros',
-    unit: 'unidad',
-    currentStock: 12,
-    minStock: 4,
-    initialStock: 15,
-    companyId: DEFAULT_COMPANY_ID,
-    createdAt: new Date().toISOString()
-  }
-];
 
 export const productService = {
   // Suscripción en tiempo real a productos
@@ -146,8 +23,14 @@ export const productService = {
     if (isDemoMode) {
       let stored = localStorage.getItem(DEMO_PRODUCTS_KEY);
       if (!stored) {
-        localStorage.setItem(DEMO_PRODUCTS_KEY, JSON.stringify(INITIAL_DEMO_PRODUCTS));
-        stored = JSON.stringify(INITIAL_DEMO_PRODUCTS);
+        localStorage.setItem(DEMO_PRODUCTS_KEY, JSON.stringify(ZENIT_INITIAL_PRODUCTS.map((p, idx) => ({
+          ...p,
+          id: 'prod_' + (idx + 1),
+          currentStock: p.initialStock,
+          companyId: DEFAULT_COMPANY_ID,
+          createdAt: new Date().toISOString()
+        }))));
+        stored = localStorage.getItem(DEMO_PRODUCTS_KEY);
       }
       callback(JSON.parse(stored));
 
@@ -252,5 +135,47 @@ export const productService = {
 
     const docRef = doc(db, 'products', productId);
     await deleteDoc(docRef);
+  },
+
+  // Carga masiva de los 69 productos de Zenit a Firestore Online
+  async importZenitCatalog(user) {
+    const companyId = user?.companyId || DEFAULT_COMPANY_ID;
+
+    if (isDemoMode) {
+      const demoList = ZENIT_INITIAL_PRODUCTS.map((p, idx) => ({
+        ...p,
+        id: 'prod_' + (idx + 1),
+        currentStock: p.initialStock,
+        companyId,
+        createdAt: new Date().toISOString()
+      }));
+      localStorage.setItem(DEMO_PRODUCTS_KEY, JSON.stringify(demoList));
+      window.dispatchEvent(new Event('demo_products_updated'));
+      return demoList.length;
+    }
+
+    // Firestore Batch import (hasta 500 operaciones en 1 commit)
+    const batch = writeBatch(db);
+    const productsRef = collection(db, 'products');
+
+    ZENIT_INITIAL_PRODUCTS.forEach((item) => {
+      const newDocRef = doc(productsRef);
+      batch.set(newDocRef, {
+        name: item.name.trim(),
+        category: item.category,
+        unit: item.unit,
+        initialStock: Number(item.initialStock),
+        currentStock: Number(item.initialStock),
+        minStock: Number(item.minStock),
+        notes: '',
+        companyId: companyId,
+        createdBy: user?.uid || 'admin',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+    });
+
+    await batch.commit();
+    return ZENIT_INITIAL_PRODUCTS.length;
   }
 };

@@ -154,6 +154,19 @@ export const InventoryProvider = ({ children }) => {
     }
   };
 
+  // Importar catálogo completo de alimentos a Firestore
+  const importInitialProducts = async () => {
+    try {
+      const count = await productService.importZenitCatalog(user);
+      showToast(`¡${count} productos importados exitosamente a Firebase!`, 'success');
+      return count;
+    } catch (error) {
+      console.error("Error importing initial catalog:", error);
+      showToast(error.message || 'Error al importar productos iniciales', 'error');
+      throw error;
+    }
+  };
+
   const value = {
     products,
     filteredProducts,
@@ -169,7 +182,8 @@ export const InventoryProvider = ({ children }) => {
     addProduct,
     updateProduct,
     deleteProduct,
-    registerMovement
+    registerMovement,
+    importInitialProducts
   };
 
   return (

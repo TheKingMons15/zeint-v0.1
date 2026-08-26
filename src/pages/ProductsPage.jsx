@@ -17,7 +17,8 @@ export const ProductsPage = () => {
     setSelectedCategory,
     updateProduct,
     deleteProduct,
-    addProduct
+    addProduct,
+    importInitialProducts
   } = useInventory();
 
   const { handleOpenMovementModal } = useOutletContext();
@@ -75,13 +76,25 @@ export const ProductsPage = () => {
           </p>
         </div>
 
-        <Button
-          size="sm"
-          onClick={handleCreate}
-          icon={Plus}
-        >
-          Crear Nuevo Alimento
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          {filteredProducts.length === 0 && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={importInitialProducts}
+              className="border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+            >
+              ⚡ Cargar Catálogo (69 Alimentos)
+            </Button>
+          )}
+          <Button
+            size="sm"
+            onClick={handleCreate}
+            icon={Plus}
+          >
+            Crear Nuevo Alimento
+          </Button>
+        </div>
       </div>
 
       {/* Category Chips Bar */}
@@ -92,12 +105,23 @@ export const ProductsPage = () => {
 
       {/* Grid de Productos */}
       {filteredProducts.length === 0 ? (
-        <EmptyState
-          title="No hay productos disponibles"
-          description="Comienza creando tu primer producto para iniciar el control de inventario."
-          actionLabel="+ Crear Producto"
-          onAction={handleCreate}
-        />
+        <div className="space-y-4">
+          <EmptyState
+            title="No hay productos disponibles en esta categoría"
+            description="Puedes crear productos individuales o cargar el catálogo completo de 69 alimentos de Zenit con 1 clic."
+            actionLabel="+ Crear Producto Individual"
+            onAction={handleCreate}
+          />
+          <div className="text-center">
+            <Button
+              size="sm"
+              variant="success"
+              onClick={importInitialProducts}
+            >
+              ⚡ Cargar Catálogo Completo de Alimentos (69 Productos)
+            </Button>
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredProducts.map((product) => (
