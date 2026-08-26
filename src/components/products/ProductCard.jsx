@@ -59,13 +59,21 @@ export const ProductCard = ({
           </div>
         </div>
 
-        {/* Product Name */}
-        <h4 className="text-base font-bold text-slate-100 mt-2 tracking-tight line-clamp-1">
-          {product.name}
-        </h4>
+        {/* Product Name & ID */}
+        <div className="mt-2">
+          <div className="flex items-center justify-between gap-1">
+            <h4 className="text-base font-bold text-slate-100 tracking-tight line-clamp-1">
+              {product.name}
+            </h4>
+          </div>
+          <div className="flex items-center gap-2 text-[10px] text-slate-500 font-mono mt-0.5">
+            <span>ID: {product.id_producto || product.id}</span>
+            {product.supplier && <span>• {product.supplier}</span>}
+          </div>
+        </div>
 
         {product.notes && (
-          <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
+          <p className="text-[11px] text-slate-400 line-clamp-1 mt-1">
             {product.notes}
           </p>
         )}
