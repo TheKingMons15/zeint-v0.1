@@ -9,7 +9,8 @@ import {
   ShieldCheck, 
   Sparkles,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  KeyRound
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -31,14 +32,13 @@ export const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Redirigir si ya está autenticado
   if (user) {
     navigate('/', { replace: true });
     return null;
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     setError('');
     setLoading(true);
 
@@ -58,7 +58,7 @@ export const LoginPage = () => {
           throw new Error('La contraseña debe tener al menos 6 caracteres');
         }
         await register(email, password, displayName, role);
-        showToast('Cuenta creada exitosamente', 'success');
+        showToast('Cuenta creada exitosamente en Firebase', 'success');
         navigate('/');
       } else if (mode === 'forgot') {
         if (!email) {
@@ -70,28 +70,24 @@ export const LoginPage = () => {
       }
     } catch (err) {
       console.error(err);
-      setError(err.message || 'Ocurrió un error al procesar la solicitud');
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        setError('Correo o contraseña incorrectos. Si aún no has creado la cuenta en Firebase, créala en la pestaña "Crear Cuenta".');
+      } else {
+        setError(err.message || 'Ocurrió un error al procesar la solicitud');
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // Acceso Rápido Modo Demostración
-  const handleQuickDemoLogin = async () => {
-    setLoading(true);
-    try {
-      await login('admin@inventario.com', 'admin123');
-      showToast('Sesión de demostración iniciada como Administrador', 'success');
-      navigate('/');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+  const handleSelectPredefinedUser = (userEmail, userPassword) => {
+    setEmail(userEmail);
+    setPassword(userPassword);
+    setMode('login');
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-10 sm:px-6 lg:px-8 relative overflow-hidden">
       
       {/* Background ambient gradient */}
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -108,7 +104,7 @@ export const LoginPage = () => {
           Control Diario de Inventario
         </h2>
         <p className="mt-1.5 text-xs sm:text-sm text-slate-400">
-          Gestión inteligente de alimentos para Móvil, Tablet y Escritorio
+          Auditoría en tiempo real para Karen, Wladimir y Hernán
         </p>
       </div>
 
@@ -155,7 +151,7 @@ export const LoginPage = () => {
               <Input
                 label="Nombre Completo *"
                 icon={User}
-                placeholder="Ej: Carlos Gómez"
+                placeholder="Ej: Karen Administrador"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 required
@@ -167,7 +163,7 @@ export const LoginPage = () => {
               label="Correo Electrónico *"
               icon={Mail}
               type="email"
-              placeholder="ejemplo@negocio.com"
+              placeholder="karenadmin@zenit.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -193,9 +189,9 @@ export const LoginPage = () => {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 options={[
-                  { value: USER_ROLES.ADMIN, label: 'Administrador (Control Total)' },
-                  { value: USER_ROLES.SUPERVISOR, label: 'Supervisor (Inventario & Reportes)' },
-                  { value: USER_ROLES.OPERATOR, label: 'Operador (Entradas y Salidas)' }
+                  { value: USER_ROLES.ADMIN, label: 'Administrador (Karen - Control Total & Auditoría)' },
+                  { value: USER_ROLES.SUPERVISOR, label: 'Supervisor (Wladimir - Reportes & Stock)' },
+                  { value: USER_ROLES.OPERATOR, label: 'Operador (Hernán - Entradas y Salidas)' }
                 ]}
               />
             )}
@@ -221,27 +217,58 @@ export const LoginPage = () => {
               className="mt-2"
             >
               {mode === 'login' && 'Ingresar al Sistema'}
-              {mode === 'register' && 'Registrarme'}
+              {mode === 'register' && 'Registrar Cuenta'}
               {mode === 'forgot' && 'Enviar Correo de Recuperación'}
             </Button>
 
           </form>
 
-          {/* Quick Demo Login Option */}
-          <div className="mt-6 pt-6 border-t border-slate-800 text-center">
-            <p className="text-[11px] text-slate-400 mb-3">
-              ¿Deseas probar la aplicación de inmediato?
+          {/* Selector de Cuentas Preconfiguradas */}
+          <div className="mt-6 pt-5 border-t border-slate-800">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 text-center mb-3">
+              Cuentas del Equipo Zenit:
             </p>
-            <Button
-              variant="outline"
-              size="sm"
-              fullWidth
-              onClick={handleQuickDemoLogin}
-              icon={Sparkles}
-              className="border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
-            >
-              Acceso Rápido Demo (1-Click)
-            </Button>
+
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => handleSelectPredefinedUser('karenadmin@zenit.com', 'KarenZenit2026!')}
+                className="p-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-emerald-500/50 text-left transition-all group"
+              >
+                <span className="block text-[11px] font-bold text-slate-200 group-hover:text-emerald-400">
+                  Karen
+                </span>
+                <span className="block text-[9px] text-emerald-400 font-semibold">
+                  Admin
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectPredefinedUser('wladimir@zenit.com', 'WladimirZenit2026!')}
+                className="p-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-sky-500/50 text-left transition-all group"
+              >
+                <span className="block text-[11px] font-bold text-slate-200 group-hover:text-sky-400">
+                  Wladimir
+                </span>
+                <span className="block text-[9px] text-sky-400 font-semibold">
+                  Supervisor
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectPredefinedUser('hernan@zenit.com', 'HernanZenit2026!')}
+                className="p-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-amber-500/50 text-left transition-all group"
+              >
+                <span className="block text-[11px] font-bold text-slate-200 group-hover:text-amber-400">
+                  Hernán
+                </span>
+                <span className="block text-[9px] text-amber-400 font-semibold">
+                  Operador
+                </span>
+              </button>
+            </div>
           </div>
 
         </div>

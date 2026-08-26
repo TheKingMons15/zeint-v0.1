@@ -20,6 +20,7 @@ const navItems = [
   { to: '/movimientos', label: 'Movimientos', icon: ArrowLeftRight },
   { to: '/inventario', label: 'Vista Inventario', icon: Boxes },
   { to: '/reportes', label: 'Reporte Diario PDF', icon: FileText },
+  { to: '/auditoria', label: 'Auditoría y Cambios', icon: AlertTriangle },
   { to: '/configuracion', label: 'Configuración', icon: Settings },
 ];
 

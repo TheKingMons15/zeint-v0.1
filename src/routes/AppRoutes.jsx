@@ -8,6 +8,7 @@ import { ProductsPage } from '../pages/ProductsPage';
 import { MovementsPage } from '../pages/MovementsPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { ReportsPage } from '../pages/ReportsPage';
+import { AuditPage } from '../pages/AuditPage';
 import { SettingsPage } from '../pages/SettingsPage';
 
 export const AppRoutes = () => {
@@ -30,6 +31,7 @@ export const AppRoutes = () => {
         <Route path="movimientos" element={<MovementsPage />} />
         <Route path="inventario" element={<InventoryPage />} />
         <Route path="reportes" element={<ReportsPage />} />
+        <Route path="auditoria" element={<AuditPage />} />
         <Route path="configuracion" element={<SettingsPage />} />
       </Route>
 

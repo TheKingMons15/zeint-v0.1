@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db, isDemoMode, DEFAULT_COMPANY_ID } from '../firebase/config';
 import { ZENIT_INITIAL_PRODUCTS } from '../data/initialProducts';
+import { auditService } from './auditService';
 
 const DEMO_PRODUCTS_KEY = 'inventario_demo_products';
 
@@ -90,15 +91,31 @@ export const productService = {
       items.push(createdItem);
       localStorage.setItem(DEMO_PRODUCTS_KEY, JSON.stringify(items));
       window.dispatchEvent(new Event('demo_products_updated'));
+
+      await auditService.logAction(user, 'CREATE_PRODUCT', {
+        product: newProduct.name,
+        category: newProduct.category,
+        initialStock: `${newProduct.initialStock} ${newProduct.unit}`,
+        minStock: `${newProduct.minStock} ${newProduct.unit}`
+      });
+
       return createdItem.id;
     }
 
     const docRef = await addDoc(collection(db, 'products'), newProduct);
+
+    await auditService.logAction(user, 'CREATE_PRODUCT', {
+      product: newProduct.name,
+      category: newProduct.category,
+      initialStock: `${newProduct.initialStock} ${newProduct.unit}`,
+      minStock: `${newProduct.minStock} ${newProduct.unit}`
+    });
+
     return docRef.id;
   },
 
   // Actualizar producto
-  async update(productId, updates) {
+  async update(productId, updates, user) {
     const cleanUpdates = {
       ...updates,
       updatedAt: isDemoMode ? new Date().toISOString() : serverTimestamp()
@@ -116,25 +133,45 @@ export const productService = {
         localStorage.setItem(DEMO_PRODUCTS_KEY, JSON.stringify(items));
         window.dispatchEvent(new Event('demo_products_updated'));
       }
+
+      await auditService.logAction(user, 'UPDATE_PRODUCT', {
+        product: updates.name || productId,
+        changes: cleanUpdates
+      });
       return;
     }
 
     const docRef = doc(db, 'products', productId);
     await updateDoc(docRef, cleanUpdates);
+
+    await auditService.logAction(user, 'UPDATE_PRODUCT', {
+      product: updates.name || productId,
+      changes: cleanUpdates
+    });
   },
 
   // Eliminar producto
-  async delete(productId) {
+  async delete(productId, productName, user) {
     if (isDemoMode) {
       let items = JSON.parse(localStorage.getItem(DEMO_PRODUCTS_KEY) || '[]');
       items = items.filter(p => p.id !== productId);
       localStorage.setItem(DEMO_PRODUCTS_KEY, JSON.stringify(items));
       window.dispatchEvent(new Event('demo_products_updated'));
+
+      await auditService.logAction(user, 'DELETE_PRODUCT', {
+        product: productName || productId,
+        message: `Producto eliminado del catálogo`
+      });
       return;
     }
 
     const docRef = doc(db, 'products', productId);
     await deleteDoc(docRef);
+
+    await auditService.logAction(user, 'DELETE_PRODUCT', {
+      product: productName || productId,
+      message: `Producto eliminado del catálogo`
+    });
   },
 
   // Carga masiva de los 69 productos de Zenit a Firestore Online
@@ -151,10 +188,16 @@ export const productService = {
       }));
       localStorage.setItem(DEMO_PRODUCTS_KEY, JSON.stringify(demoList));
       window.dispatchEvent(new Event('demo_products_updated'));
+
+      await auditService.logAction(user, 'IMPORT_CATALOG', {
+        count: demoList.length,
+        message: 'Importación del catálogo inicial de 69 productos'
+      });
+
       return demoList.length;
     }
 
-    // Firestore Batch import (hasta 500 operaciones en 1 commit)
+    // Firestore Batch import
     const batch = writeBatch(db);
     const productsRef = collection(db, 'products');
 
@@ -176,6 +219,12 @@ export const productService = {
     });
 
     await batch.commit();
+
+    await auditService.logAction(user, 'IMPORT_CATALOG', {
+      count: ZENIT_INITIAL_PRODUCTS.length,
+      message: 'Importación del catálogo inicial de 69 productos a Firestore'
+    });
+
     return ZENIT_INITIAL_PRODUCTS.length;
   }
 };

@@ -11,65 +11,29 @@ import {
 } from 'firebase/firestore';
 import { db, isDemoMode, DEFAULT_COMPANY_ID } from '../firebase/config';
 import { getTodayDateString } from '../utils/formatters';
+import { auditService } from './auditService';
 
 const DEMO_MOVEMENTS_KEY = 'inventario_demo_movements';
 const DEMO_PRODUCTS_KEY = 'inventario_demo_products';
 
-// Movimientos iniciales de prueba del día de hoy
 const todayStr = getTodayDateString();
 const INITIAL_DEMO_MOVEMENTS = [
   {
     id: 'mov_1',
     type: 'ENTRY',
     productId: 'prod_1',
-    productName: 'Tomate Chonto',
-    category: 'Vegetales',
+    productName: 'Filete de pollo',
+    category: 'Proteínas',
     unit: 'kg',
     quantity: 15.0,
-    previousStock: 20.5,
-    newStock: 35.5,
+    previousStock: 0,
+    newStock: 15.0,
     reason: 'Compra a Proveedor',
     notes: 'Recibido fresco para producción',
     date: todayStr,
     createdAt: new Date().toISOString(),
-    userName: 'Administrador Demo',
-    userEmail: 'admin@inventario.com',
-    companyId: DEFAULT_COMPANY_ID
-  },
-  {
-    id: 'mov_2',
-    type: 'EXIT',
-    productId: 'prod_2',
-    productName: 'Cebolla Cabezona',
-    category: 'Vegetales',
-    unit: 'kg',
-    quantity: 10.0,
-    previousStock: 18.0,
-    newStock: 8.0,
-    reason: 'Consumo en Cocina / Preparación',
-    notes: 'Preparación de salsas y guisos del día',
-    date: todayStr,
-    createdAt: new Date().toISOString(),
-    userName: 'Administrador Demo',
-    userEmail: 'admin@inventario.com',
-    companyId: DEFAULT_COMPANY_ID
-  },
-  {
-    id: 'mov_3',
-    type: 'ENTRY',
-    productId: 'prod_3',
-    productName: 'Pechuga de Pollo Fresca',
-    category: 'Carnes',
-    unit: 'kg',
-    quantity: 20.0,
-    previousStock: 28.0,
-    newStock: 48.0,
-    reason: 'Compra a Proveedor',
-    notes: 'Lote refrigerado recibido',
-    date: todayStr,
-    createdAt: new Date().toISOString(),
-    userName: 'Administrador Demo',
-    userEmail: 'admin@inventario.com',
+    userName: 'Karen (Administrador)',
+    userEmail: 'karenadmin@zenit.com',
     companyId: DEFAULT_COMPANY_ID
   }
 ];
@@ -111,7 +75,7 @@ export const movementService = {
     });
   },
 
-  // Registrar movimiento (Entrada o Salida) con transacción atómica
+  // Registrar movimiento (Entrada o Salida) con transacción atómica y auditoría
   async registerMovement(movementData, user) {
     const { productId, type, quantity, reason, notes, date } = movementData;
     const qty = Number(quantity);
@@ -136,10 +100,6 @@ export const movementService = {
         newStock = previousStock + qty;
       } else {
         newStock = previousStock - qty;
-        if (newStock < 0) {
-          // Opcional: advertencia si queda negativo
-          console.warn("El stock resultante es negativo:", newStock);
-        }
       }
 
       // Actualizar producto en demo
@@ -165,8 +125,8 @@ export const movementService = {
         date: movementDate,
         createdAt: new Date().toISOString(),
         userId: user?.uid || 'demo_user',
-        userName: user?.displayName || 'Usuario Demo',
-        userEmail: user?.email || 'admin@inventario.com',
+        userName: user?.displayName || 'Usuario',
+        userEmail: user?.email || 'usuario@zenit.com',
         companyId: user?.companyId || DEFAULT_COMPANY_ID
       };
 
@@ -174,11 +134,21 @@ export const movementService = {
       localStorage.setItem(DEMO_MOVEMENTS_KEY, JSON.stringify(movements));
       window.dispatchEvent(new Event('demo_movements_updated'));
 
+      // Registrar en bitácora de auditoría
+      await auditService.logAction(user, type === 'ENTRY' ? 'ENTRY_MOVEMENT' : 'EXIT_MOVEMENT', {
+        product: product.name,
+        category: product.category,
+        quantity: `${type === 'ENTRY' ? '+' : '-'}${qty} ${product.unit}`,
+        stockChange: `${previousStock} → ${newStock} ${product.unit}`,
+        reason: createdMovement.reason,
+        notes: notes || ''
+      });
+
       return createdMovement;
     }
 
     // Transacción atómica en Firestore
-    return await runTransaction(db, async (transaction) => {
+    const result = await runTransaction(db, async (transaction) => {
       const productRef = doc(db, 'products', productId);
       const productDoc = await transaction.get(productRef);
 
@@ -225,7 +195,25 @@ export const movementService = {
 
       transaction.set(movementRef, newMovement);
 
-      return { id: movementRef.id, ...newMovement };
+      return { 
+        id: movementRef.id, 
+        ...newMovement,
+        productName: productData.name,
+        unit: productData.unit,
+        category: productData.category
+      };
     });
+
+    // Registrar en auditoría
+    await auditService.logAction(user, type === 'ENTRY' ? 'ENTRY_MOVEMENT' : 'EXIT_MOVEMENT', {
+      product: result.productName,
+      category: result.category,
+      quantity: `${type === 'ENTRY' ? '+' : '-'}${qty} ${result.unit}`,
+      stockChange: `${result.previousStock} → ${result.newStock} ${result.unit}`,
+      reason: result.reason,
+      notes: notes || ''
+    });
+
+    return result;
   }
 };
