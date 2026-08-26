@@ -1,93 +1,76 @@
-// Lista completa de productos iniciales para el negocio
+// Catálogo oficial verificado de alimentos e insumos para Zenit
+// Todos los productos inician en stock 0.0 para ingreso real diario
 export const ZENIT_INITIAL_PRODUCTS = [
-  // 1. Proteínas
-  { name: 'Filete de pollo', category: 'Proteínas', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Filete de res', category: 'Proteínas', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Filete de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 12, minStock: 5 },
-  { name: 'Porcion Picaña', category: 'Proteínas', unit: 'kg', initialStock: 10, minStock: 3 },
-  { name: 'Matambre', category: 'Proteínas', unit: 'kg', initialStock: 8, minStock: 3 },
-  { name: 'Tomahawk', category: 'Proteínas', unit: 'UND', initialStock: 10, minStock: 4 },
-  { name: 'Costilla', category: 'Proteínas', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Chuletón', category: 'Proteínas', unit: 'kg', initialStock: 10, minStock: 4 },
-  { name: 'Chinchulines', category: 'Proteínas', unit: 'kg', initialStock: 8, minStock: 3 },
-  { name: 'Cuerito', category: 'Proteínas', unit: 'kg', initialStock: 8, minStock: 3 },
-  { name: 'Chorizo Rojo', category: 'Proteínas', unit: 'kg', initialStock: 10, minStock: 3 },
-  { name: 'Chorizo Blanco', category: 'Proteínas', unit: 'kg', initialStock: 10, minStock: 3 },
-  { name: 'Morcilla', category: 'Proteínas', unit: 'kg', initialStock: 8, minStock: 3 },
-  { name: 'Camarón', category: 'Proteínas', unit: 'kg', initialStock: 10, minStock: 3 },
-  { name: 'Cuy entero', category: 'Proteínas', unit: 'kg', initialStock: 6, minStock: 2 },
+  // 1. Proteínas (Carnes, Aves, Mariscos)
+  { name: 'Carne molida de res', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Carne de res suave', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Tomahawk', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 3 },
+  { name: 'Carne de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Costilla de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 4 },
+  { name: 'Pollos - Pechugas', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Chinchulines', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Camarón limpio', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Chorizo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Cuy', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 2 },
+  { name: 'Cuerito', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
 
-  // 2. Lácteos
-  { name: 'Queso mozzarella', category: 'Lácteos', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Queso amasado', category: 'Lácteos', unit: 'kg', initialStock: 10, minStock: 4 },
-  { name: 'Crema de leche', category: 'Lácteos', unit: 'litro', initialStock: 10, minStock: 3 },
-  { name: 'Leche', category: 'Lácteos', unit: 'litro', initialStock: 20, minStock: 6 },
-  { name: 'Helado vainilla', category: 'Lácteos', unit: 'kg', initialStock: 6, minStock: 2 },
+  // 2. Papas y carbohidratos
+  { name: 'Papa super chola', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 10 },
+  { name: 'Papa amarilla', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 10 },
+  { name: 'Plátano maduro', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Maíz', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Arroz', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 10 },
+  { name: 'Fréjol rojo seco', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Arepas pequeñas', category: 'Papas y carbohidratos', unit: 'unidad', initialStock: 0, minStock: 15 },
 
-  // 3. Embutidos
-  { name: 'Tocino', category: 'Embutidos', unit: 'kg', initialStock: 8, minStock: 3 },
+  // 3. Verduras y Legumbres
+  { name: 'Tomate riñón', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
+  { name: 'Cebolla blanca/perla', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
+  { name: 'Cebolla colorada', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
+  { name: 'Pimiento', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 10 },
+  { name: 'Lechuga crespa', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 6 },
+  { name: 'Pepinillo', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 6 },
+  { name: 'Ají rocoto', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 2 },
+  { name: 'Ajo pelado', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 2 },
+  { name: 'Cilantro', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 3 },
+  { name: 'Perejil', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 3 },
+  { name: 'Romero', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 1 },
 
-  // 4. Verduras
-  { name: 'Tomate riñón', category: 'Verduras', unit: 'UND', initialStock: 40, minStock: 15 },
-  { name: 'Tomate cherry/tomatillo', category: 'Verduras', unit: 'UND', initialStock: 50, minStock: 20 },
-  { name: 'Cebolla blanca', category: 'Verduras', unit: 'UND', initialStock: 35, minStock: 15 },
-  { name: 'Cebolla paiteña', category: 'Verduras', unit: 'UND', initialStock: 35, minStock: 15 },
-  { name: 'Cebolla larga', category: 'Verduras', unit: 'UND', initialStock: 25, minStock: 10 },
-  { name: 'Ajo', category: 'Verduras', unit: 'UND', initialStock: 30, minStock: 10 },
-  { name: 'Pimiento verde', category: 'Verduras', unit: 'UND', initialStock: 25, minStock: 10 },
-  { name: 'Lechuga', category: 'Verduras', unit: 'UND', initialStock: 20, minStock: 8 },
-  { name: 'Repollo', category: 'Verduras', unit: 'UND', initialStock: 15, minStock: 5 },
-  { name: 'Zanahoria', category: 'Verduras', unit: 'UND', initialStock: 30, minStock: 10 },
-  { name: 'Apio', category: 'Verduras', unit: 'UND', initialStock: 15, minStock: 5 },
-  { name: 'Perejil', category: 'Verduras', unit: 'UND', initialStock: 15, minStock: 5 },
-  { name: 'Romero', category: 'Verduras', unit: 'kg', initialStock: 3, minStock: 1 },
-  { name: 'Champiñones', category: 'Verduras', unit: 'UND', initialStock: 25, minStock: 10 },
+  // 4. Frutas
+  { name: 'Aguacate', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 4 },
+  { name: 'Tomate de árbol', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Limón sutil', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Naranja', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5 },
 
-  // 5. Papas y carbohidratos
-  { name: 'Papa amarilla', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 30, minStock: 10 },
-  { name: 'Papa chola', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 40, minStock: 15 },
-  { name: 'Papa criolla', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 25, minStock: 10 },
-  { name: 'Maduro', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 20, minStock: 8 },
-  { name: 'VERDE', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 20, minStock: 8 },
-  { name: 'Arroz', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 40, minStock: 15 },
-  { name: 'Fréjol', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Arepas', category: 'Papas y carbohidratos', unit: 'unidad', initialStock: 50, minStock: 20 },
-  { name: 'Pan francés', category: 'Papas y carbohidratos', unit: 'unidad', initialStock: 60, minStock: 25 },
-  { name: 'Pan hamburguesa', category: 'Papas y carbohidratos', unit: 'unidad', initialStock: 50, minStock: 20 },
+  // 5. Lácteos
+  { name: 'Queso mozzarella', category: 'Lácteos', unit: 'kg', initialStock: 0, minStock: 4 },
+  { name: 'Leche', category: 'Lácteos', unit: 'litro', initialStock: 0, minStock: 5 },
 
-  // 6. Frutas
-  { name: 'Aguacate', category: 'Frutas', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Limón', category: 'Frutas', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Manzana verde', category: 'Frutas', unit: 'kg', initialStock: 10, minStock: 3 },
-  { name: 'Piña', category: 'Frutas', unit: 'kg', initialStock: 12, minStock: 4 },
+  // 6. Aceites y Grasas
+  { name: 'Mantequilla', category: 'Aceites y grasas', unit: 'kg', initialStock: 0, minStock: 2 },
+  { name: 'Manteca de cerdo', category: 'Aceites y grasas', unit: 'kg', initialStock: 0, minStock: 2 },
+  { name: 'Aceite', category: 'Aceites y grasas', unit: 'litro', initialStock: 0, minStock: 5 },
 
-  // 7. Salsas
-  { name: 'Chimichurri', category: 'Salsas', unit: 'kg', initialStock: 8, minStock: 3 },
-  { name: 'Salsa de ajo', category: 'Salsas', unit: 'kg', initialStock: 8, minStock: 3 },
-  { name: 'Mayonesa', category: 'Salsas', unit: 'kg', initialStock: 10, minStock: 3 },
-  { name: 'Salsa de queso', category: 'Salsas', unit: 'kg', initialStock: 8, minStock: 3 },
-  { name: 'Salsa de piña', category: 'Salsas', unit: 'kg', initialStock: 8, minStock: 3 },
-  { name: 'Ají', category: 'Salsas', unit: 'kg', initialStock: 8, minStock: 3 },
-  { name: 'Vinagretas', category: 'Salsas', unit: 'kg', initialStock: 8, minStock: 3 },
+  // 7. Salsas y Aderezos
+  { name: 'Vinagre', category: 'Salsas', unit: 'litro', initialStock: 0, minStock: 2 },
+  { name: 'Salsa de tomate', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Mostaza', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 2 },
 
-  // 8. Secos y condimentos
-  { name: 'Aliño completo en polvo', category: 'Secos y condimentos', unit: 'kg', initialStock: 5, minStock: 2 },
-  { name: 'Sal', category: 'Secos y condimentos', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Pimienta', category: 'Secos y condimentos', unit: 'kg', initialStock: 3, minStock: 1 },
-  { name: 'Orégano', category: 'Secos y condimentos', unit: 'kg', initialStock: 3, minStock: 1 },
-  { name: 'Azúcar', category: 'Secos y condimentos', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Harina', category: 'Secos y condimentos', unit: 'kg', initialStock: 15, minStock: 5 },
-  { name: 'Panko', category: 'Secos y condimentos', unit: 'kg', initialStock: 6, minStock: 2 },
-  { name: 'Nueces', category: 'Secos y condimentos', unit: 'kg', initialStock: 3, minStock: 1 },
+  // 8. Secos y Condimentos
+  { name: 'Maní en pasta', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Achiote', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 2 },
+  { name: 'Sal', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Sal gruesa', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Pimienta negra', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
+  { name: 'Comino', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
+  { name: 'Orégano', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
+  { name: 'Ají seco', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
 
-  // 9. Aceites y grasas
-  { name: 'Aceite vegetal', category: 'Aceites y grasas', unit: 'litro', initialStock: 15, minStock: 5 },
-  { name: 'Aceite de oliva', category: 'Aceites y grasas', unit: 'litro', initialStock: 6, minStock: 2 },
-  { name: 'Mantequilla', category: 'Aceites y grasas', unit: 'kg', initialStock: 8, minStock: 3 },
-
-  // 10. Bebidas
-  { name: 'Café', category: 'Bebidas', unit: 'kg', initialStock: 6, minStock: 2 },
-
-  // 11. Otros
-  { name: 'Huevos', category: 'Otros', unit: 'UND', initialStock: 90, minStock: 30 }
+  // 9. Otros e Insumos Operativos
+  { name: 'Huevos', category: 'Otros', unit: 'UND', initialStock: 0, minStock: 30 },
+  { name: 'Carbón', category: 'Otros', unit: 'bolsa', initialStock: 0, minStock: 5 },
+  { name: 'Alcohol', category: 'Otros', unit: 'litro', initialStock: 0, minStock: 2 },
+  { name: 'Algodón', category: 'Otros', unit: 'paquete', initialStock: 0, minStock: 2 },
+  { name: 'Papel aluminio', category: 'Otros', unit: 'rollo', initialStock: 0, minStock: 2 },
+  { name: 'Hojas de achira', category: 'Otros', unit: 'paquete', initialStock: 0, minStock: 3 }
 ];
