@@ -3,7 +3,6 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
-// Leer .env directamente con fs
 function loadEnv() {
   const envConfig = {};
   if (fs.existsSync('.env')) {
@@ -24,32 +23,46 @@ function loadEnv() {
 const env = loadEnv();
 
 const firebaseConfig = {
-  apiKey: env.VITE_FIREBASE_API_KEY || "AIzaSyDmsy4pv4h8fhtz_LcFstcps1R8dexFuw",
+  apiKey: env.VITE_FIREBASE_API_KEY || "AIzaSyDmsy4pvHef8hftz_LcFstcps1R8dexFuw",
   authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || "zenit-1bbc3.firebaseapp.com",
   projectId: env.VITE_FIREBASE_PROJECT_ID || "zenit-1bbc3",
   storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET || "zenit-1bbc3.firebasestorage.app",
   messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1084151887776",
-  appId: env.VITE_FIREBASE_APP_ID || "1:1084151887776:web:7ad06ea8f2b9cebadd6c5"
+  appId: env.VITE_FIREBASE_APP_ID || "1:1084151887776:web:7ad06eaa8f2b9cebdad6c5"
 };
 
 const USERS_TO_CREATE = [
+  // SUPER ADMIN SECRETO (SOLO PARA TI)
+  {
+    email: 'master@zenit.com',
+    password: 'ZenitMaster2026#Secret!',
+    displayName: 'Super Administrador (Director)',
+    role: 'superadmin',
+    isSuperAdmin: true
+  },
+  // KAREN (ADMINISTRADORA)
   {
     email: 'karenadmin@zenit.com',
     password: 'KarenZenit2026!',
     displayName: 'Karen (Administrador)',
-    role: 'admin'
+    role: 'admin',
+    isSuperAdmin: false
   },
+  // WLADIMIR (SUPERVISOR)
   {
     email: 'wladimir@zenit.com',
     password: 'WladimirZenit2026!',
     displayName: 'Wladimir (Supervisor)',
-    role: 'supervisor'
+    role: 'supervisor',
+    isSuperAdmin: false
   },
+  // HERNÁN (OPERADOR)
   {
     email: 'hernan@zenit.com',
     password: 'HernanZenit2026!',
     displayName: 'Hernán (Operador)',
-    role: 'operator'
+    role: 'operator',
+    isSuperAdmin: false
   }
 ];
 
@@ -72,6 +85,7 @@ async function createAllUsers() {
         email: u.email,
         displayName: u.displayName,
         role: u.role,
+        isSuperAdmin: u.isSuperAdmin,
         companyId: 'default_company',
         createdAt: serverTimestamp(),
         active: true
@@ -87,7 +101,7 @@ async function createAllUsers() {
     }
   }
 
-  console.log("\n🎉 ¡Proceso finalizado! Las 3 cuentas están listas para iniciar sesión.");
+  console.log("\n🎉 ¡Proceso finalizado! Las 4 cuentas (incluyendo tu Super Admin) están listas en Firebase.");
   process.exit(0);
 }
 

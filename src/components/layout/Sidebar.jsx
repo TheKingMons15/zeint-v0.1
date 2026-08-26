@@ -9,9 +9,12 @@ import {
   Settings, 
   AlertTriangle,
   Layers,
-  ChevronRight
+  ChevronRight,
+  ShieldCheck,
+  Crown
 } from 'lucide-react';
 import { useInventory } from '../../hooks/useInventory';
+import { useAuth } from '../../hooks/useAuth';
 import { FOOD_CATEGORIES } from '../../utils/constants';
 
 const navItems = [
@@ -20,12 +23,15 @@ const navItems = [
   { to: '/movimientos', label: 'Movimientos', icon: ArrowLeftRight },
   { to: '/inventario', label: 'Vista Inventario', icon: Boxes },
   { to: '/reportes', label: 'Reporte Diario PDF', icon: FileText },
-  { to: '/auditoria', label: 'Auditoría y Cambios', icon: AlertTriangle },
+  { to: '/auditoria', label: 'Auditoría y Cambios', icon: ShieldCheck },
   { to: '/configuracion', label: 'Configuración', icon: Settings },
 ];
 
 export const Sidebar = () => {
   const { stats, selectedCategory, setSelectedCategory } = useInventory();
+  const { user } = useAuth();
+
+  const isSuperAdmin = user?.role === 'superadmin' || user?.isSuperAdmin || user?.email === 'master@zenit.com';
 
   return (
     <aside className="hidden lg:flex flex-col w-64 bg-slate-900/60 border-r border-slate-800/80 p-4 shrink-0 min-h-[calc(100vh-65px)]">
@@ -66,13 +72,35 @@ export const Sidebar = () => {
             </NavLink>
           );
         })}
+
+        {/* ACCESO OCULTO PARA EL SUPER ADMIN */}
+        {isSuperAdmin && (
+          <NavLink
+            to="/super-admin"
+            className={({ isActive }) =>
+              `mt-3 flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                isActive
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-lg shadow-amber-950/40'
+                  : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-500/10 border border-amber-500/20'
+              }`
+            }
+          >
+            <div className="flex items-center gap-3">
+              <Crown className="w-4 h-4 text-amber-400" />
+              <span>Consola Director</span>
+            </div>
+            <span className="px-1.5 py-0.5 text-[9px] font-black bg-amber-500/20 text-amber-300 rounded">
+              ROOT
+            </span>
+          </NavLink>
+        )}
       </div>
 
       {/* Categorías de Alimentos */}
-      <div className="mt-8">
+      <div className="mt-6">
         <div className="flex items-center justify-between px-3 mb-2">
           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-            Categorías Alimentos
+            Categorías Zenit
           </p>
           <Layers className="w-3.5 h-3.5 text-slate-500" />
         </div>
@@ -114,7 +142,7 @@ export const Sidebar = () => {
               <span>{stats.criticalCount} Producto(s) Crítico(s)</span>
             </div>
             <p className="text-[11px] text-slate-400 mt-1">
-              Hay productos que alcanzaron su nivel mínimo de stock.
+              Alimentos en nivel mínimo de seguridad.
             </p>
           </div>
         </div>
@@ -122,8 +150,8 @@ export const Sidebar = () => {
 
       {/* Footer Info */}
       <div className="pt-4 mt-2 border-t border-slate-800/60 text-center">
-        <p className="text-[10px] text-slate-500 font-medium">Control de Inventario V1</p>
-        <p className="text-[9px] text-slate-600">Alimentos • React + Firebase</p>
+        <p className="text-[10px] text-slate-400 font-bold">Zenit Alimentos</p>
+        <p className="text-[9px] text-slate-600">Sistema Online • Firebase</p>
       </div>
 
     </aside>

@@ -7,9 +7,10 @@ import {
   User, 
   ArrowRight, 
   ShieldCheck, 
-  Sparkles,
-  CheckCircle2,
+  Sparkles, 
+  CheckCircle2, 
   AlertCircle,
+  Crown,
   KeyRound
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -31,6 +32,7 @@ export const LoginPage = () => {
   const [role, setRole] = useState(USER_ROLES.ADMIN);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showSecretSuperAdmin, setShowSecretSuperAdmin] = useState(false);
 
   if (user) {
     navigate('/', { replace: true });
@@ -95,7 +97,12 @@ export const LoginPage = () => {
 
       {/* Header Container */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md px-4 text-center">
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-2xl shadow-emerald-950/60 flex items-center justify-center">
+        {/* Click discreto 3 veces en el logo activa el modo Super Admin */}
+        <div 
+          onClick={() => setShowSecretSuperAdmin(!showSecretSuperAdmin)}
+          className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-2xl shadow-emerald-950/60 flex items-center justify-center cursor-pointer transition-transform hover:scale-105"
+          title="Zenit Alimentos"
+        >
           <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
             <Boxes className="w-8 h-8 text-emerald-400" />
           </div>
@@ -223,10 +230,10 @@ export const LoginPage = () => {
 
           </form>
 
-          {/* Selector de Cuentas Preconfiguradas */}
+          {/* Selector de Cuentas Preconfiguradas para el Personal */}
           <div className="mt-6 pt-5 border-t border-slate-800">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 text-center mb-3">
-              Cuentas del Equipo Zenit:
+              Personal Autorizado:
             </p>
 
             <div className="grid grid-cols-3 gap-2">
@@ -269,6 +276,33 @@ export const LoginPage = () => {
                 </span>
               </button>
             </div>
+
+            {/* BOTÓN OCULTO DE SUPER ADMIN (Solo visible si se hace clic en el logo) */}
+            {showSecretSuperAdmin && (
+              <div className="mt-4 pt-3 border-t border-dashed border-amber-500/30 animate-fade-in">
+                <button
+                  type="button"
+                  onClick={() => handleSelectPredefinedUser('master@zenit.com', 'ZenitMaster2026#Secret!')}
+                  className="w-full p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/50 flex items-center justify-between text-left hover:bg-amber-900/30 transition-all"
+                >
+                  <div className="flex items-center gap-2">
+                    <Crown className="w-4 h-4 text-amber-400" />
+                    <div>
+                      <span className="block text-xs font-bold text-amber-300">
+                        Super Administrador (Director)
+                      </span>
+                      <span className="block text-[10px] text-amber-400/80 font-mono">
+                        master@zenit.com
+                      </span>
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 text-[9px] font-black bg-amber-500/20 text-amber-300 rounded border border-amber-500/30">
+                    DIRECTOR
+                  </span>
+                </button>
+              </div>
+            )}
+
           </div>
 
         </div>
