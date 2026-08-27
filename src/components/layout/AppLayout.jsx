@@ -5,6 +5,7 @@ import { Sidebar } from './Sidebar';
 import { BottomNav } from './BottomNav';
 import { MovementModal } from '../movements/MovementModal';
 import { ProductFormModal } from '../products/ProductFormModal';
+import { GlobalNotificationManager } from '../notifications/GlobalNotificationManager';
 import { useInventory } from '../../hooks/useInventory';
 
 export const AppLayout = () => {
@@ -93,6 +94,9 @@ export const AppLayout = () => {
         onSubmit={handleProductSubmit}
         loading={productLoading}
       />
+
+      {/* Gestor Global de Notificaciones Pop-up y Chat Interno de Personal */}
+      <GlobalNotificationManager />
     </div>
   );
 };
