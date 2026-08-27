@@ -9,6 +9,7 @@ import {
   CheckCircle2, 
   AlertTriangle, 
   ChefHat, 
+  Wine,
   Sparkles, 
   X, 
   Search, 
@@ -16,7 +17,8 @@ import {
   Bell, 
   Flame,
   CheckCircle,
-  Eye
+  Eye,
+  Coffee
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useInventory } from '../hooks/useInventory';
@@ -41,6 +43,7 @@ export const WaiterPage = () => {
 
   const [activeTab, setActiveTab] = useState('menu'); // 'menu' | 'orders'
   const [selectedTable, setSelectedTable] = useState('Mesa 1');
+  const [stationFilter, setStationFilter] = useState('ALL'); // 'ALL' | 'KITCHEN' | 'BAR'
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState([]);
@@ -48,7 +51,6 @@ export const WaiterPage = () => {
   const [sendingOrder, setSendingOrder] = useState(false);
   const [liveOrders, setLiveOrders] = useState([]);
   const [selectedDishDetail, setSelectedDishDetail] = useState(null);
-  const [isCartOpenMobile, setIsCartOpenMobile] = useState(false);
 
   const companyId = user?.companyId || 'default_company';
 
@@ -63,19 +65,28 @@ export const WaiterPage = () => {
   // Verificar disponibilidad de cada plato según stock real de inventario
   const dishesWithAvailability = useMemo(() => {
     return ZENIT_RECIPES.map(dish => {
+      const isDrink = dish.category === 'Bebidas' || dish.category === 'Cócteles' || dish.destination === 'BAR';
       const validation = orderService.validateAvailability([{ recipe: dish, quantity: 1 }], products);
       return {
         ...dish,
+        destination: isDrink ? 'BAR' : 'KITCHEN',
         isAvailable: validation.isAvailable,
         missing: validation.missing
       };
     });
   }, [products]);
 
-  // Filtrado de platos
+  // Filtrado de platos por estación (Cocina / Bar), categoría y buscador
   const filteredDishes = useMemo(() => {
     return dishesWithAvailability.filter(dish => {
+      // Filtro de estación (Cocina / Bar)
+      if (stationFilter === 'KITCHEN' && dish.destination !== 'KITCHEN') return false;
+      if (stationFilter === 'BAR' && dish.destination !== 'BAR') return false;
+
+      // Filtro de categoría
       const matchCat = selectedCategory === 'ALL' || dish.category === selectedCategory;
+      
+      // Filtro de texto
       const q = search.toLowerCase().trim();
       const matchSearch = !q || 
         dish.name.toLowerCase().includes(q) || 
@@ -84,12 +95,12 @@ export const WaiterPage = () => {
 
       return matchCat && matchSearch;
     });
-  }, [dishesWithAvailability, selectedCategory, search]);
+  }, [dishesWithAvailability, stationFilter, selectedCategory, search]);
 
   // Agregar plato al carrito
   const addToCart = (dish) => {
     if (!dish.isAvailable) {
-      showToast(`Este plato no está disponible temporalmente por falta de insumos (${dish.missing?.map(m => m.productName).join(', ')}).`, 'error');
+      showToast(`Este item no está disponible temporalmente por falta de insumos (${dish.missing?.map(m => m.productName).join(', ')}).`, 'error');
       return;
     }
 
@@ -102,6 +113,7 @@ export const WaiterPage = () => {
         id: dish.id,
         name: dish.name,
         category: dish.category,
+        destination: dish.destination,
         price: dish.price,
         quantity: 1,
         notes: '',
@@ -139,10 +151,10 @@ export const WaiterPage = () => {
     return cart.reduce((sum, item) => sum + item.quantity, 0);
   }, [cart]);
 
-  // Enviar pedido a cocina
+  // Enviar pedido a cocina y bar
   const handleSendOrder = async () => {
     if (cart.length === 0) {
-      showToast('El pedido está vacío. Agrega al menos un plato.', 'error');
+      showToast('El pedido está vacío. Agrega al menos un plato o bebida.', 'error');
       return;
     }
 
@@ -150,7 +162,7 @@ export const WaiterPage = () => {
     const validation = orderService.validateAvailability(cart, products);
     if (!validation.isAvailable) {
       const missingNames = validation.missing.map(m => `${m.productName} (Faltan ${(m.required - m.available).toFixed(2)} ${m.unit})`).join(', ');
-      showToast(`No es posible enviar el pedido. Insumos insuficientes en cocina: ${missingNames}`, 'error');
+      showToast(`No es posible enviar el pedido. Insumos insuficientes: ${missingNames}`, 'error');
       return;
     }
 
@@ -163,14 +175,13 @@ export const WaiterPage = () => {
         companyId
       }, user, products);
 
-      showToast(`¡Comanda enviada a cocina con éxito para ${selectedTable}! Stock descontado automáticamente.`, 'success');
+      showToast(`¡Comanda enviada a Cocina y Bar con éxito para ${selectedTable}! Stock descontado automáticamente.`, 'success');
       setCart([]);
       setGeneralNotes('');
-      setIsCartOpenMobile(false);
       setActiveTab('orders');
     } catch (err) {
       console.error(err);
-      showToast(err.message || 'Error al enviar pedido a cocina', 'error');
+      showToast(err.message || 'Error al enviar pedido', 'error');
     } finally {
       setSendingOrder(false);
     }
@@ -189,11 +200,11 @@ export const WaiterPage = () => {
   const getStatusBadge = (status) => {
     switch (status) {
       case ORDER_STATUS.PENDING:
-        return { label: '🟡 Pendiente en Cocina', bg: 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse' };
+        return { label: '🟡 Pendiente', bg: 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse' };
       case ORDER_STATUS.PREPARING:
         return { label: '🔵 En Preparación', bg: 'bg-sky-500/20 text-sky-300 border-sky-500/40' };
       case ORDER_STATUS.READY:
-        return { label: '🟢 ¡LISTO PARA SERVIR!', bg: 'bg-emerald-500/30 text-emerald-200 border-emerald-400 font-black animate-bounce' };
+        return { label: '🟢 ¡LISTO PARA RETIRAR!', bg: 'bg-emerald-500/30 text-emerald-200 border-emerald-400 font-black animate-bounce' };
       case ORDER_STATUS.DELIVERED:
         return { label: '⚫ Entregado', bg: 'bg-slate-800 text-slate-400 border-slate-700' };
       default:
@@ -215,14 +226,14 @@ export const WaiterPage = () => {
           <div className="flex items-center gap-2">
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
               <UtensilsCrossed className="w-6 h-6 text-emerald-400" />
-              Toma de Pedidos y Sala
+              Toma de Pedidos (Cocina & Bar)
             </h2>
             <span className="px-2.5 py-0.5 text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full">
-              SISTEMA MESERO
+              {user?.displayName || 'Mesero Zénit'}
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
-            Atención rápida de comandas con validación de stock y envío directo a cocina
+            Atención de comandas en sala con enrutamiento automático a Cocina y Bar
           </p>
         </div>
 
@@ -263,7 +274,7 @@ export const WaiterPage = () => {
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              📋 Pedidos en Cocina
+              📋 Pedidos en Cocina & Bar
               {myActiveOrders.filter(o => o.status === ORDER_STATUS.READY).length > 0 && (
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               )}
@@ -277,16 +288,55 @@ export const WaiterPage = () => {
       {activeTab === 'menu' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          {/* COLUMNA IZQUIERDA (2/3): CATÁLOGO DE PLATOS */}
+          {/* COLUMNA IZQUIERDA (2/3): CATÁLOGO DE PLATOS Y BEBIDAS */}
           <div className="lg:col-span-2 space-y-4">
             
+            {/* Filtro de Estación: Todo / Cocina / Bar */}
+            <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-900 border border-slate-800">
+              <button
+                onClick={() => { setStationFilter('ALL'); setSelectedCategory('ALL'); }}
+                className={`flex-1 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 ${
+                  stationFilter === 'ALL'
+                    ? 'bg-slate-800 text-white shadow-md'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <UtensilsCrossed className="w-3.5 h-3.5" />
+                Todo el Menú
+              </button>
+
+              <button
+                onClick={() => { setStationFilter('KITCHEN'); setSelectedCategory('ALL'); }}
+                className={`flex-1 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 ${
+                  stationFilter === 'KITCHEN'
+                    ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+                    : 'text-amber-400 hover:text-amber-300'
+                }`}
+              >
+                <ChefHat className="w-3.5 h-3.5" />
+                🍳 Cocina & Parrilla
+              </button>
+
+              <button
+                onClick={() => { setStationFilter('BAR'); setSelectedCategory('ALL'); }}
+                className={`flex-1 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 ${
+                  stationFilter === 'BAR'
+                    ? 'bg-purple-500 text-slate-950 shadow-md font-black'
+                    : 'text-purple-400 hover:text-purple-300'
+                }`}
+              >
+                <Wine className="w-3.5 h-3.5" />
+                🍸 Bar & Bebidas
+              </button>
+            </div>
+
             {/* Buscador y Categorías */}
             <div className="space-y-3">
               <div className="relative">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Buscar plato por nombre o ingrediente..."
+                  placeholder="Buscar por nombre o ingrediente..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-2xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
@@ -303,7 +353,7 @@ export const WaiterPage = () => {
                       : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
                   }`}
                 >
-                  Todos los Platos
+                  Todas las Categorías
                 </button>
                 {MENU_CATEGORIES.map(cat => (
                   <button
@@ -323,77 +373,88 @@ export const WaiterPage = () => {
 
             {/* Grid de Platos */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {filteredDishes.map(dish => (
-                <div
-                  key={dish.id}
-                  className={`p-4 rounded-3xl border transition-all flex flex-col justify-between gap-3 ${
-                    dish.isAvailable
-                      ? 'bg-slate-900/90 border-slate-800 hover:border-emerald-500/40 shadow-lg'
-                      : 'bg-slate-950/60 border-slate-900 opacity-60'
-                  }`}
-                >
-                  <div className="space-y-2">
-                    <div className="relative h-36 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800/80">
-                      <img
-                        src={dish.image}
-                        alt={dish.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute top-2.5 left-2.5">
-                        <span className="px-2 py-0.5 text-[10px] font-bold bg-slate-950/80 backdrop-blur-md text-emerald-400 rounded-lg border border-slate-800">
-                          {dish.category}
-                        </span>
+              {filteredDishes.map(dish => {
+                const isBar = dish.destination === 'BAR';
+
+                return (
+                  <div
+                    key={dish.id}
+                    className={`p-4 rounded-3xl border transition-all flex flex-col justify-between gap-3 ${
+                      dish.isAvailable
+                        ? 'bg-slate-900/90 border-slate-800 hover:border-emerald-500/40 shadow-lg'
+                        : 'bg-slate-950/60 border-slate-900 opacity-60'
+                    }`}
+                  >
+                    <div className="space-y-2">
+                      <div className="relative h-36 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800/80">
+                        <img
+                          src={dish.image}
+                          alt={dish.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1">
+                          <span className="px-2 py-0.5 text-[10px] font-bold bg-slate-950/80 backdrop-blur-md text-emerald-400 rounded-lg border border-slate-800">
+                            {dish.category}
+                          </span>
+                          <span className={`px-2 py-0.5 text-[9px] font-bold rounded-lg border ${
+                            isBar 
+                              ? 'bg-purple-950/80 text-purple-300 border-purple-500/40' 
+                              : 'bg-amber-950/80 text-amber-300 border-amber-500/40'
+                          }`}>
+                            {isBar ? '🍸 Bar' : '🍳 Cocina'}
+                          </span>
+                        </div>
+                        <div className="absolute top-2.5 right-2.5">
+                          <span className={`px-2 py-0.5 text-[9px] font-black uppercase rounded-full border ${
+                            dish.isAvailable
+                              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                              : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                          }`}>
+                            {dish.isAvailable ? '🟢 Disponible' : '🔴 Agotado'}
+                          </span>
+                        </div>
                       </div>
-                      <div className="absolute top-2.5 right-2.5">
-                        <span className={`px-2 py-0.5 text-[9px] font-black uppercase rounded-full border ${
-                          dish.isAvailable
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                            : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
-                        }`}>
-                          {dish.isAvailable ? '🟢 Disponible' : '🔴 Agotado'}
-                        </span>
+
+                      <div>
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="text-sm font-bold text-slate-100">{dish.name}</h4>
+                          <span className="text-sm font-black text-emerald-400">${dish.price.toFixed(2)}</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 line-clamp-2 mt-0.5">{dish.description}</p>
+                      </div>
+
+                      {/* Insumos */}
+                      <div className="pt-2 border-t border-slate-800/80 text-[10px] text-slate-400">
+                        <span className="font-semibold text-slate-300">Insumos: </span>
+                        {dish.ingredients.map(i => `${i.productName} (${i.grams}g)`).join(', ')}
                       </div>
                     </div>
 
-                    <div>
-                      <div className="flex items-start justify-between gap-2">
-                        <h4 className="text-sm font-bold text-slate-100">{dish.name}</h4>
-                        <span className="text-sm font-black text-emerald-400">${dish.price.toFixed(2)}</span>
-                      </div>
-                      <p className="text-[11px] text-slate-400 line-clamp-2 mt-0.5">{dish.description}</p>
+                    <div className="flex items-center justify-between gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedDishDetail(dish)}
+                        className="text-[11px] text-slate-400 hover:text-slate-200 underline"
+                      >
+                        Ver ficha técnica
+                      </button>
+
+                      <Button
+                        size="sm"
+                        variant={dish.isAvailable ? "primary" : "secondary"}
+                        disabled={!dish.isAvailable}
+                        onClick={() => addToCart(dish)}
+                        icon={Plus}
+                        className="text-xs py-1.5 px-3"
+                      >
+                        {dish.isAvailable ? 'Agregar' : 'Sin Stock'}
+                      </Button>
                     </div>
 
-                    {/* Ficha técnica compacta */}
-                    <div className="pt-2 border-t border-slate-800/80 text-[10px] text-slate-400">
-                      <span className="font-semibold text-slate-300">Ingredientes: </span>
-                      {dish.ingredients.map(i => `${i.productName} (${i.grams}g)`).join(', ')}
-                    </div>
                   </div>
-
-                  <div className="flex items-center justify-between gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedDishDetail(dish)}
-                      className="text-[11px] text-slate-400 hover:text-slate-200 underline"
-                    >
-                      Ver ficha técnica
-                    </button>
-
-                    <Button
-                      size="sm"
-                      variant={dish.isAvailable ? "primary" : "secondary"}
-                      disabled={!dish.isAvailable}
-                      onClick={() => addToCart(dish)}
-                      icon={Plus}
-                      className="text-xs py-1.5 px-3"
-                    >
-                      {dish.isAvailable ? 'Agregar' : 'Sin Stock'}
-                    </Button>
-                  </div>
-
-                </div>
-              ))}
+                );
+              })}
             </div>
 
           </div>
@@ -410,14 +471,14 @@ export const WaiterPage = () => {
                   </h3>
                 </div>
                 <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  {totalItemsCount} Plato(s)
+                  {totalItemsCount} Item(s)
                 </span>
               </div>
 
               {/* Items del Carrito */}
               {cart.length === 0 ? (
                 <div className="py-12 text-center text-xs text-slate-500">
-                  No hay platos agregados a esta mesa. Selecciona platos del menú a la izquierda.
+                  No hay items en esta comanda. Selecciona platos de cocina o bebidas del bar a la izquierda.
                 </div>
               ) : (
                 <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
@@ -425,7 +486,14 @@ export const WaiterPage = () => {
                     <div key={item.id} className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <h5 className="text-xs font-bold text-slate-100">{item.name}</h5>
+                          <div className="flex items-center gap-1.5">
+                            <h5 className="text-xs font-bold text-slate-100">{item.name}</h5>
+                            <span className={`text-[9px] px-1.5 py-0.2 rounded font-bold ${
+                              item.destination === 'BAR' ? 'bg-purple-950 text-purple-300' : 'bg-amber-950 text-amber-300'
+                            }`}>
+                              {item.destination === 'BAR' ? 'Bar' : 'Cocina'}
+                            </span>
+                          </div>
                           <span className="text-[11px] text-emerald-400 font-semibold">
                             ${(item.price * item.quantity).toFixed(2)} (${item.price.toFixed(2)} c/u)
                           </span>
@@ -454,7 +522,7 @@ export const WaiterPage = () => {
                       {/* Observación por plato */}
                       <input
                         type="text"
-                        placeholder="Ej: Término medio, sin ají..."
+                        placeholder="Ej: Con hielo, término medio, sin ají..."
                         value={item.notes}
                         onChange={(e) => updateItemNotes(item.id, e.target.value)}
                         className="w-full text-[11px] px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
@@ -467,18 +535,18 @@ export const WaiterPage = () => {
               {/* Observación General de la Mesa */}
               <div className="space-y-1 pt-2 border-t border-slate-800">
                 <label className="text-[10px] font-bold uppercase text-slate-400">
-                  Instrucciones Generales para Cocina:
+                  Instrucciones Generales:
                 </label>
                 <input
                   type="text"
-                  placeholder="Ej: Todos los platos juntos, cliente alérgico..."
+                  placeholder="Ej: Bebidas primero, cliente alérgico..."
                   value={generalNotes}
                   onChange={(e) => setGeneralNotes(e.target.value)}
                   className="w-full text-xs px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
-              {/* Resumen de Total y Botón de Enviar a Cocina */}
+              {/* Resumen de Total y Botón de Enviar */}
               <div className="pt-3 border-t border-slate-800 space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-semibold text-slate-400">Total Comanda:</span>
@@ -494,7 +562,7 @@ export const WaiterPage = () => {
                   icon={Send}
                   className="py-3 text-sm font-black bg-emerald-600 hover:bg-emerald-500 shadow-xl shadow-emerald-950/50"
                 >
-                  ENVIAR PEDIDO A COCINA
+                  ENVIAR A COCINA Y BAR
                 </Button>
               </div>
 
@@ -504,7 +572,7 @@ export const WaiterPage = () => {
         </div>
       )}
 
-      {/* VISTA 2: ESTADO DE PEDIDOS EN COCINA */}
+      {/* VISTA 2: ESTADO DE PEDIDOS EN COCINA & BAR */}
       {activeTab === 'orders' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -512,7 +580,7 @@ export const WaiterPage = () => {
               <Clock className="w-5 h-5 text-emerald-400" />
               Comandas Activas en Sala ({myActiveOrders.length})
             </h3>
-            <span className="text-xs text-slate-400">Actualización en tiempo real desde Cocina</span>
+            <span className="text-xs text-slate-400">Actualización en tiempo real desde Cocina y Bar</span>
           </div>
 
           {myActiveOrders.length === 0 ? (
@@ -545,12 +613,17 @@ export const WaiterPage = () => {
                         </span>
                       </div>
 
-                      {/* Lista de Platos */}
+                      {/* Lista de Platos y Bebidas */}
                       <div className="space-y-1.5 pt-2 border-t border-slate-800/80">
                         {order.items?.map((item, idx) => (
                           <div key={idx} className="flex items-start justify-between text-xs">
-                            <span className="text-slate-200 font-semibold">
-                              {item.quantity}x {item.name}
+                            <span className="text-slate-200 font-semibold flex items-center gap-1.5">
+                              <span>{item.quantity}x {item.name}</span>
+                              <span className={`text-[9px] px-1 py-0.2 rounded font-mono ${
+                                item.category === 'Bebidas' ? 'bg-purple-950 text-purple-300' : 'bg-amber-950 text-amber-300'
+                              }`}>
+                                {item.category === 'Bebidas' ? 'Bar' : 'Cocina'}
+                              </span>
                             </span>
                             {item.notes && (
                               <span className="text-[10px] text-amber-300 italic">({item.notes})</span>

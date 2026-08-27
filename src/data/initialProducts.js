@@ -1,7 +1,7 @@
-// Catálogo oficial verificado de alimentos e insumos para Inventario Zenit, Cocina
+// Catálogo oficial verificado de alimentos e insumos para Inventario Zenit, Cocina y Bar
 // Todos los productos inician en stock 0.0 para ingreso real diario
 export const ZENIT_INITIAL_PRODUCTS = [
-  // 1. Proteínas (Carnes, Aves, Mariscos)
+  // 1. Proteínas (Carnes, Aves, Mariscos, Embutidos)
   { name: 'Carne molida de res', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
   { name: 'Filete de res', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
   { name: 'Tomahawk', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 3 },
@@ -12,6 +12,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
   { name: 'Camarón limpio (Porciones)', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
   { name: 'Chorizo Rojo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
   { name: 'Chorizo Blanco', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
+  { name: 'Morcilla', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 10 },
   { name: 'Cuy', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 2 },
   { name: 'Cuerito', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
 
@@ -27,11 +28,15 @@ export const ZENIT_INITIAL_PRODUCTS = [
   // 3. Verduras y Legumbres
   { name: 'Plátano Verde', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 8 },
   { name: 'Tomate riñón', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
+  { name: 'Tomates cherry', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 0.5 },
   { name: 'Cebolla blanca/perla', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
   { name: 'Cebolla colorada', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
+  { name: 'Cebolla larga', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 1 },
+  { name: 'Zanahoria', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 1 },
   { name: 'Pimiento', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 10 },
   { name: 'Lechuga crespa', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 6 },
   { name: 'Pepinillo', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 6 },
+  { name: 'Champiñones', category: 'Verduras', unit: 'paquete', initialStock: 0, minStock: 2 },
   { name: 'Ají rocoto', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 2 },
   { name: 'Ajo pelado', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 2 },
   { name: 'Cilantro', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 3 },
@@ -43,10 +48,12 @@ export const ZENIT_INITIAL_PRODUCTS = [
   { name: 'Tomate de árbol', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5 },
   { name: 'Limón sutil', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5 },
   { name: 'Naranja', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5 },
+  { name: 'Manzana verde', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 1 },
 
   // 5. Lácteos
   { name: 'Queso mozzarella', category: 'Lácteos', unit: 'kg', initialStock: 0, minStock: 4 },
   { name: 'Queso amasado', category: 'Lácteos', unit: 'kg', initialStock: 0, minStock: 4 },
+  { name: 'Crema de leche', category: 'Lácteos', unit: 'litro', initialStock: 0, minStock: 2 },
   { name: 'Leche', category: 'Lácteos', unit: 'litro', initialStock: 0, minStock: 5 },
 
   // 6. Aceites y Grasas
@@ -58,9 +65,12 @@ export const ZENIT_INITIAL_PRODUCTS = [
   { name: 'Vinagre', category: 'Salsas', unit: 'litro', initialStock: 0, minStock: 2 },
   { name: 'Salsa de tomate', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 3 },
   { name: 'Mostaza', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 2 },
+  { name: 'Jarabe de frutilla', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 1 },
 
   // 8. Secos y Condimentos
   { name: 'Aliño completo en polvo', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 2 },
+  { name: 'Cocoa', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 0.5 },
+  { name: 'Cobertura de chocolate', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
   { name: 'Maní en pasta', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 3 },
   { name: 'Achiote', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 2 },
   { name: 'Sal', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 5 },

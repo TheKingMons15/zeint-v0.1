@@ -13,6 +13,7 @@ import {
   Crown,
   UtensilsCrossed,
   ChefHat,
+  Wine,
   FileSpreadsheet
 } from 'lucide-react';
 import { useInventory } from '../../hooks/useInventory';
@@ -55,7 +56,7 @@ export const Sidebar = () => {
             className={({ isActive }) =>
               `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                 isActive
-                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm'
+                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30 shadow-sm'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
               }`
             }
@@ -65,10 +66,26 @@ export const Sidebar = () => {
               <span>Pantalla de Cocina</span>
             </div>
           </NavLink>
+
+          <NavLink
+            to="/bar"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                isActive
+                  ? 'bg-purple-500/15 text-purple-400 border border-purple-500/30 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`
+            }
+          >
+            <div className="flex items-center gap-3">
+              <Wine className="w-4 h-4 text-purple-400" />
+              <span>Pantalla de Bar</span>
+            </div>
+          </NavLink>
         </div>
 
         <div className="mt-auto pt-4 border-t border-slate-800/60 text-center">
-          <p className="text-[11px] text-slate-300 font-bold">Inventario Zenit, Cocina</p>
+          <p className="text-[11px] text-slate-300 font-bold">Inventario Zenit, Cocina y Bar</p>
           <p className="text-[9px] text-emerald-400/90 font-medium">Turno de Sala • Meseros</p>
         </div>
       </aside>
@@ -80,6 +97,7 @@ export const Sidebar = () => {
     { to: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
     { to: '/mesero', label: 'Toma de Pedidos (Sala)', icon: UtensilsCrossed },
     { to: '/cocina', label: 'Pantalla Cocina KDS', icon: ChefHat },
+    { to: '/bar', label: 'Pantalla Bar KDS', icon: Wine },
     { to: '/reporte-consumo', label: 'Consumo por Recetas', icon: FileSpreadsheet },
     { to: '/productos', label: 'Gestión Productos', icon: Package },
     { to: '/movimientos', label: 'Movimientos', icon: ArrowLeftRight },
