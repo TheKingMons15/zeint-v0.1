@@ -8,12 +8,19 @@ import {
   UtensilsCrossed, 
   MessageSquare,
   Sparkles,
-  Volume2
+  Volume2,
+  Smartphone
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { orderService, ORDER_STATUS } from '../../services/orderService';
 import { chatService } from '../../services/chatService';
 import { playSound } from '../../utils/audioAlerts';
+import { 
+  sendNativeNotification, 
+  requestNativeNotificationPermission, 
+  getNotificationPermission,
+  isNotificationSupported 
+} from '../../utils/nativeNotifications';
 import { StaffChatDrawer } from '../chat/StaffChatDrawer';
 
 export const GlobalNotificationManager = () => {
@@ -21,6 +28,8 @@ export const GlobalNotificationManager = () => {
   const [activePopup, setActivePopup] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
+  const [permissionState, setPermissionState] = useState('default');
+  const [showPermissionBanner, setShowPermissionBanner] = useState(false);
 
   const prevOrdersRef = useRef(new Map());
   const initialLoadRef = useRef(true);
@@ -29,13 +38,35 @@ export const GlobalNotificationManager = () => {
   const companyId = user?.companyId || 'default_company';
   const role = (user?.role || '').toUpperCase();
 
-  // Suscripción a pedidos en vivo para alertas pop-up de Cocina, Bar y Meseros
+  // Verificar estado de permisos de notificación nativa del teléfono
+  useEffect(() => {
+    const perm = getNotificationPermission();
+    setPermissionState(perm);
+    if (perm === 'default' && isNotificationSupported()) {
+      setShowPermissionBanner(true);
+    }
+  }, []);
+
+  const handleEnableDeviceNotifications = async () => {
+    const result = await requestNativeNotificationPermission();
+    setPermissionState(result);
+    setShowPermissionBanner(false);
+    if (result === 'granted') {
+      sendNativeNotification({
+        title: '🔔 ¡Notificaciones Zénit Activadas!',
+        body: 'Recibirás avisos de comandas y platos listos directamente en la pantalla de tu celular.',
+        tag: 'welcome-notification'
+      });
+      playSound('NEW_ORDER');
+    }
+  };
+
+  // Suscripción a pedidos en vivo para alertas pop-up y nativas de Cocina, Bar y Meseros
   useEffect(() => {
     if (!user) return;
 
     const unsub = orderService.subscribeOrders(companyId, (liveOrders) => {
       if (initialLoadRef.current) {
-        // En la carga inicial guardamos el estado actual sin disparar alertas
         liveOrders.forEach(o => prevOrdersRef.current.set(o.id, o.status));
         initialLoadRef.current = false;
         return;
@@ -55,9 +86,15 @@ export const GlobalNotificationManager = () => {
             return i.destination === 'BAR' || cat.includes('bebida') || cat.includes('coctel') || cat.includes('bar');
           });
 
-          // Notificar a Cocina
+          // Notificar a Cocina (Pop-up + Audio + Notificación Nativa Celular)
           if ((role === 'COCINA' || role === 'ADMIN' || role === 'SUPERADMIN') && hasKitchenItems) {
             playSound('NEW_ORDER');
+            sendNativeNotification({
+              title: `🍳 ¡Nueva Comanda en Cocina! (${order.table})`,
+              body: `Mesero: ${order.waiterName || 'Sala'} • ${order.items?.map(i => `${i.quantity}x ${i.name}`).slice(0, 2).join(', ')}`,
+              tag: `kitchen-order-${order.id}`
+            });
+
             setActivePopup({
               id: 'new_kitchen_' + order.id,
               type: 'KITCHEN_NEW',
@@ -68,9 +105,15 @@ export const GlobalNotificationManager = () => {
             });
           }
 
-          // Notificar a Bar
+          // Notificar a Bar (Pop-up + Audio + Notificación Nativa Celular)
           if ((role === 'BAR' || role === 'ADMIN' || role === 'SUPERADMIN') && hasBarItems) {
             playSound('NEW_ORDER');
+            sendNativeNotification({
+              title: `🍸 ¡Nueva Comanda en Bar! (${order.table})`,
+              body: `Mesero: ${order.waiterName || 'Sala'} • ${order.items?.map(i => `${i.quantity}x ${i.name}`).slice(0, 2).join(', ')}`,
+              tag: `bar-order-${order.id}`
+            });
+
             setActivePopup({
               id: 'new_bar_' + order.id,
               type: 'BAR_NEW',
@@ -86,6 +129,12 @@ export const GlobalNotificationManager = () => {
         if (prevStatus && prevStatus !== ORDER_STATUS.READY && order.status === ORDER_STATUS.READY) {
           if (role === 'MESERO' || role === 'ADMIN' || role === 'SUPERADMIN') {
             playSound('ORDER_READY');
+            sendNativeNotification({
+              title: `✅ ¡Pedido LISTO para Servir! (${order.table})`,
+              body: `La comanda de ${order.table} ya está lista en barra / cocina para retirar.`,
+              tag: `ready-order-${order.id}`
+            });
+
             setActivePopup({
               id: 'ready_' + order.id,
               type: 'ORDER_READY',
@@ -105,7 +154,7 @@ export const GlobalNotificationManager = () => {
     return () => unsub();
   }, [companyId, user, role]);
 
-  // Suscripción al chat para contador de no leídos
+  // Suscripción al chat para contador de no leídos y notificación nativa
   useEffect(() => {
     if (!user) return;
 
@@ -113,6 +162,15 @@ export const GlobalNotificationManager = () => {
       if (liveMessages.length > prevChatCountRef.current) {
         if (!isChatOpen && prevChatCountRef.current > 0) {
           setUnreadChatCount(prev => prev + 1);
+
+          const lastMsg = liveMessages[liveMessages.length - 1];
+          if (lastMsg.senderId !== user?.uid) {
+            sendNativeNotification({
+              title: `💬 Chat Zénit: ${lastMsg.senderName} (${lastMsg.roleBadge || 'Personal'})`,
+              body: lastMsg.text,
+              tag: 'chat-message'
+            });
+          }
         }
       }
       prevChatCountRef.current = liveMessages.length;
@@ -135,6 +193,42 @@ export const GlobalNotificationManager = () => {
 
   return (
     <>
+      {/* Banner de Solicitud de Permiso Nativo Móvil (Android & iOS) */}
+      {showPermissionBanner && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-lg w-[92%] animate-slide-down">
+          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-950 border border-emerald-500/40 shadow-2xl shadow-emerald-950/80 backdrop-blur-xl flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 bg-emerald-500/20 text-emerald-300 rounded-xl">
+                <Smartphone className="w-5 h-5 animate-pulse" />
+              </div>
+              <div>
+                <h5 className="text-xs font-black text-white leading-tight">
+                  Activar Avisos en este Celular
+                </h5>
+                <p className="text-[10px] text-slate-300">
+                  Recibe alertas de comandas y platos listos en Android e iOS
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={handleEnableDeviceNotifications}
+                className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black shadow-md transition-all whitespace-nowrap"
+              >
+                Activar
+              </button>
+              <button
+                onClick={() => setShowPermissionBanner(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Pop-up flotante de Notificación In-App */}
       {activePopup && (
         <div className="fixed top-5 right-5 z-50 max-w-md w-full animate-slide-down pointer-events-auto px-4">
