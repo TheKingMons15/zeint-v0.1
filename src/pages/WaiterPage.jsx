@@ -371,73 +371,70 @@ export const WaiterPage = () => {
               </div>
             </div>
 
-            {/* Grid de Platos */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {/* Grid de Platos y Cócteles (Vista Rápida sin fotos para meseros) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {filteredDishes.map(dish => {
                 const isBar = dish.destination === 'BAR';
 
                 return (
                   <div
                     key={dish.id}
-                    className={`p-4 rounded-3xl border transition-all flex flex-col justify-between gap-3 ${
+                    className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-2.5 ${
                       dish.isAvailable
-                        ? 'bg-slate-900/90 border-slate-800 hover:border-emerald-500/40 shadow-lg'
+                        ? 'bg-slate-900/95 border-slate-800 hover:border-emerald-500/40 shadow-md'
                         : 'bg-slate-950/60 border-slate-900 opacity-60'
                     }`}
                   >
                     <div className="space-y-2">
-                      <div className="relative h-36 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800/80">
-                        <img
-                          src={dish.image}
-                          alt={dish.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                        />
-                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1">
-                          <span className="px-2 py-0.5 text-[10px] font-bold bg-slate-950/80 backdrop-blur-md text-emerald-400 rounded-lg border border-slate-800">
+                      {/* Cabecera con Categoría, Estación y Disponibilidad */}
+                      <div className="flex items-center justify-between gap-1.5 flex-wrap">
+                        <div className="flex items-center gap-1.5">
+                          <span className="px-2 py-0.5 text-[10px] font-bold bg-slate-950 text-emerald-400 rounded-lg border border-slate-800">
                             {dish.category}
                           </span>
                           <span className={`px-2 py-0.5 text-[9px] font-bold rounded-lg border ${
                             isBar 
-                              ? 'bg-purple-950/80 text-purple-300 border-purple-500/40' 
-                              : 'bg-amber-950/80 text-amber-300 border-amber-500/40'
+                              ? 'bg-purple-950 text-purple-300 border-purple-500/40' 
+                              : 'bg-amber-950 text-amber-300 border-amber-500/40'
                           }`}>
                             {isBar ? '🍸 Bar' : '🍳 Cocina'}
                           </span>
                         </div>
-                        <div className="absolute top-2.5 right-2.5">
-                          <span className={`px-2 py-0.5 text-[9px] font-black uppercase rounded-full border ${
-                            dish.isAvailable
-                              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                              : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
-                          }`}>
-                            {dish.isAvailable ? '🟢 Disponible' : '🔴 Agotado'}
-                          </span>
-                        </div>
+
+                        <span className={`px-2 py-0.5 text-[9px] font-black uppercase rounded-full border ${
+                          dish.isAvailable
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                            : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                        }`}>
+                          {dish.isAvailable ? '🟢 Disponible' : '🔴 Agotado'}
+                        </span>
                       </div>
 
+                      {/* Nombre y Precio */}
                       <div>
-                        <div className="flex items-start justify-between gap-2">
-                          <h4 className="text-sm font-bold text-slate-100">{dish.name}</h4>
-                          <span className="text-sm font-black text-emerald-400">${dish.price.toFixed(2)}</span>
+                        <div className="flex items-baseline justify-between gap-2">
+                          <h4 className="text-sm font-black text-slate-100 leading-snug">{dish.name}</h4>
+                          <span className="text-sm font-black text-emerald-400 shrink-0">${dish.price.toFixed(2)}</span>
                         </div>
-                        <p className="text-[11px] text-slate-400 line-clamp-2 mt-0.5">{dish.description}</p>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">{dish.description}</p>
                       </div>
 
-                      {/* Insumos */}
-                      <div className="pt-2 border-t border-slate-800/80 text-[10px] text-slate-400">
-                        <span className="font-semibold text-slate-300">Insumos: </span>
-                        {dish.ingredients.map(i => `${i.productName} (${i.grams}g)`).join(', ')}
-                      </div>
+                      {/* Insumos resumidos */}
+                      {dish.ingredients && dish.ingredients.length > 0 && (
+                        <div className="pt-1.5 border-t border-slate-800/60 text-[10px] text-slate-400">
+                          <span className="font-semibold text-slate-300">Insumos: </span>
+                          {dish.ingredients.map(i => `${i.productName}`).join(', ')}
+                        </div>
+                      )}
                     </div>
 
-                    <div className="flex items-center justify-between gap-2 pt-2">
+                    <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-800/80">
                       <button
                         type="button"
                         onClick={() => setSelectedDishDetail(dish)}
                         className="text-[11px] text-slate-400 hover:text-slate-200 underline"
                       >
-                        Ver ficha técnica
+                        Ficha técnica
                       </button>
 
                       <Button

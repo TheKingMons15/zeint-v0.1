@@ -10,7 +10,8 @@ export const ProductFormModal = ({
   onClose,
   onSubmit,
   initialData = null,
-  loading = false
+  loading = false,
+  defaultLocation = 'Cocina / Bodega Central'
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -19,6 +20,8 @@ export const ProductFormModal = ({
     initialStock: '',
     currentStock: '',
     minStock: '',
+    location: defaultLocation,
+    supplier: 'Proveedor Central Zénit',
     notes: ''
   });
 
@@ -33,6 +36,8 @@ export const ProductFormModal = ({
         initialStock: initialData.initialStock ?? '',
         currentStock: initialData.currentStock ?? '',
         minStock: initialData.minStock ?? '',
+        location: initialData.location || defaultLocation,
+        supplier: initialData.supplier || 'Proveedor Central Zénit',
         notes: initialData.notes || ''
       });
     } else {
@@ -43,11 +48,13 @@ export const ProductFormModal = ({
         initialStock: '',
         currentStock: '',
         minStock: '',
+        location: defaultLocation,
+        supplier: 'Proveedor Central Zénit',
         notes: ''
       });
     }
     setErrors({});
-  }, [initialData, isOpen]);
+  }, [initialData, isOpen, defaultLocation]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -171,6 +178,25 @@ export const ProductFormModal = ({
             onChange={handleChange}
             error={errors.minStock}
             helperText="Genera aviso cuando el stock sea menor"
+          />
+        </div>
+
+        {/* Ubicación y Proveedor */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Input
+            label="Ubicación / Área"
+            name="location"
+            placeholder="Ej: Cocina, Bar, Bodega..."
+            value={formData.location}
+            onChange={handleChange}
+          />
+
+          <Input
+            label="Proveedor Habitual"
+            name="supplier"
+            placeholder="Ej: Proveedor Central Zénit..."
+            value={formData.supplier}
+            onChange={handleChange}
           />
         </div>
 

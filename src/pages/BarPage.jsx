@@ -9,20 +9,28 @@ import {
   Sparkles,
   CupSoda,
   Beer,
-  Coffee
+  Coffee,
+  Plus,
+  PackagePlus
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useInventory } from '../hooks/useInventory';
 import { useToast } from '../hooks/useToast';
 import { orderService, ORDER_STATUS } from '../services/orderService';
 import { Button } from '../components/common/Button';
+import { ProductFormModal } from '../components/products/ProductFormModal';
 import { formatTime } from '../utils/formatters';
 
 export const BarPage = () => {
   const { user } = useAuth();
+  const { addProduct } = useInventory();
   const { showToast } = useToast();
 
   const [orders, setOrders] = useState([]);
   const [filterStatus, setFilterStatus] = useState('ACTIVE'); // 'ACTIVE' | 'PENDING' | 'PREPARING' | 'READY' | 'ALL'
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+
   const companyId = user?.companyId || 'default_company';
 
   useEffect(() => {
@@ -124,58 +132,71 @@ export const BarPage = () => {
           </div>
         </div>
 
-        {/* Filtros de Estado */}
-        <div className="flex items-center gap-2 flex-wrap bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
-          <button
-            onClick={() => setFilterStatus('ACTIVE')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              filterStatus === 'ACTIVE'
-                ? 'bg-slate-800 text-white shadow-md'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
+        {/* Acciones y Filtros de Estado */}
+        <div className="flex items-center gap-3 flex-wrap">
+          
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setIsProductModalOpen(true)}
+            icon={PackagePlus}
+            className="border-purple-500/40 text-purple-300 hover:bg-purple-500/10 text-xs font-bold"
           >
-            Activas ({pendingCount + preparingCount + readyCount})
-          </button>
-          <button
-            onClick={() => setFilterStatus(ORDER_STATUS.PENDING)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              filterStatus === ORDER_STATUS.PENDING
-                ? 'bg-purple-500 text-slate-950 shadow-md font-black'
-                : 'text-purple-400/80 hover:text-purple-300'
-            }`}
-          >
-            🟡 Pendientes ({pendingCount})
-          </button>
-          <button
-            onClick={() => setFilterStatus(ORDER_STATUS.PREPARING)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              filterStatus === ORDER_STATUS.PREPARING
-                ? 'bg-cyan-500 text-slate-950 shadow-md font-black'
-                : 'text-cyan-400/80 hover:text-cyan-300'
-            }`}
-          >
-            🔵 En Preparación ({preparingCount})
-          </button>
-          <button
-            onClick={() => setFilterStatus(ORDER_STATUS.READY)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              filterStatus === ORDER_STATUS.READY
-                ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
-                : 'text-emerald-400/80 hover:text-emerald-300'
-            }`}
-          >
-            🟢 Listas en Barra ({readyCount})
-          </button>
-          <button
-            onClick={() => setFilterStatus('ALL')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              filterStatus === 'ALL'
-                ? 'bg-slate-800 text-white shadow-md'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Historial Turno
-          </button>
+            + Registrar Insumo / Bebida (Bar)
+          </Button>
+
+          <div className="flex items-center gap-2 flex-wrap bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
+            <button
+              onClick={() => setFilterStatus('ACTIVE')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                filterStatus === 'ACTIVE'
+                  ? 'bg-slate-800 text-white shadow-md'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Activas ({pendingCount + preparingCount + readyCount})
+            </button>
+            <button
+              onClick={() => setFilterStatus(ORDER_STATUS.PENDING)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                filterStatus === ORDER_STATUS.PENDING
+                  ? 'bg-purple-500 text-slate-950 shadow-md font-black'
+                  : 'text-purple-400/80 hover:text-purple-300'
+              }`}
+            >
+              🟡 Pendientes ({pendingCount})
+            </button>
+            <button
+              onClick={() => setFilterStatus(ORDER_STATUS.PREPARING)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                filterStatus === ORDER_STATUS.PREPARING
+                  ? 'bg-cyan-500 text-slate-950 shadow-md font-black'
+                  : 'text-cyan-400/80 hover:text-cyan-300'
+              }`}
+            >
+              🔵 En Coctelera ({preparingCount})
+            </button>
+            <button
+              onClick={() => setFilterStatus(ORDER_STATUS.READY)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                filterStatus === ORDER_STATUS.READY
+                  ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
+                  : 'text-emerald-400/80 hover:text-emerald-300'
+              }`}
+            >
+              🟢 Listas en Barra ({readyCount})
+            </button>
+            <button
+              onClick={() => setFilterStatus('ALL')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                filterStatus === 'ALL'
+                  ? 'bg-slate-800 text-white shadow-md'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Historial
+            </button>
+          </div>
         </div>
       </div>
 
@@ -305,6 +326,28 @@ export const BarPage = () => {
             );
           })}
         </div>
+      )}
+
+      {/* Modal para que Bar registre un nuevo insumo */}
+      {isProductModalOpen && (
+        <ProductFormModal
+          isOpen={isProductModalOpen}
+          onClose={() => setIsProductModalOpen(false)}
+          loading={modalLoading}
+          defaultLocation="Bar"
+          onSubmit={async (formData) => {
+            setModalLoading(true);
+            try {
+              await addProduct(formData);
+              setIsProductModalOpen(false);
+              showToast(`Insumo "${formData.name}" registrado exitosamente en el inventario central.`, 'success');
+            } catch (err) {
+              showToast(err.message || 'Error al registrar insumo', 'error');
+            } finally {
+              setModalLoading(false);
+            }
+          }}
+        />
       )}
 
     </div>
