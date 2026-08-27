@@ -57,17 +57,25 @@ export const orderService = {
   },
 
   // 2. Validar disponibilidad de stock antes de enviar comanda
+  // Platos de cocina se validan contra stock real; Bar y Coctelería tienen stock libre a full
   validateAvailability(cartItems, inventoryProducts) {
-    const required = this.calculateTotalIngredients(cartItems);
+    // Solo validamos ingredientes de platos de cocina (los de bar y bebidas están sin límite)
+    const kitchenItems = cartItems.filter(item => {
+      const isBar = item.destination === 'BAR' || 
+                    item.category === 'Bebidas' || 
+                    item.category === 'Cócteles de Altura' || 
+                    (item.category || '').toLowerCase().includes('coctel');
+      return !isBar;
+    });
+
+    const required = this.calculateTotalIngredients(kitchenItems);
     const missing = [];
 
     required.forEach(req => {
       const product = inventoryProducts.find(p => p.name.toLowerCase() === req.productName.toLowerCase());
       const currentStock = Number(product?.currentStock || 0);
 
-      // Si el producto se mide en kg, comparamos con totalKg; si no, comparamos con totalGrams o unidades
-      const isKg = product?.unit === 'kg';
-      const needed = isKg ? req.totalKg : req.totalKg; // stock en inventario está en kg/unidades
+      const needed = req.totalKg;
 
       if (!product || currentStock < needed) {
         missing.push({

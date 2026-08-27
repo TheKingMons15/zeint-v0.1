@@ -66,10 +66,21 @@ export const WaiterPage = () => {
   const dishesWithAvailability = useMemo(() => {
     return ZENIT_RECIPES.map(dish => {
       const isDrink = dish.category === 'Bebidas' || dish.category === 'Cócteles' || dish.category === 'Cócteles de Altura' || dish.destination === 'BAR';
+      
+      // Bebidas, cócteles y licores de Bar están SIEMPRE disponibles sin límite (Stock Full)
+      if (isDrink) {
+        return {
+          ...dish,
+          destination: 'BAR',
+          isAvailable: true,
+          missing: []
+        };
+      }
+
       const validation = orderService.validateAvailability([{ recipe: dish, quantity: 1 }], products);
       return {
         ...dish,
-        destination: isDrink ? 'BAR' : 'KITCHEN',
+        destination: 'KITCHEN',
         isAvailable: validation.isAvailable,
         missing: validation.missing
       };
