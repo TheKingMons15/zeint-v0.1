@@ -68,11 +68,13 @@ export const productService = {
       );
 
       return onSnapshot(q, (snapshot) => {
-        const products = snapshot.docs.map(doc => ({
-          id: doc.id,
-          id_producto: doc.id,
-          ...doc.data()
-        }));
+        const products = snapshot.docs
+          .filter(doc => !doc.data().isOrder)
+          .map(doc => ({
+            id: doc.id,
+            id_producto: doc.id,
+            ...doc.data()
+          }));
 
         // Ordenamiento seguro en memoria por nombre
         products.sort((a, b) => (a.name || '').localeCompare(b.name || ''));

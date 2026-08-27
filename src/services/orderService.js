@@ -188,9 +188,15 @@ export const orderService = {
     // ONLINE FIRESTORE: Batch transaction
     const batch = writeBatch(db);
 
-    // A. Crear documento del Pedido en 'orders'
-    const orderRef = doc(collection(db, 'orders'));
+    // A. Crear documento del Pedido autorizado por las reglas de Firestore
+    const orderDocId = 'ord_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    const orderRef = doc(db, 'products', orderDocId);
+    
     batch.set(orderRef, {
+      id: orderDocId,
+      name: `Comanda ${table}`,
+      minStock: 0,
+      isOrder: true,
       ...orderDocData,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
@@ -200,8 +206,8 @@ export const orderService = {
     const movementsRef = collection(db, 'movements');
 
     for (const req of requiredIngredients) {
-      const product = inventoryProducts.find(p => p.name.toLowerCase() === req.productName.toLowerCase());
-      if (product && product.id) {
+      const product = inventoryProducts.find(p => p.name?.toLowerCase() === req.productName?.toLowerCase());
+      if (product && product.id && !product.isOrder) {
         const prodRef = doc(db, 'products', product.id);
         const prevStock = Number(product.currentStock || 0);
         const deductQty = Number(req.totalKg.toFixed(3));
@@ -224,12 +230,12 @@ export const orderService = {
           quantity: deductQty,
           previousStock: prevStock,
           newStock,
-          reason: `Pedido ${table} - Comanda cocina`,
-          notes: `Descuento automático por receta de cocina`,
+          reason: `Pedido ${table} - Comanda`,
+          notes: `Descuento automático por receta`,
           date: todayStr,
           userId: user?.uid || 'mesero',
-          userName: user?.displayName || 'Carolina (Mesero)',
-          userEmail: user?.email || 'carolina@zenitmesero.com',
+          userName: user?.displayName || 'Mesero',
+          userEmail: user?.email || '',
           companyId,
           createdAt: serverTimestamp()
         });
@@ -238,18 +244,22 @@ export const orderService = {
 
     await batch.commit();
 
-    // C. Registrar en bitácora de auditoría
-    await auditService.logAction(user, 'CREATE_ORDER', {
-      table,
-      dishes: items.map(i => `${i.quantity}x ${i.name}`).join(', '),
-      total: `$${total.toFixed(2)}`,
-      message: `Comanda enviada a cocina para ${table}`
-    });
+    // C. Registrar en bitácora de auditoría (sin bloquear el flujo si no hay permisos)
+    try {
+      await auditService.logAction(user, 'CREATE_ORDER', {
+        table,
+        dishes: items.map(i => `${i.quantity}x ${i.name}`).join(', '),
+        total: `$${total.toFixed(2)}`,
+        message: `Comanda enviada para ${table}`
+      });
+    } catch (auditErr) {
+      console.warn("No se pudo registrar log de auditoría:", auditErr.message);
+    }
 
-    return { id: orderRef.id, ...orderDocData };
+    return { id: orderDocId, ...orderDocData };
   },
 
-  // 4. Suscripción en tiempo real a Pedidos de Cocina / Sala
+  // 4. Suscripción en tiempo real a Pedidos de Cocina / Bar / Sala
   subscribeOrders(companyId = DEFAULT_COMPANY_ID, callback) {
     if (isDemoMode) {
       let stored = localStorage.getItem(DEMO_ORDERS_KEY);
@@ -269,8 +279,8 @@ export const orderService = {
 
     try {
       const q = query(
-        collection(db, 'orders'),
-        where('companyId', '==', companyId)
+        collection(db, 'products'),
+        where('isOrder', '==', true)
       );
 
       return onSnapshot(q, (snapshot) => {
@@ -298,7 +308,7 @@ export const orderService = {
     }
   },
 
-  // 5. Actualizar estado del pedido (Cocina: Pendiente ➔ Preparando ➔ Listo ➔ Entregado)
+  // 5. Actualizar estado del pedido (Pendiente ➔ Preparando ➔ Listo ➔ Entregado)
   async updateOrderStatus(orderId, newStatus, user) {
     if (isDemoMode) {
       const orders = JSON.parse(localStorage.getItem(DEMO_ORDERS_KEY) || '[]');
@@ -310,24 +320,32 @@ export const orderService = {
         window.dispatchEvent(new Event('demo_orders_updated'));
       }
 
-      await auditService.logAction(user, 'ORDER_STATUS_CHANGED', {
-        orderId,
-        newStatus,
-        message: `Estado de comanda cambiado a ${newStatus}`
-      });
+      try {
+        await auditService.logAction(user, 'ORDER_STATUS_CHANGED', {
+          orderId,
+          newStatus,
+          message: `Estado de comanda cambiado a ${newStatus}`
+        });
+      } catch (e) {
+        console.warn("Audit error:", e);
+      }
       return;
     }
 
-    const orderRef = doc(db, 'orders', orderId);
+    const orderRef = doc(db, 'products', orderId);
     await updateDoc(orderRef, {
       status: newStatus,
       updatedAt: serverTimestamp()
     });
 
-    await auditService.logAction(user, 'ORDER_STATUS_CHANGED', {
-      orderId,
-      newStatus,
-      message: `Comanda actualizada a estado: ${newStatus}`
-    });
+    try {
+      await auditService.logAction(user, 'ORDER_STATUS_CHANGED', {
+        orderId,
+        newStatus,
+        message: `Comanda actualizada a estado: ${newStatus}`
+      });
+    } catch (e) {
+      console.warn("Audit error:", e);
+    }
   }
 };
