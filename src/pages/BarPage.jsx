@@ -40,22 +40,22 @@ export const BarPage = () => {
     return () => unsub();
   }, [companyId]);
 
-  // Filtrar pedidos que contengan bebidas/bar o comandas generales
+  // Filtrar pedidos exclusivos de Bar (eliminando completamente cualquier plato de cocina)
   const barOrders = useMemo(() => {
-    return orders.map(order => {
-      // Identificar items de bar (categoría Bebidas, Cócteles, etc. o todos los items si no está especificado)
-      const drinkItems = order.items?.filter(item => {
-        const cat = (item.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        return cat.includes('bebida') || cat.includes('coctel') || cat.includes('bar') || cat.includes('licor') || cat.includes('cafe') || item.destination === 'BAR';
-      }) || [];
+    return orders
+      .map(order => {
+        const drinkItems = order.items?.filter(item => {
+          const cat = (item.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          return cat.includes('bebida') || cat.includes('coctel') || cat.includes('bar') || cat.includes('licor') || cat.includes('cafe') || item.destination === 'BAR';
+        }) || [];
 
-      // Si tiene items de bar o si el pedido general está activo
-      return {
-        ...order,
-        drinkItems: drinkItems.length > 0 ? drinkItems : order.items,
-        isSpecificBarOrder: drinkItems.length > 0
-      };
-    });
+        return {
+          ...order,
+          drinkItems,
+          hasDrinkItems: drinkItems.length > 0
+        };
+      })
+      .filter(order => order.hasDrinkItems);
   }, [orders]);
 
   // Cambiar estado de la comanda en Bar

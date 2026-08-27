@@ -8,23 +8,42 @@ export const ProtectedRoute = ({ children, allowedRoles, blockWaiters = false })
   const location = useLocation();
 
   if (loading) {
-    return <LoadingSpinner fullPage label="Verificando sesión..." />;
+    return <LoadingSpinner fullPage label="Verificando permisos y área asignada..." />;
   }
 
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  const isWaiter = user.role === 'MESERO' || user.role === 'mesero';
+  const role = (user.role || '').toUpperCase();
+  const path = location.pathname;
 
-  // Si es mesero y la ruta no es para meseros (rutas de administración/inventario/costos)
-  if (isWaiter && (blockWaiters || location.pathname === '/')) {
-    return <Navigate to="/mesero" replace />;
+  // 1. Delimitación Estricta: BAR (Marlon) - Solo accede a /bar
+  if (role === 'BAR') {
+    if (path !== '/bar') {
+      return <Navigate to="/bar" replace />;
+    }
+    return children;
   }
 
-  // Si se especificaron roles permitidos y el usuario no lo tiene
+  // 2. Delimitación Estricta: COCINA (Hernán) - Solo accede a /cocina
+  if (role === 'COCINA') {
+    if (path !== '/cocina') {
+      return <Navigate to="/cocina" replace />;
+    }
+    return children;
+  }
+
+  // 3. Delimitación Estricta: MESERO (Carolina, Issac, David) - Solo accede a /mesero
+  if (role === 'MESERO') {
+    if (path !== '/mesero') {
+      return <Navigate to="/mesero" replace />;
+    }
+    return children;
+  }
+
+  // 4. Si se especificaron roles permitidos para usuarios administrativos
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    if (isWaiter) return <Navigate to="/mesero" replace />;
     return <Navigate to="/" replace />;
   }
 

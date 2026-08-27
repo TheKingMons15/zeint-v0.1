@@ -39,12 +39,33 @@ export const authService = {
             await setDoc(userDocRef, profileData, { merge: true });
           }
 
+          const emailLower = (firebaseUser.email || '').toLowerCase();
+          let calculatedRole = profileData.role || USER_ROLES.OPERATOR;
+          
+          if (emailLower === 'marlon@zenit.com' || calculatedRole.toUpperCase() === 'BAR') {
+            calculatedRole = 'BAR';
+          } else if (emailLower === 'hernan@zenit.com' || calculatedRole.toUpperCase() === 'COCINA') {
+            calculatedRole = 'COCINA';
+          } else if (emailLower.includes('mesero') || calculatedRole.toUpperCase() === 'MESERO') {
+            calculatedRole = 'MESERO';
+          } else if (emailLower === 'master@zenit.com' || calculatedRole === 'superadmin') {
+            calculatedRole = 'superadmin';
+          } else if (emailLower === 'karenadmin@zenit.com' || calculatedRole === 'admin') {
+            calculatedRole = 'admin';
+          } else if (emailLower === 'wladimir@zenit.com' || calculatedRole === 'supervisor') {
+            calculatedRole = 'supervisor';
+          }
+
           const userObj = {
             uid: firebaseUser.uid,
             email: firebaseUser.email,
-            displayName: firebaseUser.displayName || profileData.displayName || 'Usuario',
-            role: profileData.role || USER_ROLES.OPERATOR,
-            isSuperAdmin: Boolean(profileData.isSuperAdmin || profileData.role === 'superadmin' || firebaseUser.email === 'master@zenit.com'),
+            displayName: firebaseUser.displayName || profileData.displayName || (
+              calculatedRole === 'BAR' ? 'Marlon (Bar & Coctelería)' :
+              calculatedRole === 'COCINA' ? 'Hernán (Cocina)' :
+              calculatedRole === 'MESERO' ? 'Mesero (Sala)' : 'Usuario'
+            ),
+            role: calculatedRole,
+            isSuperAdmin: Boolean(profileData.isSuperAdmin || calculatedRole === 'superadmin' || emailLower === 'master@zenit.com'),
             companyId: profileData.companyId || DEFAULT_COMPANY_ID,
             photoURL: firebaseUser.photoURL,
             lastLoginAt: profileData.lastLoginAt
@@ -53,11 +74,18 @@ export const authService = {
           callback(userObj);
         } catch (error) {
           console.error("Error fetching user profile:", error);
+          const emailLower = (firebaseUser.email || '').toLowerCase();
+          const fallbackRole = (
+            emailLower === 'marlon@zenit.com' ? 'BAR' :
+            emailLower === 'hernan@zenit.com' ? 'COCINA' :
+            emailLower.includes('mesero') ? 'MESERO' : USER_ROLES.OPERATOR
+          );
+
           callback({
             uid: firebaseUser.uid,
             email: firebaseUser.email,
             displayName: firebaseUser.displayName || 'Usuario',
-            role: USER_ROLES.OPERATOR,
+            role: fallbackRole,
             companyId: DEFAULT_COMPANY_ID
           });
         }

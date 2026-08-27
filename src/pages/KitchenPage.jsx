@@ -58,9 +58,33 @@ export const KitchenPage = () => {
     }
   };
 
-  // Filtrado de comandas
+  // Filtrar pedidos exclusivos de Cocina (eliminando completamente cualquier item de bar o bebida)
+  const kitchenOrders = useMemo(() => {
+    return orders
+      .map(order => {
+        const kitchenItems = order.items?.filter(item => {
+          const cat = (item.category || '').toLowerCase();
+          const isBar = item.destination === 'BAR' || 
+                        cat.includes('bebida') || 
+                        cat.includes('coctel') || 
+                        cat.includes('cóctel') || 
+                        cat.includes('bar') || 
+                        cat.includes('licor');
+          return !isBar;
+        }) || [];
+
+        return {
+          ...order,
+          kitchenItems,
+          hasKitchenItems: kitchenItems.length > 0
+        };
+      })
+      .filter(order => order.hasKitchenItems);
+  }, [orders]);
+
+  // Filtrado de comandas según estado
   const filteredOrders = useMemo(() => {
-    return orders.filter(order => {
+    return kitchenOrders.filter(order => {
       if (filterStatus === 'ACTIVE') {
         return order.status === ORDER_STATUS.PENDING || 
                order.status === ORDER_STATUS.PREPARING || 
@@ -69,12 +93,12 @@ export const KitchenPage = () => {
       if (filterStatus === 'ALL') return true;
       return order.status === filterStatus;
     });
-  }, [orders, filterStatus]);
+  }, [kitchenOrders, filterStatus]);
 
-  // Contadores
-  const pendingCount = useMemo(() => orders.filter(o => o.status === ORDER_STATUS.PENDING).length, [orders]);
-  const preparingCount = useMemo(() => orders.filter(o => o.status === ORDER_STATUS.PREPARING).length, [orders]);
-  const readyCount = useMemo(() => orders.filter(o => o.status === ORDER_STATUS.READY).length, [orders]);
+  // Contadores de Cocina
+  const pendingCount = useMemo(() => kitchenOrders.filter(o => o.status === ORDER_STATUS.PENDING).length, [kitchenOrders]);
+  const preparingCount = useMemo(() => kitchenOrders.filter(o => o.status === ORDER_STATUS.PREPARING).length, [kitchenOrders]);
+  const readyCount = useMemo(() => kitchenOrders.filter(o => o.status === ORDER_STATUS.READY).length, [kitchenOrders]);
 
   const getStatusCardStyle = (status) => {
     switch (status) {
@@ -231,9 +255,9 @@ export const KitchenPage = () => {
                     </div>
                   </div>
 
-                  {/* Lista de Platos y Cantidades */}
+                  {/* Lista de Platos de Cocina */}
                   <div className="space-y-2.5">
-                    {order.items?.map((item, idx) => (
+                    {order.kitchenItems?.map((item, idx) => (
                       <div key={idx} className="p-2.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 space-y-1">
                         <div className="flex items-start justify-between gap-2">
                           <span className="text-sm font-bold text-slate-100 leading-tight">
