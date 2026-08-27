@@ -37,7 +37,7 @@ export const BarPage = () => {
     return orders.map(order => {
       // Identificar items de bar (categoría Bebidas, Cócteles, etc. o todos los items si no está especificado)
       const drinkItems = order.items?.filter(item => {
-        const cat = (item.category || '').toLowerCase();
+        const cat = (item.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         return cat.includes('bebida') || cat.includes('coctel') || cat.includes('bar') || cat.includes('licor') || cat.includes('cafe') || item.destination === 'BAR';
       }) || [];
 

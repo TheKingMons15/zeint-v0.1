@@ -13,6 +13,7 @@ export const MENU_CATEGORIES = [
   'Bandeja Paisa',
   'Pequeños Astros',
   'Postres',
+  'Cócteles de Altura',
   'Bebidas'
 ];
 
@@ -580,12 +581,254 @@ export const ZENIT_RECIPES = [
   },
 
   // -------------------------------------------------------------
-  // 10. BEBIDAS
+  // 10. CÓCTELES DE ALTURA (BAR & COCTELERÍA)
+  // -------------------------------------------------------------
+  {
+    id: 'bar_paramo_zenit',
+    name: 'Páramo Zénit',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 7.00,
+    description: 'Cóctel insignia Zénit. Destilado artesanal macerado con cítricos de montaña, infusión de hierbas andinas y toque ahumado de romero.',
+    image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 50 },
+      { productName: 'Romero', grams: 5 },
+      { productName: 'Jarabe de frutilla', grams: 25 }
+    ],
+    accompaniments: ['Copa de cristal ahumada', 'Romero flameado', 'Cítrico deshidratado']
+  },
+  {
+    id: 'bar_mojito_cima',
+    name: 'Mojito de la cima',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 4.99,
+    description: 'Refrescante mojito clásico con ron blanco, hierbabuena fresca macerada, limón sutil y soda burbujeante.',
+    image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 60 }
+    ],
+    accompaniments: ['Vaso alto con hielo picado', 'Ramita de hierbabuena', 'Rodaja de limón sutil']
+  },
+  {
+    id: 'bar_mojito_sabores',
+    name: 'Mojito de sabores',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.50,
+    description: 'Mojito artesanal a elección con pulpa de frutas naturales (Frutilla, Maracuyá o Frutos Rojos), ron y toques de menta.',
+    image: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Jarabe de frutilla', grams: 40 },
+      { productName: 'Limón sutil', grams: 40 }
+    ],
+    accompaniments: ['Vaso alto escarchado', 'Fruta natural macerada', 'Hielo frappé']
+  },
+  {
+    id: 'bar_margarita_horizonte',
+    name: 'Margarita del horizonte',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.99,
+    description: 'Tequila reposado, triple sec y zumo de limón sutil recién exprimido con borde escarchado de sal marina.',
+    image: 'https://images.unsplash.com/photo-1556881286-fc6915169721?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 60 },
+      { productName: 'Sal', grams: 5 }
+    ],
+    accompaniments: ['Copa margarita escarchada', 'Media luna de limón']
+  },
+  {
+    id: 'bar_padrino_cielo_nocturno',
+    name: 'Padrino cielo nocturno',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 6.50,
+    description: 'Elegante fusión de whisky escocés y licor de amaretto con piel de naranja aromatizada.',
+    image: 'https://images.unsplash.com/photo-1527061011665-3652c757a4d4?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Naranja', grams: 40 }
+    ],
+    accompaniments: ['Vaso Old Fashioned', 'Hielo esfera cristalino', 'Twist de naranja']
+  },
+  {
+    id: 'bar_ruso_cielo_negro',
+    name: 'Ruso cielo negro',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.50,
+    description: 'Vodka premium combinado con licor de café artesanal sobre rocas de hielo puro.',
+    image: 'https://images.unsplash.com/photo-1560512823-829485b8bf24?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Leche', grams: 30 },
+      { productName: 'Cocoa', grams: 10 }
+    ],
+    accompaniments: ['Vaso corto en las rocas', 'Granos de café tostado']
+  },
+  {
+    id: 'bar_caipirina_bosque',
+    name: 'Caipiriña niña del bosque',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.99,
+    description: 'Cachaça brasileña macerada con gajos de limón sutil, azúcar morena y toques de frutos del bosque.',
+    image: 'https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 70 },
+      { productName: 'Jarabe de frutilla', grams: 25 }
+    ],
+    accompaniments: ['Vaso bajo de boca ancha', 'Gajos de limón macerados', 'Hielo frappé']
+  },
+  {
+    id: 'bar_pina_colada',
+    name: 'Piña colada',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 6.50,
+    description: 'Cremosa mezcla caribeña de ron blanco, crema de coco y zumo natural de piña con cereza marrasquino.',
+    image: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Crema de leche', grams: 40 },
+      { productName: 'Leche', grams: 40 }
+    ],
+    accompaniments: ['Copa Huracán', 'Triángulo de piña', 'Cereza al marrasquino']
+  },
+  {
+    id: 'bar_daiquiri',
+    name: 'Daiquiri',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.99,
+    description: 'Ron blanco, zumo de limón sutil fresco y pulpa de fruta batido frozen a punto de nieve.',
+    image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 50 },
+      { productName: 'Jarabe de frutilla', grams: 35 }
+    ],
+    accompaniments: ['Copa Coupé helada', 'Borde escarchado', 'Rodaja cítrica']
+  },
+  {
+    id: 'bar_gin_tonic',
+    name: 'Gin Tonic',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 6.50,
+    description: 'Ginebra aromática premium, agua tónica botánica, bayas de enebro y rodaja de limón sutil.',
+    image: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 40 },
+      { productName: 'Romero', grams: 5 }
+    ],
+    accompaniments: ['Copa Balón con abundante hielo', 'Botánicos de enebro', 'Twist de limón']
+  },
+  {
+    id: 'bar_whisky_rocas',
+    name: 'Whisky en las rocas',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.99,
+    description: 'Doble medida de whisky seleccionado servido sobre esfera o rocas de hielo puro.',
+    image: 'https://images.unsplash.com/photo-1527061011665-3652c757a4d4?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Naranja', grams: 20 }
+    ],
+    accompaniments: ['Vaso Old Fashioned de cristal', 'Hielo cristalino']
+  },
+  {
+    id: 'bar_orgasmo',
+    name: 'Orgasmo',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.99,
+    description: 'Suave y seductor cóctel a base de licor de café, amaretto, crema irlandesa y crema de leche fresca.',
+    image: 'https://images.unsplash.com/photo-1560512823-829485b8bf24?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Crema de leche', grams: 50 },
+      { productName: 'Leche', grams: 40 },
+      { productName: 'Cobertura de chocolate', grams: 15 }
+    ],
+    accompaniments: ['Copa de cóctel decorada con hilo de chocolate']
+  },
+  {
+    id: 'bar_saltamontes',
+    name: 'Saltamontes',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.99,
+    description: 'Clásico Grasshopper: crema de menta verde, crema de cacao blanca y crema de leche batida.',
+    image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Crema de leche', grams: 50 },
+      { productName: 'Leche', grams: 40 },
+      { productName: 'Cocoa', grams: 10 }
+    ],
+    accompaniments: ['Copa Martini fría', 'Hojas de menta', 'Ralladura de chocolate']
+  },
+  {
+    id: 'bar_martini',
+    name: 'Martini',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 7.99,
+    description: 'El rey de los cócteles: Ginebra o Vodka dry, vermouth extra dry servido glacial con aceitunas o twist de limón.',
+    image: 'https://images.unsplash.com/photo-1575023782549-62ca0d244b39?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 30 }
+    ],
+    accompaniments: ['Copa Martini helada', 'Aceituna verde sevillana o twist de limón']
+  },
+  {
+    id: 'bar_moscow_mule',
+    name: 'Moscow Mule',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 6.50,
+    description: 'Vodka, cerveza de jengibre (ginger beer), zumo de limón sutil y menta fresca servido en taza de cobre tradicional.',
+    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 50 }
+    ],
+    accompaniments: ['Taza artesanal de cobre (Mule Mug)', 'Rodaja de limón', 'Menta fresca']
+  },
+  {
+    id: 'bar_negroni',
+    name: 'Negroni',
+    category: 'Cócteles de Altura',
+    destination: 'BAR',
+    persons: 1,
+    price: 7.99,
+    description: 'El icónico aperitivo italiano: partes iguales de Ginebra, Campari bitter y Vermouth dulce rosso con media luna de naranja.',
+    image: 'https://images.unsplash.com/photo-1556881286-fc6915169721?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Naranja', grams: 40 }
+    ],
+    accompaniments: ['Vaso Old Fashioned', 'Hielo macizo', 'Media luna de naranja fresca']
+  },
+
+  // -------------------------------------------------------------
+  // 11. BEBIDAS Y JUGOS NATURALES
   // -------------------------------------------------------------
   {
     id: 'beb_jugo_natural',
     name: 'Jugo Natural de Fruta',
     category: 'Bebidas',
+    destination: 'BAR',
     persons: 1,
     price: 2.50,
     description: 'Jugo natural preparado al instante (Tomate de árbol, Naranja o Limón).',
@@ -599,6 +842,7 @@ export const ZENIT_RECIPES = [
     id: 'beb_limonada_imperial',
     name: 'Limonada Imperial',
     category: 'Bebidas',
+    destination: 'BAR',
     persons: 1,
     price: 2.50,
     description: 'Limonada refrescante con limón sutil recién exprimido.',

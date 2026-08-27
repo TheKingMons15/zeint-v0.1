@@ -65,7 +65,7 @@ export const WaiterPage = () => {
   // Verificar disponibilidad de cada plato según stock real de inventario
   const dishesWithAvailability = useMemo(() => {
     return ZENIT_RECIPES.map(dish => {
-      const isDrink = dish.category === 'Bebidas' || dish.category === 'Cócteles' || dish.destination === 'BAR';
+      const isDrink = dish.category === 'Bebidas' || dish.category === 'Cócteles' || dish.category === 'Cócteles de Altura' || dish.destination === 'BAR';
       const validation = orderService.validateAvailability([{ recipe: dish, quantity: 1 }], products);
       return {
         ...dish,
