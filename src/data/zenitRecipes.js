@@ -1,6 +1,6 @@
 // =========================================================================
 // MENÚ OFICIAL Y FICHAS TÉCNICAS (RECETAS) DE RESTAURANTE ZÉNIT
-// Basado en el recetario maestro oficial con deducción exacta de gramajes
+// Precios oficiales corregidos y actualizados según Carta Oficial Zénit
 // =========================================================================
 
 export const MENU_CATEGORIES = [
@@ -13,8 +13,8 @@ export const MENU_CATEGORIES = [
   'Bandeja Paisa',
   'Pequeños Astros',
   'Postres',
-  'Cócteles de Altura',
-  'Bebidas'
+  'Bebidas',
+  'Cócteles de Altura'
 ];
 
 export const ZENIT_RECIPES = [
@@ -25,9 +25,10 @@ export const ZENIT_RECIPES = [
     id: 'ent_coctel_camaron',
     name: 'Cóctel de camarón',
     category: 'Entradas Nubes',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 6.50,
-    description: 'Camarones frescos en salsa cóctel de la casa con toques cítricos.',
+    price: 4.50,
+    description: 'Camarones frescos en salsa cóctel artesanal de la casa con toques cítricos y chips.',
     image: 'https://images.unsplash.com/photo-1535400255456-984241443b29?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Camarón limpio (Porciones)', grams: 100 },
@@ -41,8 +42,9 @@ export const ZENIT_RECIPES = [
     id: 'ent_pan_carbonara',
     name: 'Pan francés con carbonara',
     category: 'Entradas Nubes',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 5.00,
+    price: 4.00,
     description: 'Pan francés crujiente bañado en cremosa salsa carbonara y tocino ahumado.',
     image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&auto=format&fit=crop&q=80',
     ingredients: [
@@ -56,9 +58,10 @@ export const ZENIT_RECIPES = [
     id: 'ent_canastillas_patacon',
     name: 'Canastillas de patacón con chorizo, guacamole y pico de gallo',
     category: 'Entradas Nubes',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 6.00,
-    description: 'Canastillas crocantes de plátano verde rellenas de chorizo, guacamole y pico de gallo.',
+    price: 4.50,
+    description: 'Canastillas crocantes de plátano verde rellenas de chorizo artesanal, guacamole y pico de gallo.',
     image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Plátano Verde', grams: 105 },
@@ -73,9 +76,10 @@ export const ZENIT_RECIPES = [
     id: 'ent_chinchulines_maiz',
     name: 'Maíz tostado con chinchulines y papas',
     category: 'Entradas Nubes',
+    destination: 'KITCHEN',
     persons: 1,
     price: 5.50,
-    description: 'Chinchulines dorados a la parrilla servidos sobre maíz tostado y papitas.',
+    description: 'Chinchulines dorados a la parrilla servidos sobre maíz tostado y papitas (Presentación en plato negro alfarero).',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Chinchulines', grams: 80 },
@@ -83,19 +87,20 @@ export const ZENIT_RECIPES = [
       { productName: 'Papa super chola', grams: 45 },
       { productName: 'Limón sutil', grams: 20 }
     ],
-    accompaniments: ['Maíz tostado crocante', 'Papas doradas', 'Salsa de la casa']
+    accompaniments: ['Plato negro alfarero', 'Maíz tostado crocante', 'Papas doradas', 'Salsa de la casa']
   },
 
   // -------------------------------------------------------------
-  // 2. PICADAS PARRILLA
+  // 2. COMBOS / PICADAS PARRILLA (ESPECIALIDAD DE CARNES AHUMADAS)
   // -------------------------------------------------------------
   {
     id: 'pic_estrella_fugaz',
-    name: 'Estrella Fugaz',
+    name: 'Estrella Fugaz (1 PAX)',
     category: 'Picadas Parrilla',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 14.50,
-    description: 'Combinación individual de filete de res, pollo, chorizos y chinchulines con ensalada Waldorf.',
+    price: 7.99,
+    description: 'Picada individual: 2 proteínas a elección (Cerdo al barril, Pollo o Res), chorizo 2 clases, chinchulines, papa salteada y ensalada Waldorf.',
     image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de res', grams: 120 },
@@ -107,15 +112,16 @@ export const ZENIT_RECIPES = [
       { productName: 'Lechuga crespa', grams: 60 },
       { productName: 'Tomate riñón', grams: 40 }
     ],
-    accompaniments: ['Papa salteada', 'Ensalada Waldorf', 'Chimichurri y mayonesa']
+    accompaniments: ['Papa salteada', 'Ensalada Waldorf', 'Chimichurri, salsa de ajo y mayonesa']
   },
   {
     id: 'pic_constelacion_sabores',
-    name: 'Constelación de Sabores',
+    name: 'Constelación de Sabores (2 PAX)',
     category: 'Picadas Parrilla',
+    destination: 'KITCHEN',
     persons: 2,
-    price: 26.00,
-    description: 'Picada para 2 personas con 3 carnes, chorizos, cuerito, papas salteadas y arepas.',
+    price: 12.99,
+    description: 'Picada para 2 personas: 3 proteínas (Cerdo al barril, Pollo y Res), chorizo 3 clases, cuerito asado, papa salteada, 2 arepas y ensalada Waldorf.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de res', grams: 120 },
@@ -133,11 +139,12 @@ export const ZENIT_RECIPES = [
   },
   {
     id: 'pic_fuego_horizonte',
-    name: 'Fuego del Horizonte',
+    name: 'Fuego del Horizonte (4 PAX)',
     category: 'Picadas Parrilla',
+    destination: 'KITCHEN',
     persons: 4,
-    price: 48.00,
-    description: 'Gran parrillada para 4 personas con 3 carnes, chinchulines, cuerito, maduro y papas.',
+    price: 16.99,
+    description: 'Parrillada para 4 personas: 3 proteínas (Cerdo al barril, Pollo y Res), chorizo 3 clases, chinchulines, cuerito asado, papa salteada, 2 arepas, maduro y ensalada Waldorf.',
     image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de res', grams: 120 },
@@ -153,15 +160,16 @@ export const ZENIT_RECIPES = [
       { productName: 'Lechuga crespa', grams: 100 },
       { productName: 'Tomate riñón', grams: 60 }
     ],
-    accompaniments: ['Papas salteadas', 'Maduro asado', 'Arepas', 'Ensalada Waldorf', 'Trío de salsas']
+    accompaniments: ['Papas salteadas', '2 Arepas', 'Maduro asado', 'Ensalada Waldorf', 'Trío de salsas']
   },
   {
     id: 'pic_cumbre_andina',
-    name: 'Cumbre Andina Sky Grill',
+    name: 'Cumbre Andina Sky Grill (8/10 PAX)',
     category: 'Picadas Parrilla',
+    destination: 'KITCHEN',
     persons: 8,
-    price: 95.00,
-    description: 'El festín supremo para 8 a 10 personas. Gran variedad de carnes, chorizos, queso amasado y guarniciones.',
+    price: 25.99,
+    description: 'El festín supremo para 8 a 10 personas: Cerdo al barril, Pollo, Res, muslitos en salsa bechamel o champiñones, 6 chorizos, chinchulines, cuerito asado, queso amasado, papa salteada, 4 arepas, maduro y ensalada Waldorf.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de res', grams: 250 },
@@ -178,7 +186,7 @@ export const ZENIT_RECIPES = [
       { productName: 'Lechuga crespa', grams: 200 },
       { productName: 'Tomate riñón', grams: 100 }
     ],
-    accompaniments: ['Papas salteadas', 'Queso amasado', 'Arepas', 'Maduro asado', 'Salsas variadas']
+    accompaniments: ['Papas salteadas', '4 Arepas', 'Queso amasado', 'Maduro asado', 'Ensalada Waldorf', 'Salsas variadas']
   },
 
   // -------------------------------------------------------------
@@ -186,51 +194,56 @@ export const ZENIT_RECIPES = [
   // -------------------------------------------------------------
   {
     id: 'pic_zenit_prime',
-    name: 'Zenit Prime',
+    name: 'Zenit Prime (2/3 PAX)',
     category: 'Picadas Premium',
+    destination: 'KITCHEN',
     persons: 3,
-    price: 42.00,
-    description: 'Picaña, Matambre y Costilla al barril acompañados de papas salteadas, arepas y maduro.',
+    price: 45.00,
+    description: 'Picada Premium Zénit: 2 proteínas a elección (Picaña a término, Matambre, Costilla al barril), chorizo 3 clases, papa salteada, 3 arepas, maduro y ensalada Waldorf.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Carne de res suave', grams: 200 },
+      { productName: 'Filete de res', grams: 200 },
       { productName: 'Carne molida de res', grams: 180 },
       { productName: 'Costilla de cerdo', grams: 280 },
-      { productName: 'Papa super chola', grams: 300 },
-      { productName: 'Plátano maduro', grams: 100 },
-      { productName: 'Arepas pequeñas', grams: 50 },
+      { productName: 'Chorizo Rojo', grams: 60 },
+      { productName: 'Chorizo Blanco', grams: 60 },
+      { productName: 'Papa super chola', grams: 350 },
+      { productName: 'Plátano maduro', grams: 120 },
+      { productName: 'Arepas pequeñas', grams: 80 },
       { productName: 'Lechuga crespa', grams: 100 }
     ],
-    accompaniments: ['Papa salteada', '3 Arepas', 'Maduro asado', 'Ensalada Waldorf', 'Trío de salsas']
+    accompaniments: ['Papa salteada', '3 Arepas', 'Maduro asado', 'Ensalada Waldorf', 'Trío de salsas (Chimichurri, ajo, mayonesa)']
   },
 
   // -------------------------------------------------------------
-  // 4. CORTES DE CARNE
+  // 4. CORTES DE CARNE (INCLUYEN BEBIDA: COPA DE VINO, CERVEZA O GASEOSA)
   // -------------------------------------------------------------
   {
     id: 'cor_picanha_suprema',
     name: 'Picaña Suprema del Horizonte',
     category: 'Cortes de carne',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 18.50,
-    description: 'Corte premium de 200g a la parrilla, con papas francesas o gratinadas y ensalada Waldorf.',
+    price: 15.99,
+    description: 'Picaña a la parrilla con papa francesa o gratinada, ensalada Waldorf y decoración con espárragos, tomatillo y romero. Incluye copa de vino, cerveza o gaseosa.',
     image: 'https://images.unsplash.com/photo-1558030006-450675393462?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Carne de res suave', grams: 200 },
+      { productName: 'Filete de res', grams: 200 },
       { productName: 'Papa super chola', grams: 180 },
       { productName: 'Lechuga crespa', grams: 60 },
       { productName: 'Tomate riñón', grams: 40 },
-      { productName: 'Aceite', grams: 20 }
+      { productName: 'Romero', grams: 5 }
     ],
-    accompaniments: ['Papa francesa o gratinada', 'Ensalada Waldorf', 'Salsa chimichurri']
+    accompaniments: ['Papa francesa o papa gratinada', 'Ensalada Waldorf', 'Espárragos y tomatillo', 'Copa de vino, cerveza o gaseosa']
   },
   {
     id: 'cor_matambre',
-    name: 'Matambre',
+    name: 'Matambre a la Brasa',
     category: 'Cortes de carne',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 16.00,
-    description: '180g de matambre dorado con hierbas finas y papas a elección.',
+    price: 12.99,
+    description: 'Corte de matambre dorado con hierbas finas, papa francesa o gratinada y ensalada Waldorf. Incluye copa de vino, cerveza o gaseosa.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de res', grams: 180 },
@@ -238,15 +251,16 @@ export const ZENIT_RECIPES = [
       { productName: 'Lechuga crespa', grams: 60 },
       { productName: 'Tomate riñón', grams: 40 }
     ],
-    accompaniments: ['Papa francesa o gratinada', 'Ensalada Waldorf', 'Salsa de la casa']
+    accompaniments: ['Papa francesa o gratinada', 'Ensalada Waldorf', 'Copa de vino, cerveza o gaseosa']
   },
   {
     id: 'cor_tomahawk',
-    name: 'Tomahawk',
+    name: 'Tomahawk Steak',
     category: 'Cortes de carne',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 24.00,
-    description: '300g de corte Tomahawk con hueso a la leña, papas gratinadas y ensalada.',
+    price: 19.99,
+    description: 'Corte Tomahawk con hueso a la leña, papa francesa o gratinada, ensalada Waldorf y decoración con espárragos y romero. Incluye copa de vino, cerveza o gaseosa.',
     image: 'https://images.unsplash.com/photo-1558030006-450675393462?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Tomahawk', grams: 300 },
@@ -254,19 +268,20 @@ export const ZENIT_RECIPES = [
       { productName: 'Romero', grams: 5 },
       { productName: 'Lechuga crespa', grams: 60 }
     ],
-    accompaniments: ['Papa francesa o gratinada', 'Ensalada Waldorf', 'Salsa parrillera']
+    accompaniments: ['Papa francesa o gratinada', 'Ensalada Waldorf', 'Espárragos y tomatillo', 'Copa de vino, cerveza o gaseosa']
   },
 
   // -------------------------------------------------------------
-  // 5. DE LAS ALTURAS
+  // 5. DE LAS ALTURAS (INDIVIDUAL 1 PAX)
   // -------------------------------------------------------------
   {
     id: 'alt_chicharron',
-    name: 'Chicharrón',
+    name: 'Chicharrón Crocante',
     category: 'De las Alturas',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 11.50,
-    description: '180g de chicharrón crocante con papa salteada, maduro frito, pico de gallo y guacamole.',
+    price: 6.50,
+    description: 'Chicharrón crujiente acompañado de papa salteada, guacamole fresco, maduro frito y pico de gallo.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Cuerito', grams: 180 },
@@ -276,103 +291,123 @@ export const ZENIT_RECIPES = [
       { productName: 'Tomate riñón', grams: 40 },
       { productName: 'Cebolla colorada', grams: 40 }
     ],
-    accompaniments: ['Papa salteada', 'Maduro frito', 'Pico de gallo', 'Guacamole']
+    accompaniments: ['Papa salteada', 'Guacamole fresco', 'Maduro frito', 'Pico de gallo']
   },
   {
-    id: 'alt_costilla_barril',
-    name: 'Costilla al barril',
+    id: 'alt_costilla_barril_res',
+    name: 'Costilla al barril de res',
     category: 'De las Alturas',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 15.00,
-    description: '500g de costilla tierna ahumada al barril con papas francesas y ají.',
+    price: 7.99,
+    description: 'Costilla de res ahumada tierna al barril con papa a la francesa o papa salteada y ensalada fresca.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Costilla de cerdo', grams: 500 },
+      { productName: 'Costilla de cerdo', grams: 350 },
       { productName: 'Papa super chola', grams: 180 },
-      { productName: 'Lechuga crespa', grams: 60 },
-      { productName: 'Ají rocoto', grams: 25 }
+      { productName: 'Lechuga crespa', grams: 60 }
     ],
-    accompaniments: ['Papa francesa o salteada', 'Ensalada fresca', 'Ají de la casa']
+    accompaniments: ['Papa francesa o papa salteada', 'Ensalada fresca', 'Ají de la casa']
+  },
+  {
+    id: 'alt_costilla_barril_cerdo',
+    name: 'Costilla al barril de cerdo',
+    category: 'De las Alturas',
+    destination: 'KITCHEN',
+    persons: 1,
+    price: 8.50,
+    description: 'Costilla de cerdo ahumada al barril con papa a la francesa o papa salteada y ensalada.',
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Costilla de cerdo', grams: 400 },
+      { productName: 'Papa super chola', grams: 180 },
+      { productName: 'Lechuga crespa', grams: 60 }
+    ],
+    accompaniments: ['Papa francesa o papa salteada', 'Ensalada', 'Salsa parrillera']
   },
   {
     id: 'alt_pollo_chorizo_barril',
-    name: 'Filete pollo y chorizo al barril',
+    name: 'Filete de pollo y chorizo al barril',
     category: 'De las Alturas',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 12.50,
-    description: '200g de filete de pechuga con 90g de chorizo artesanal al barril.',
+    price: 5.50,
+    description: 'Filete de pechuga de pollo y chorizo artesanal al barril con papa francesa o salteada y ensalada.',
     image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Filete de pechuga de pollo', grams: 200 },
-      { productName: 'Chorizo Rojo', grams: 90 },
-      { productName: 'Papa super chola', grams: 180 },
-      { productName: 'Lechuga crespa', grams: 60 }
+      { productName: 'Filete de pechuga de pollo', grams: 150 },
+      { productName: 'Chorizo Rojo', grams: 70 },
+      { productName: 'Papa super chola', grams: 150 },
+      { productName: 'Lechuga crespa', grams: 50 }
     ],
-    accompaniments: ['Papa francesa o salteada', 'Ensalada', 'Salsa BBQ/ajo']
+    accompaniments: ['Papa francesa o salteada', 'Ensalada', 'Salsa de ajo']
   },
   {
     id: 'alt_res_chorizo_barril',
-    name: 'Filete res y chorizo al barril',
+    name: 'Filete de Res y chorizo al barril',
     category: 'De las Alturas',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 13.50,
-    description: '220g de filete de res jugoso con 90g de chorizo ahumado.',
+    price: 5.50,
+    description: 'Filete de res jugoso y chorizo ahumado al barril con papa francesa o salteada y ensalada.',
     image: 'https://images.unsplash.com/photo-1558030006-450675393462?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Filete de res', grams: 220 },
-      { productName: 'Chorizo Rojo', grams: 90 },
-      { productName: 'Papa super chola', grams: 180 },
-      { productName: 'Lechuga crespa', grams: 60 }
+      { productName: 'Filete de res', grams: 150 },
+      { productName: 'Chorizo Rojo', grams: 70 },
+      { productName: 'Papa super chola', grams: 150 },
+      { productName: 'Lechuga crespa', grams: 50 }
     ],
-    accompaniments: ['Papa francesa o salteada', 'Ensalada', 'Salsa']
+    accompaniments: ['Papa francesa o salteada', 'Ensalada', 'Chimichurri']
   },
   {
     id: 'alt_chuleton_chorizo',
     name: 'Chuletón y chorizo',
     category: 'De las Alturas',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 14.00,
-    description: '300g de chuletón con hueso a la brasa y chorizo parrillero.',
+    price: 5.50,
+    description: 'Chuletón a la brasa y chorizo parrillero acompañado de papa a la francesa o papa salteada y ensalada.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Filete de cerdo', grams: 300 },
-      { productName: 'Chorizo Rojo', grams: 90 },
-      { productName: 'Papa super chola', grams: 180 },
-      { productName: 'Lechuga crespa', grams: 60 }
+      { productName: 'Filete de cerdo', grams: 200 },
+      { productName: 'Chorizo Rojo', grams: 70 },
+      { productName: 'Papa super chola', grams: 150 },
+      { productName: 'Lechuga crespa', grams: 50 }
     ],
-    accompaniments: ['Papas doradas', 'Ensalada', 'Salsa parrillera']
+    accompaniments: ['Papa francesa o salteada', 'Ensalada fresca']
   },
   {
     id: 'alt_brochetas_cielo',
     name: 'Brochetas del cielo',
     category: 'De las Alturas',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 13.00,
-    description: '220g de carnes mixtas en brocheta con papas cocidas y salsa de queso.',
+    price: 6.50,
+    description: 'Brochetas con 2 clases de carne (res, pollo o cerdo), 2 ensaladas con vinagretas, 3 papas cocidas bañadas en salsa de queso fría y mayonesa verde.',
     image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de res', grams: 80 },
       { productName: 'Filete de pechuga de pollo', grams: 70 },
-      { productName: 'Filete de cerdo', grams: 70 },
-      { productName: 'Papa super chola', grams: 170 },
+      { productName: 'Papa super chola', grams: 150 },
       { productName: 'Queso mozzarella', grams: 40 },
       { productName: 'Lechuga crespa', grams: 80 }
     ],
-    accompaniments: ['Papa cocida bañada en salsa de queso', 'Doble ensalada', 'Mayonesa verde']
+    accompaniments: ['3 Papas cocidas en salsa de queso fría', 'Dos ensaladas con vinagreta', 'Mayonesa verde']
   },
   {
     id: 'alt_pollo_salsa_pina',
-    name: 'Filete pollo salsa piña',
+    name: 'Filete de Pollo salsa piña',
     category: 'De las Alturas',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 11.50,
-    description: '200g de pechuga de pollo marinada en reducción dulce de piña y papas francesas.',
+    price: 5.50,
+    description: 'Filete de pechuga bañado en reducción de salsa de piña artesanal acompañado de papas a la francesa.',
     image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Filete de pechuga de pollo', grams: 200 },
-      { productName: 'Papa super chola', grams: 160 }
+      { productName: 'Filete de pechuga de pollo', grams: 180 },
+      { productName: 'Papa super chola', grams: 150 }
     ],
-    accompaniments: ['Papas francesas', 'Salsa de piña artesanal']
+    accompaniments: ['Papas a la francesa', 'Salsa de piña']
   },
 
   // -------------------------------------------------------------
@@ -382,33 +417,35 @@ export const ZENIT_RECIPES = [
     id: 'res_cuy_entero',
     name: 'Cuy Zénit crocante entero',
     category: 'Bajo reserva',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 32.00,
-    description: 'Cuy tradicional entero asado a la brasa con papas cocidas, ensalada y sarsa.',
+    price: 20.00,
+    description: 'Cuy tradicional entero crocante asado a la brasa con 10 papas cocidas, sarsa de cuy, ensalada y ají.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Cuy', grams: 600 },
-      { productName: 'Papa super chola', grams: 200 },
+      { productName: 'Papa super chola', grams: 350 },
       { productName: 'Lechuga crespa', grams: 80 },
       { productName: 'Ají rocoto', grams: 25 }
     ],
-    accompaniments: ['Papas cocidas', 'Ensalada clásica', 'Ají/Sarsa criolla']
+    accompaniments: ['10 Papas cocidas', 'Sarsa de cuy', 'Ensalada clásica', 'Ají casero']
   },
   {
     id: 'res_cuarto_cuy',
-    name: 'Cuarto de cuy',
+    name: 'Cuartos de cuy',
     category: 'Bajo reserva',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 12.00,
-    description: 'Porción individual de cuy crocante con papas cocidas y ensalada.',
+    price: 10.00,
+    description: 'Porción de cuarto de cuy crocante con 2 papas cocidas, sarsa de cuy, ensalada y ají.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Cuy', grams: 160 },
-      { productName: 'Papa super chola', grams: 150 },
-      { productName: 'Lechuga crespa', grams: 70 },
+      { productName: 'Papa super chola', grams: 120 },
+      { productName: 'Lechuga crespa', grams: 60 },
       { productName: 'Ají rocoto', grams: 20 }
     ],
-    accompaniments: ['Papas cocidas', 'Ensalada', 'Sarsa criolla']
+    accompaniments: ['2 Papas cocidas', 'Sarsa de cuy', 'Ensalada', 'Ají']
   },
 
   // -------------------------------------------------------------
@@ -418,9 +455,10 @@ export const ZENIT_RECIPES = [
     id: 'ban_bandeja_paisa',
     name: 'Bandeja Paisa Zénit',
     category: 'Bandeja Paisa',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 13.50,
-    description: 'La reina de la casa: carne, chicharrón, chorizo, fréjol, arroz, arepa, maduro y aguacate.',
+    price: 9.99,
+    description: 'Chicharrón, chorizo, carne (molida o lomo al barril res/cerdo/pollo), maduro frito, arroz, huevo frito, aguacate, frijolada y arepa.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Carne molida de res', grams: 90 },
@@ -433,7 +471,7 @@ export const ZENIT_RECIPES = [
       { productName: 'Aguacate', grams: 45 },
       { productName: 'Huevos', grams: 50 }
     ],
-    accompaniments: ['Arroz blanco', 'Fréjoles guisados', 'Aguacate', 'Huevo frito']
+    accompaniments: ['Chicharrón', 'Chorizo', 'Arroz blanco', 'Frijolada', 'Huevo frito', 'Aguacate', 'Maduro', 'Arepa']
   },
 
   // -------------------------------------------------------------
@@ -441,88 +479,92 @@ export const ZENIT_RECIPES = [
   // -------------------------------------------------------------
   {
     id: 'ast_hamburguesa',
-    name: 'Hamburguesa',
+    name: 'Hamburguesa con Mermelada de Tocino',
     category: 'Pequeños Astros',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 6.50,
-    description: 'Hamburguesa casera de 100g con queso derretido, vegetales y papas francesas.',
+    price: 5.50,
+    description: 'Hamburguesa casera con mermelada de tocino, champiñones, queso derretido y papas a la francesa.',
     image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Carne molida de res', grams: 100 },
+      { productName: 'Champiñones', grams: 30 },
       { productName: 'Papa super chola', grams: 120 },
-      { productName: 'Queso mozzarella', grams: 30 },
-      { productName: 'Tomate riñón', grams: 15 },
-      { productName: 'Lechuga crespa', grams: 10 }
+      { productName: 'Queso mozzarella', grams: 30 }
     ],
-    accompaniments: ['Papas francesas', 'Salsas']
+    accompaniments: ['Mermelada de tocino y champiñones', 'Papas a la francesa']
   },
   {
     id: 'ast_choripapa',
-    name: 'Choripapa orbital',
+    name: 'Choripapa orbitales',
     category: 'Pequeños Astros',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 5.50,
-    description: 'Papas fritas crocantes con trozos de chorizo parrillero y queso fundido.',
+    price: 4.50,
+    description: 'Chorizo parrillero picado con papas a la francesa, guacamole fresco y queso fundido.',
     image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Chorizo Rojo', grams: 100 },
       { productName: 'Papa super chola', grams: 150 },
-      { productName: 'Queso mozzarella', grams: 40 }
+      { productName: 'Aguacate', grams: 30 },
+      { productName: 'Queso mozzarella', grams: 30 }
     ],
-    accompaniments: ['Papas fritas', 'Queso fundido o guacamole']
+    accompaniments: ['Papas a la francesa', 'Guacamole', 'Queso fundido']
   },
   {
     id: 'ast_deditos_pollo',
     name: 'Deditos de pollo galácticos',
     category: 'Pequeños Astros',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 6.00,
-    description: 'Tiras crocantes de pechuga de pollo apanadas con papas francesas.',
+    price: 4.50,
+    description: 'Tiras de pollo apanadas en panko crocante con papas a la francesa.',
     image: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de pechuga de pollo', grams: 120 },
-      { productName: 'Papa super chola', grams: 100 },
-      { productName: 'Aceite', grams: 25 }
+      { productName: 'Papa super chola', grams: 100 }
     ],
-    accompaniments: ['Papas francesas', 'Salsa golf/tomate']
+    accompaniments: ['Apanado en panko', 'Papas a la francesa', 'Salsas']
   },
   {
     id: 'ast_mini_brochetas',
     name: 'Mini brochetas del cielo',
     category: 'Pequeños Astros',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 6.00,
-    description: 'Brochetas suaves de res o pollo con papitas fritas.',
+    price: 4.50,
+    description: 'Mini brochetas de res o pollo con tocino decorativo acompañadas de papas a la francesa.',
     image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de pechuga de pollo', grams: 110 },
       { productName: 'Papa super chola', grams: 100 }
     ],
-    accompaniments: ['Papas francesas', 'Salsa suave']
+    accompaniments: ['Papas a la francesa', 'Salsa suave']
   },
   {
     id: 'ast_sanduche_pollo',
     name: 'Sánduche de pollo',
     category: 'Pequeños Astros',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 5.50,
-    description: 'Sánduche de pollo desmenuzado con vegetales y papas.',
+    price: 3.99,
+    description: 'Sánduche artesanal de pollo desmenuzado con vegetales y papas a la francesa.',
     image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de pechuga de pollo', grams: 90 },
       { productName: 'Papa super chola', grams: 100 },
-      { productName: 'Lechuga crespa', grams: 20 },
-      { productName: 'Tomate riñón', grams: 10 }
+      { productName: 'Lechuga crespa', grams: 20 }
     ],
-    accompaniments: ['Pan artesanal', 'Papas fritas']
+    accompaniments: ['Pan artesanal', 'Papas a la francesa']
   },
   {
     id: 'ast_maduro_gratinado',
     name: 'Maduro gratinado',
     category: 'Pequeños Astros',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 5.50,
-    description: 'Plátano maduro horneado con carne, chorizo y abundante queso gratinado.',
+    price: 3.50,
+    description: 'Plátano maduro al horno con carne al barril (res, pollo o cerdo), chorizos, salsa verde y queso mozzarella derretido.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Plátano maduro', grams: 155 },
@@ -530,49 +572,53 @@ export const ZENIT_RECIPES = [
       { productName: 'Chorizo Rojo', grams: 50 },
       { productName: 'Queso mozzarella', grams: 40 }
     ],
-    accompaniments: ['Maduro al horno', 'Queso gratinado']
+    accompaniments: ['Maduro al horno', 'Salsa verde', 'Queso mozzarella gratinado']
   },
 
   // -------------------------------------------------------------
-  // 9. POSTRES
+  // 9. POSTRES "NUBES DULCES"
   // -------------------------------------------------------------
   {
     id: 'pos_cheesecake',
-    name: 'Cheesecake del cielo',
+    name: 'Cheesecake del cielo (Maracuyá o Frutos Rojos)',
     category: 'Postres',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 4.50,
-    description: 'Cremoso cheesecake horneado con coulis de frutos rojos (170g).',
+    price: 3.50,
+    description: 'Cremoso cheesecake artesanal con coulis a elección: maracuyá o frutos rojos.',
     image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Queso mozzarella', grams: 70 },
-      { productName: 'Leche', grams: 50 },
-      { productName: 'Mantequilla', grams: 30 }
+      { productName: 'Queso mozzarella', grams: 60 },
+      { productName: 'Leche', grams: 40 },
+      { productName: 'Jarabe de frutilla', grams: 25 }
     ],
-    accompaniments: ['Coulis de frutos rojos']
+    accompaniments: ['Coulis de maracuyá o frutos rojos']
   },
   {
     id: 'pos_brownie_volcanico',
-    name: 'Brownie volcánico con helado',
+    name: 'Brownie volcánico con helado de vainilla',
     category: 'Postres',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 5.00,
+    price: 3.50,
     description: 'Brownie de chocolate tibio con centro fundente y bola de helado de vainilla.',
     image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Mantequilla', grams: 40 },
+      { productName: 'Cobertura de chocolate', grams: 35 },
+      { productName: 'Mantequilla', grams: 30 },
       { productName: 'Huevos', grams: 50 },
       { productName: 'Leche', grams: 30 }
     ],
-    accompaniments: ['Helado de vainilla', 'Sirope de chocolate']
+    accompaniments: ['Bola de helado de vainilla', 'Sirope de chocolate']
   },
   {
     id: 'pos_miel_quesillo',
     name: 'Postre típico andino miel con quesillo',
     category: 'Postres',
+    destination: 'KITCHEN',
     persons: 1,
-    price: 4.00,
-    description: 'Quesillo fresco andino bañado en miel de panela aromatizada.',
+    price: 2.00,
+    description: 'Quesillo fresco andino bañado en miel de panela aromatizada tradicional.',
     image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Queso amasado', grams: 120 }
@@ -581,7 +627,106 @@ export const ZENIT_RECIPES = [
   },
 
   // -------------------------------------------------------------
-  // 10. CÓCTELES DE ALTURA (BAR & COCTELERÍA)
+  // 10. BEBIDAS DEL CIELO
+  // -------------------------------------------------------------
+  {
+    id: 'beb_limonada_clasica',
+    name: 'Limonada Zénit clásica',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 1.50,
+    description: 'Limonada refrescante con limón sutil recién exprimido y hielo.',
+    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 60 }
+    ],
+    accompaniments: ['Hielo picado', 'Rodaja de limón']
+  },
+  {
+    id: 'beb_limonada_menta',
+    name: 'Limonada de menta y hierbabuena del cielo',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 2.00,
+    description: 'Limonada fresca macerada con hojas de menta y hierbabuena de altura.',
+    image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 60 }
+    ],
+    accompaniments: ['Hojas de menta y hierbabuena', 'Hielo frappé']
+  },
+  {
+    id: 'beb_limonada_frutos_rojos',
+    name: 'Limonada de frutos rojos aurora',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 2.00,
+    description: 'Limonada infusionada con pulpa de frutos rojos y sirope artesanal.',
+    image: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Limón sutil', grams: 50 },
+      { productName: 'Jarabe de frutilla', grams: 30 }
+    ],
+    accompaniments: ['Frutos rojos', 'Hielo frappé']
+  },
+  {
+    id: 'beb_jugo_natural_andino',
+    name: 'Jugo natural andino (Mora / Naranjilla / Maracuyá / Tomate)',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 2.00,
+    description: 'Jugo natural preparado al instante con frutas andinas frescas (en agua o en leche).',
+    image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Tomate de árbol', grams: 100 }
+    ],
+    accompaniments: ['En agua o leche', 'Hielo']
+  },
+  {
+    id: 'beb_gaseosas',
+    name: 'Gaseosas Personales',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 1.50,
+    description: 'Variedad de gaseosas en presentación personal.',
+    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso con hielo y limón']
+  },
+  {
+    id: 'beb_agua_mineral',
+    name: 'Agua mineral / Agua con gas',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 1.00,
+    description: 'Agua mineral natural o con gas.',
+    image: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso con hielo']
+  },
+  {
+    id: 'beb_chicha_casa',
+    name: 'Chicha de la casa',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 1.50,
+    description: 'Chicha tradicional artesanal de maíz fermentada de la casa.',
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
+    ingredients: [
+      { productName: 'Maíz', grams: 80 }
+    ],
+    accompaniments: ['Vaso tradicional de barro o cristal']
+  },
+
+  // -------------------------------------------------------------
+  // 11. CÓCTELES DE ALTURA (BAR & COCTELERÍA)
   // -------------------------------------------------------------
   {
     id: 'bar_paramo_zenit',
@@ -820,36 +965,19 @@ export const ZENIT_RECIPES = [
     ],
     accompaniments: ['Vaso Old Fashioned', 'Hielo macizo', 'Media luna de naranja fresca']
   },
-
-  // -------------------------------------------------------------
-  // 11. BEBIDAS Y JUGOS NATURALES
-  // -------------------------------------------------------------
   {
-    id: 'beb_jugo_natural',
-    name: 'Jugo Natural de Fruta',
-    category: 'Bebidas',
+    id: 'bar_tinto_verano',
+    name: 'Tinto de Verano',
+    category: 'Cócteles de Altura',
     destination: 'BAR',
     persons: 1,
-    price: 2.50,
-    description: 'Jugo natural preparado al instante (Tomate de árbol, Naranja o Limón).',
-    image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=600&auto=format&fit=crop&q=80',
+    price: 4.99,
+    description: 'Vino tinto joven combinado con gaseosa de limón, rodajas de naranja fresca y abundante hielo.',
+    image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Tomate de árbol', grams: 100 }
+      { productName: 'Naranja', grams: 40 },
+      { productName: 'Limón sutil', grams: 20 }
     ],
-    accompaniments: ['En agua o leche']
-  },
-  {
-    id: 'beb_limonada_imperial',
-    name: 'Limonada Imperial',
-    category: 'Bebidas',
-    destination: 'BAR',
-    persons: 1,
-    price: 2.50,
-    description: 'Limonada refrescante con limón sutil recién exprimido.',
-    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80',
-    ingredients: [
-      { productName: 'Limón sutil', grams: 80 }
-    ],
-    accompaniments: ['Hielo picado', 'Hierbabuena']
+    accompaniments: ['Copa de vino con hielo', 'Rodajas de naranja y limón']
   }
 ];
