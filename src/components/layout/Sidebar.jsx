@@ -14,6 +14,7 @@ import {
   UtensilsCrossed,
   ChefHat,
   Wine,
+  BookOpen,
   FileSpreadsheet
 } from 'lucide-react';
 import { useInventory } from '../../hooks/useInventory';
@@ -132,6 +133,7 @@ export const Sidebar = () => {
     { to: '/mesero', label: 'Toma de Pedidos (Sala)', icon: UtensilsCrossed },
     { to: '/cocina', label: 'Pantalla Cocina KDS', icon: ChefHat },
     { to: '/bar', label: 'Pantalla Bar KDS', icon: Wine },
+    { to: '/recetas', label: 'Recetario Maestro', icon: BookOpen },
     { to: '/reporte-consumo', label: 'Consumo por Recetas', icon: FileSpreadsheet },
     { to: '/productos', label: 'Gestión Productos', icon: Package },
     { to: '/movimientos', label: 'Movimientos', icon: ArrowLeftRight },

@@ -90,6 +90,24 @@ export const playSound = (type = 'NEW_ORDER') => {
       osc.start(now);
       osc.stop(now + 0.2);
     }
+    else if (type === 'ORDER_CANCELLED') {
+      // Tono descendente de advertencia para plato o comanda cancelada
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(440, now); // A4
+      osc.frequency.linearRampToValueAtTime(220, now + 0.35); // A3
+
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.5);
+    }
   } catch (e) {
     console.warn("No se pudo reproducir audio:", e);
   }

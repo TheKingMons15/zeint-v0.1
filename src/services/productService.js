@@ -69,7 +69,7 @@ export const productService = {
 
       return onSnapshot(q, (snapshot) => {
         const products = snapshot.docs
-          .filter(doc => !doc.data().isOrder)
+          .filter(doc => !doc.data().isOrder && !doc.data().isRecipe && !doc.data().isChatMessage)
           .map(doc => ({
             id: doc.id,
             id_producto: doc.id,

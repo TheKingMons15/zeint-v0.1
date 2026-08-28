@@ -13,6 +13,7 @@ import { SuperAdminPage } from '../pages/SuperAdminPage';
 import { WaiterPage } from '../pages/WaiterPage';
 import { KitchenPage } from '../pages/KitchenPage';
 import { BarPage } from '../pages/BarPage';
+import { RecipesPage } from '../pages/RecipesPage';
 import { ConsumptionReportPage } from '../pages/ConsumptionReportPage';
 import { SettingsPage } from '../pages/SettingsPage';
 
@@ -39,6 +40,16 @@ export const AppRoutes = () => {
 
         {/* Módulo de Bar KDS */}
         <Route path="bar" element={<BarPage />} />
+
+        {/* Recetario Maestro & Fichas Técnicas */}
+        <Route
+          path="recetas"
+          element={
+            <ProtectedRoute blockWaiters>
+              <RecipesPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Reporte de Consumo por Ficha Técnica */}
         <Route

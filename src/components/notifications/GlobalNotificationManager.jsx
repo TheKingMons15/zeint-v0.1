@@ -146,6 +146,27 @@ export const GlobalNotificationManager = () => {
           }
         }
 
+        // 3. COMANDA O PLATO CANCELADO ➔ Notificar a Cocina, Bar y Administradores
+        if (prevStatus && prevStatus !== ORDER_STATUS.CANCELLED && order.status === ORDER_STATUS.CANCELLED) {
+          if (role === 'COCINA' || role === 'BAR' || role === 'ADMIN' || role === 'SUPERADMIN') {
+            playSound('ORDER_CANCELLED');
+            sendNativeNotification({
+              title: `🚫 ¡Comanda Anulada en Sala! (${order.table})`,
+              body: `La comanda de ${order.table} fue cancelada por ${order.cancelledBy || 'Sala'}. Motivo: ${order.cancelReason || 'Por cliente'}`,
+              tag: `cancel-order-${order.id}`
+            });
+
+            setActivePopup({
+              id: 'cancelled_' + order.id,
+              type: 'ORDER_CANCELLED',
+              title: `🚫 ¡Comanda Anulada! (${order.table})`,
+              description: `Cancelada por ${order.cancelledBy || 'Sala'} • Motivo: ${order.cancelReason || 'Cliente canceló'}`,
+              items: 'No preparar ningún plato de esta mesa',
+              color: 'rose'
+            });
+          }
+        }
+
         // Actualizar mapa
         prevOrdersRef.current.set(order.id, order.status);
       });
@@ -237,6 +258,8 @@ export const GlobalNotificationManager = () => {
               ? 'border-amber-500/50 shadow-amber-950/60 ring-amber-500/30'
               : activePopup.color === 'purple'
               ? 'border-purple-500/50 shadow-purple-950/60 ring-purple-500/30'
+              : activePopup.color === 'rose'
+              ? 'border-rose-500/50 shadow-rose-950/60 ring-rose-500/30'
               : 'border-emerald-500/50 shadow-emerald-950/60 ring-emerald-500/30'
           }`}>
             
@@ -245,10 +268,13 @@ export const GlobalNotificationManager = () => {
                 ? 'bg-amber-500/20 text-amber-300'
                 : activePopup.color === 'purple'
                 ? 'bg-purple-500/20 text-purple-300'
+                : activePopup.color === 'rose'
+                ? 'bg-rose-500/20 text-rose-300'
                 : 'bg-emerald-500/20 text-emerald-300'
             }`}>
               {activePopup.color === 'amber' ? <ChefHat className="w-6 h-6 animate-bounce" /> :
                activePopup.color === 'purple' ? <Wine className="w-6 h-6 animate-bounce" /> :
+               activePopup.color === 'rose' ? <AlertTriangle className="w-6 h-6 animate-bounce" /> :
                <CheckCircle2 className="w-6 h-6 animate-pulse" />}
             </div>
 
