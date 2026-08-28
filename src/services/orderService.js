@@ -557,14 +557,275 @@ export const orderService = {
     }
   },
 
-  // 9. Calcular facturación diaria precisa excluyendo cancelados y pruebas
-  calculateBillingStats(orders = [], targetDateStr = getTodayDateString()) {
+  // 9. Calcular costos detallados de un plato o bebida según ficha técnica e inventario
+  calculateItemCost(item, inventoryProducts = []) {
+    if (!item) return { unitCost: 0, totalCost: 0, marginDollars: 0, marginPercent: 0, ingredientCosts: [] };
+    
+    const qty = Number(item.quantity || 1);
+    const unitPrice = Number(item.price || 0);
+    const totalPrice = unitPrice * qty;
+    const recipe = item.recipe || item;
+    const ingredients = recipe.ingredients || item.ingredients || [];
+
+    // Si es bebida de bar sin receta detallada de cocina
+    const isBar = item.destination === 'BAR' || 
+                  item.category === 'Bebidas' || 
+                  item.category === 'Cócteles' || 
+                  item.category === 'Cócteles de Altura' || 
+                  (item.category || '').toLowerCase().includes('coctel');
+
+    let itemUnitCost = 0;
+    const ingredientCosts = [];
+
+    if (ingredients.length > 0) {
+      ingredients.forEach(ing => {
+        // Verificar si fue retirado por el comensal
+        const isRemoved = item.customizations?.removedIngredients?.some(
+          rem => rem.toLowerCase() === ing.productName.toLowerCase()
+        );
+        if (isRemoved) return;
+
+        const product = inventoryProducts.find(p => p.name?.toLowerCase() === ing.productName?.toLowerCase());
+        const grams = Number(ing.grams || 0);
+        const kg = grams / 1000;
+
+        // Determinar costo por kg del insumo
+        let costPerKg = Number(product?.cost || product?.unitCost || product?.costo || 0);
+        if (!costPerKg || costPerKg <= 0) {
+          // Estimación benchmark según categoría
+          const cat = (product?.category || '').toLowerCase();
+          if (cat.includes('proteína') || cat.includes('carne')) costPerKg = 7.50;
+          else if (cat.includes('lácteo') || cat.includes('queso')) costPerKg = 5.80;
+          else if (cat.includes('papa') || cat.includes('carbohidrato')) costPerKg = 1.40;
+          else if (cat.includes('verdura') || cat.includes('fruta')) costPerKg = 1.90;
+          else if (cat.includes('embutido')) costPerKg = 6.20;
+          else if (cat.includes('aceite') || cat.includes('grasa')) costPerKg = 4.50;
+          else costPerKg = 3.00;
+        }
+
+        const ingCostUnit = Number((kg * costPerKg).toFixed(4));
+        const ingCostTotal = Number((ingCostUnit * qty).toFixed(4));
+
+        ingredientCosts.push({
+          name: ing.productName,
+          grams,
+          kg,
+          costPerKg,
+          unitCost: ingCostUnit,
+          totalCost: ingCostTotal
+        });
+
+        itemUnitCost += ingCostUnit;
+      });
+    } else {
+      // Si no tiene lista de ingredientes, estimar costo base estándar (28% para bar, 32% para cocina)
+      const ratio = isBar ? 0.28 : 0.32;
+      itemUnitCost = Number((unitPrice * ratio).toFixed(2));
+    }
+
+    // Asegurar que el costo unitario tenga un valor coherente mínimo
+    if (itemUnitCost <= 0 && unitPrice > 0) {
+      itemUnitCost = Number((unitPrice * 0.30).toFixed(2));
+    }
+
+    const totalCost = Number((itemUnitCost * qty).toFixed(2));
+    const marginDollars = Number((totalPrice - totalCost).toFixed(2));
+    const marginPercent = totalPrice > 0 ? Number(((marginDollars / totalPrice) * 100).toFixed(1)) : 0;
+
+    return {
+      unitCost: Number(itemUnitCost.toFixed(2)),
+      totalCost,
+      totalPrice,
+      marginDollars,
+      marginPercent,
+      ingredientCosts
+    };
+  },
+
+  // 10. Calcular costo total y margen de una comanda completa
+  calculateOrderCost(order, inventoryProducts = []) {
+    if (!order || !order.items) return { totalCost: 0, totalRevenue: 0, marginDollars: 0, marginPercent: 0, itemsWithCost: [] };
+
+    let totalCost = 0;
+    let totalRevenue = 0;
+    const itemsWithCost = [];
+
+    (order.items || []).forEach(item => {
+      if (item.cancelled) return;
+      const costData = this.calculateItemCost(item, inventoryProducts);
+      totalCost += costData.totalCost;
+      totalRevenue += costData.totalPrice;
+      itemsWithCost.push({
+        ...item,
+        costData
+      });
+    });
+
+    const marginDollars = Number((totalRevenue - totalCost).toFixed(2));
+    const marginPercent = totalRevenue > 0 ? Number(((marginDollars / totalRevenue) * 100).toFixed(1)) : 0;
+
+    return {
+      totalCost: Number(totalCost.toFixed(2)),
+      totalRevenue: Number(totalRevenue.toFixed(2)),
+      marginDollars,
+      marginPercent,
+      itemsWithCost
+    };
+  },
+
+  // 11. Calcular estadísticas y costos consolidados individualmente por mesa
+  calculateTableStats(orders = [], targetDateStr = getTodayDateString(), inventoryProducts = []) {
     const dayOrders = orders.filter(order => {
       const orderDateStr = order.date || (
         order.createdAt?.toDate ? order.createdAt.toDate().toISOString().split('T')[0] : 
         (typeof order.createdAt === 'string' ? order.createdAt.split('T')[0] : '')
       );
-      return orderDateStr === targetDateStr;
+      return targetDateStr === 'ALL' || orderDateStr === targetDateStr;
+    });
+
+    const tablesMap = {};
+
+    // Inicializar mapa de mesas
+    dayOrders.forEach(order => {
+      const tableName = order.table || 'Mesa Sin Asignar';
+      if (!tablesMap[tableName]) {
+        tablesMap[tableName] = {
+          tableName,
+          orders: [],
+          completedOrders: [],
+          activeOrders: [],
+          cancelledOrders: [],
+          totalFacturado: 0,
+          totalActive: 0,
+          kitchenRevenue: 0,
+          barRevenue: 0,
+          costoInsumos: 0,
+          costoInsumosActive: 0,
+          waitersSet: new Set(),
+          itemsMap: {},
+          lastCreatedAt: null
+        };
+      }
+
+      const tableData = tablesMap[tableName];
+      tableData.orders.push(order);
+
+      const isCompleted = order.status === ORDER_STATUS.DELIVERED;
+      const isActive = order.status === ORDER_STATUS.PENDING || order.status === ORDER_STATUS.PREPARING || order.status === ORDER_STATUS.READY;
+      const isCancelled = order.status === ORDER_STATUS.CANCELLED;
+
+      if (isCompleted) tableData.completedOrders.push(order);
+      if (isActive) tableData.activeOrders.push(order);
+      if (isCancelled) tableData.cancelledOrders.push(order);
+
+      if (order.waiterName) {
+        tableData.waitersSet.add(order.waiterName);
+      }
+
+      // Ordenar por hora
+      const orderTime = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt || 0);
+      if (!tableData.lastCreatedAt || orderTime > tableData.lastCreatedAt) {
+        tableData.lastCreatedAt = orderTime;
+      }
+
+      // Procesar items y costos
+      (order.items || []).forEach(item => {
+        if (item.cancelled) return;
+
+        const itemCostData = this.calculateItemCost(item, inventoryProducts);
+        const itemTotal = Number(item.price || 0) * Number(item.quantity || 1);
+
+        if (isCompleted) {
+          tableData.totalFacturado += itemTotal;
+          tableData.costoInsumos += itemCostData.totalCost;
+          if (item.destination === 'BAR') {
+            tableData.barRevenue += itemTotal;
+          } else {
+            tableData.kitchenRevenue += itemTotal;
+          }
+        } else if (isActive) {
+          tableData.totalActive += itemTotal;
+          tableData.costoInsumosActive += itemCostData.totalCost;
+        }
+
+        // Consolidación de items consumidos en la mesa
+        if (!tableData.itemsMap[item.name]) {
+          tableData.itemsMap[item.name] = {
+            name: item.name,
+            category: item.category,
+            destination: item.destination,
+            price: item.price,
+            quantity: 0,
+            totalRevenue: 0,
+            totalCost: 0,
+            ordersCount: 0,
+            notes: []
+          };
+        }
+        tableData.itemsMap[item.name].quantity += Number(item.quantity || 1);
+        tableData.itemsMap[item.name].totalRevenue += itemTotal;
+        tableData.itemsMap[item.name].totalCost += itemCostData.totalCost;
+        tableData.itemsMap[item.name].ordersCount += 1;
+        if (item.notes) {
+          tableData.itemsMap[item.name].notes.push(item.notes);
+        }
+      });
+    });
+
+    // Formatear resultados por mesa
+    const tableResults = Object.values(tablesMap).map(t => {
+      const totalRevenue = t.totalFacturado;
+      const costoTotal = Number(t.costoInsumos.toFixed(2));
+      const margenBruto = Number((totalRevenue - costoTotal).toFixed(2));
+      const margenPercent = totalRevenue > 0 ? Number(((margenBruto / totalRevenue) * 100).toFixed(1)) : 0;
+      
+      const totalConsumoGeneral = Number((t.totalFacturado + t.totalActive).toFixed(2));
+      const costoGeneral = Number((t.costoInsumos + t.costoInsumosActive).toFixed(2));
+
+      let currentStatus = 'LIBRE';
+      if (t.activeOrders.length > 0) currentStatus = 'OCUPADA';
+      else if (t.completedOrders.length > 0) currentStatus = 'FACTURADA';
+
+      return {
+        tableName: t.tableName,
+        orders: t.orders,
+        completedOrders: t.completedOrders,
+        activeOrders: t.activeOrders,
+        cancelledOrders: t.cancelledOrders,
+        ordersCount: t.orders.length,
+        completedOrdersCount: t.completedOrders.length,
+        activeOrdersCount: t.activeOrders.length,
+        cancelledOrdersCount: t.cancelledOrders.length,
+        totalFacturado: Number(t.totalFacturado.toFixed(2)),
+        totalActive: Number(t.totalActive.toFixed(2)),
+        totalConsumoGeneral,
+        kitchenRevenue: Number(t.kitchenRevenue.toFixed(2)),
+        barRevenue: Number(t.barRevenue.toFixed(2)),
+        costoInsumos: costoTotal,
+        costoGeneral,
+        margenBruto,
+        margenPercent,
+        waiters: Array.from(t.waitersSet),
+        itemsConsolidated: Object.values(t.itemsMap).sort((a, b) => b.totalRevenue - a.totalRevenue),
+        lastCreatedAt: t.lastCreatedAt,
+        status: currentStatus
+      };
+    });
+
+    // Ordenar mesas con mayor facturación primero
+    tableResults.sort((a, b) => b.totalConsumoGeneral - a.totalConsumoGeneral);
+
+    return tableResults;
+  },
+
+  // 12. Calcular facturación diaria precisa excluyendo cancelados y pruebas
+  calculateBillingStats(orders = [], targetDateStr = getTodayDateString(), inventoryProducts = []) {
+    const dayOrders = orders.filter(order => {
+      const orderDateStr = order.date || (
+        order.createdAt?.toDate ? order.createdAt.toDate().toISOString().split('T')[0] : 
+        (typeof order.createdAt === 'string' ? order.createdAt.split('T')[0] : '')
+      );
+      return targetDateStr === 'ALL' || orderDateStr === targetDateStr;
     });
 
     const completedOrders = dayOrders.filter(o => o.status === ORDER_STATUS.DELIVERED);
@@ -577,6 +838,7 @@ export const orderService = {
 
     let kitchenRevenue = 0;
     let barRevenue = 0;
+    let totalCostoInsumos = 0;
 
     completedOrders.forEach(order => {
       (order.items || []).forEach(item => {
@@ -587,20 +849,32 @@ export const orderService = {
           } else {
             kitchenRevenue += itemTotal;
           }
+
+          if (inventoryProducts && inventoryProducts.length > 0) {
+            const costData = this.calculateItemCost(item, inventoryProducts);
+            totalCostoInsumos += costData.totalCost;
+          }
         }
       });
     });
 
+    const margenBrutoTotal = Number((totalFacturado - totalCostoInsumos).toFixed(2));
+    const margenPercentTotal = totalFacturado > 0 ? Number(((margenBrutoTotal / totalFacturado) * 100).toFixed(1)) : 0;
+
     return {
       date: targetDateStr,
-      totalFacturado,
+      totalFacturado: Number(totalFacturado.toFixed(2)),
       completedOrdersCount: countCompleted,
-      averageTicket,
-      kitchenRevenue,
-      barRevenue,
+      averageTicket: Number(averageTicket.toFixed(2)),
+      kitchenRevenue: Number(kitchenRevenue.toFixed(2)),
+      barRevenue: Number(barRevenue.toFixed(2)),
+      totalCostoInsumos: Number(totalCostoInsumos.toFixed(2)),
+      margenBrutoTotal,
+      margenPercentTotal,
       pendingCount: pendingOrders.length,
       cancelledCount: cancelledOrders.length,
       completedOrders
     };
   }
 };
+

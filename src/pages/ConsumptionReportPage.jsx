@@ -10,7 +10,9 @@ import {
   ChefHat, 
   DollarSign,
   PackageCheck,
-  Search
+  Search,
+  Receipt,
+  ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useInventory } from '../hooks/useInventory';
@@ -19,6 +21,8 @@ import { orderService } from '../services/orderService';
 import { StatCard } from '../components/common/StatCard';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
+import { InvoiceDetailModal } from '../components/orders/InvoiceDetailModal';
+import { isAuthorizedBillingUser } from '../utils/constants';
 import { getTodayDateString, formatNumber, formatDate } from '../utils/formatters';
 
 export const ConsumptionReportPage = () => {
@@ -29,7 +33,9 @@ export const ConsumptionReportPage = () => {
   const [orders, setOrders] = useState([]);
   const [selectedDate, setSelectedDate] = useState(getTodayDateString());
   const [search, setSearch] = useState('');
+  const [selectedTableForInvoice, setSelectedTableForInvoice] = useState(null);
 
+  const isAuthorized = isAuthorizedBillingUser(user);
   const companyId = user?.companyId || 'default_company';
 
   useEffect(() => {
@@ -107,6 +113,11 @@ export const ConsumptionReportPage = () => {
   const totalDishesCount = useMemo(() => {
     return dishesSummary.reduce((sum, d) => sum + d.quantity, 0);
   }, [dishesSummary]);
+
+  // Consolidar estadísticas y costos por mesa
+  const tableStats = useMemo(() => {
+    return orderService.calculateTableStats(orders, selectedDate, products);
+  }, [orders, selectedDate, products]);
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in pb-20">
@@ -273,6 +284,97 @@ export const ConsumptionReportPage = () => {
 
       </div>
 
+      {/* SECCIÓN 3: COSTOS Y RENTABILIDAD POR MESA (EXCLUSIVO KAREN Y WLADIMIR) */}
+      {isAuthorized && (
+        <div className="p-6 rounded-3xl bg-slate-900/90 border border-purple-500/30 shadow-xl space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
+                  Costos de Insumos & Rentabilidad por Mesa
+                  <span className="px-2 py-0.2 text-[9px] font-black uppercase rounded bg-purple-500/30 text-purple-200 border border-purple-400/40">
+                    Karen & Wladimir
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Comparativa individual de ventas vs costo de materia prima para cada mesa
+                </p>
+              </div>
+            </div>
+
+            <span className="text-xs text-slate-400">
+              {tableStats.length} mesas activas
+            </span>
+          </div>
+
+          {tableStats.length === 0 ? (
+            <div className="p-8 text-center text-xs text-slate-500">
+              No hay consumos de mesas registrados en esta fecha.
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-2xl border border-slate-800">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="bg-slate-950 text-slate-400 border-b border-slate-800 text-[10px] font-black uppercase">
+                    <th className="py-3 px-3.5">Mesa</th>
+                    <th className="py-3 px-3.5">Comandas</th>
+                    <th className="py-3 px-3.5 text-right">Facturación ($)</th>
+                    <th className="py-3 px-3.5 text-right text-purple-400">Costo Insumos ($)</th>
+                    <th className="py-3 px-3.5 text-right text-teal-400">Margen Bruto ($)</th>
+                    <th className="py-3 px-3.5 text-right text-teal-400">Margen (%)</th>
+                    <th className="py-3 px-3.5 text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60">
+                  {tableStats.map((t) => (
+                    <tr key={t.tableName} className="hover:bg-slate-800/30">
+                      <td className="py-3 px-3.5 font-bold text-white">{t.tableName}</td>
+                      <td className="py-3 px-3.5 text-slate-400">{t.ordersCount} pedidos</td>
+                      <td className="py-3 px-3.5 text-right font-mono font-bold text-emerald-400">
+                        ${t.totalConsumoGeneral.toFixed(2)}
+                      </td>
+                      <td className="py-3 px-3.5 text-right font-mono text-purple-300">
+                        ${t.costoGeneral.toFixed(2)}
+                      </td>
+                      <td className="py-3 px-3.5 text-right font-mono font-bold text-teal-300">
+                        +${(t.totalConsumoGeneral - t.costoGeneral).toFixed(2)}
+                      </td>
+                      <td className="py-3 px-3.5 text-right font-mono text-teal-400 font-bold">
+                        {t.margenPercent}%
+                      </td>
+                      <td className="py-3 px-3.5 text-center">
+                        <button
+                          onClick={() => setSelectedTableForInvoice(t)}
+                          className="px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 text-[10px] font-bold border border-emerald-500/40 transition-all flex items-center gap-1 mx-auto"
+                        >
+                          <Receipt className="w-3.5 h-3.5" />
+                          <span>Ver Factura</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Modal de Detalle de Factura */}
+      {selectedTableForInvoice && (
+        <InvoiceDetailModal
+          isOpen={Boolean(selectedTableForInvoice)}
+          onClose={() => setSelectedTableForInvoice(null)}
+          tableData={selectedTableForInvoice}
+          inventoryProducts={products}
+          currentUser={user}
+        />
+      )}
+
     </div>
   );
 };
+

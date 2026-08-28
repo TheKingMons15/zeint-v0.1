@@ -110,7 +110,7 @@ export const BarPage = () => {
     return products.filter(p => {
       const loc = (p.location || '').toLowerCase();
       const cat = (p.category || '').toLowerCase();
-      return loc.includes('bar') || cat.includes('licor') || cat.includes('bebida') || cat.includes('coctel') || cat.includes('jarabe') || cat.includes('cristaleria');
+      return loc.includes('bar') || cat.includes('licor') || cat.includes('bebida') || cat.includes('coctel') || cat.includes('jarabe') || cat.includes('cristaleria') || cat.includes('cerveza') || cat.includes('vino');
     });
   }, [products]);
 

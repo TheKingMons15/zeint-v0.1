@@ -10,6 +10,7 @@ export const FOOD_CATEGORIES = [
   'Secos y condimentos',
   'Aceites y grasas',
   'Bebidas',
+  'Vinos & Cervezas',
   'Otros'
 ];
 
@@ -75,6 +76,12 @@ export const CATEGORY_META = {
     dotClass: 'bg-purple-400',
     icon: 'Coffee'
   },
+  'Vinos & Cervezas': {
+    color: 'amber',
+    bgClass: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+    dotClass: 'bg-amber-400',
+    icon: 'Beer'
+  },
   'Otros': {
     color: 'slate',
     bgClass: 'bg-slate-500/10 text-slate-400 border-slate-500/30',
@@ -139,3 +146,33 @@ export const USER_ROLES = {
   OPERATOR: 'operator',
   MESERO: 'MESERO'
 };
+
+// Lista oficial de mesas y estaciones de atención en Sala Zénit
+export const ALL_RESTAURANT_TABLES = [
+  'Mesa 1', 'Mesa 2', 'Mesa 3', 'Mesa 4', 'Mesa 5',
+  'Mesa 6', 'Mesa 7', 'Mesa 8', 'Mesa 9', 'Mesa 10',
+  'Mesa 11', 'Mesa 12', 'Barra 1', 'Barra 2', 'Terraza 1', 'Terraza 2'
+];
+
+// Helper de Autorización Estricta: Exclusivo Wladimir y Karen (y Superadministración)
+export const isAuthorizedBillingUser = (user) => {
+  if (!user) return false;
+  const emailLower = (user.email || '').toLowerCase().trim();
+  const nameLower = (user.displayName || '').toLowerCase().trim();
+  const roleLower = (user.role || '').toLowerCase().trim();
+
+  // Wladimir
+  if (emailLower === 'wladimir@zenit.com' || emailLower.includes('wladimir') || nameLower.includes('wladimir')) {
+    return true;
+  }
+  // Karen
+  if (emailLower === 'karenadmin@zenit.com' || emailLower.includes('karen') || nameLower.includes('karen')) {
+    return true;
+  }
+  // Master / Superadmin / Administrador
+  if (user.isSuperAdmin || roleLower === 'superadmin' || emailLower === 'master@zenit.com' || roleLower === 'admin' || roleLower === 'supervisor') {
+    return true;
+  }
+  return false;
+};
+

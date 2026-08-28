@@ -22,7 +22,8 @@ import {
   FileText,
   Trash2,
   AlertCircle,
-  RotateCcw
+  RotateCcw,
+  Receipt
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useInventory } from '../hooks/useInventory';
@@ -35,6 +36,7 @@ import { Modal } from '../components/common/Modal';
 import { ItemCustomizationModal } from '../components/orders/ItemCustomizationModal';
 import { DishIngredientsModal } from '../components/orders/DishIngredientsModal';
 import { OrderCancellationModal } from '../components/orders/OrderCancellationModal';
+import { InvoiceDetailModal } from '../components/orders/InvoiceDetailModal';
 import { formatNumber, formatTime, formatDateTime } from '../utils/formatters';
 
 const TABLES = [
@@ -66,6 +68,8 @@ export const WaiterPage = () => {
   const [cancellingOrderData, setCancellingOrderData] = useState(null);
   const [cancellingLoading, setCancellingLoading] = useState(false);
   const [itemToDeleteFromCart, setItemToDeleteFromCart] = useState(null);
+  const [viewingInvoiceOrder, setViewingInvoiceOrder] = useState(null);
+  const [selectedTableForPrecount, setSelectedTableForPrecount] = useState(null);
 
   const companyId = user?.companyId || 'default_company';
 
@@ -750,12 +754,37 @@ export const WaiterPage = () => {
       {/* VISTA 2: ESTADO DE PEDIDOS & CANCELACIONES EN TIEMPO REAL */}
       {activeTab === 'orders' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <h3 className="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
               <Clock className="w-5 h-5 text-emerald-400" />
               Comandas en Sala ({filteredLiveOrders.length})
             </h3>
-            <span className="text-xs text-slate-400">Actualización en tiempo real desde Cocina y Bar</span>
+            
+            <div className="flex items-center gap-2 flex-wrap">
+              <select
+                onChange={(e) => {
+                  if (e.target.value) {
+                    const tbl = e.target.value;
+                    const tblOrders = liveOrders.filter(o => o.table === tbl && o.status !== ORDER_STATUS.CANCELLED);
+                    setSelectedTableForPrecount({ 
+                      tableName: tbl, 
+                      orders: tblOrders,
+                      waiters: Array.from(new Set(tblOrders.map(o => o.waiterName).filter(Boolean)))
+                    });
+                    setViewingInvoiceOrder(null);
+                    e.target.value = '';
+                  }
+                }}
+                defaultValue=""
+                className="bg-slate-950 border border-emerald-500/40 text-emerald-400 text-xs rounded-xl px-3 py-1.5 font-bold focus:outline-none cursor-pointer shadow-md"
+              >
+                <option value="" disabled>📄 Consultar Precuenta por Mesa...</option>
+                {TABLES.map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+              <span className="text-xs text-slate-500 hidden md:inline">• En vivo desde Cocina y Bar</span>
+            </div>
           </div>
 
           {filteredLiveOrders.length === 0 ? (
@@ -884,6 +913,20 @@ export const WaiterPage = () => {
                         <span className="text-sm font-black text-emerald-400">${Number(order.total || 0).toFixed(2)}</span>
                       </div>
 
+                      {/* Botón de Ver Factura / Precuenta */}
+                      <Button
+                        fullWidth
+                        variant="outline"
+                        onClick={() => {
+                          setViewingInvoiceOrder(order);
+                          setSelectedTableForPrecount(null);
+                        }}
+                        icon={Receipt}
+                        className="py-2 text-xs font-bold text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/50 bg-slate-950/60"
+                      >
+                        Ver Factura / Precuenta
+                      </Button>
+
                       {isReady && (
                         <Button
                           fullWidth
@@ -972,6 +1015,22 @@ export const WaiterPage = () => {
         </Modal>
       )}
 
+      {/* Modal de Detalle de Factura / Precuenta */}
+      {(viewingInvoiceOrder || selectedTableForPrecount) && (
+        <InvoiceDetailModal
+          isOpen={Boolean(viewingInvoiceOrder || selectedTableForPrecount)}
+          onClose={() => {
+            setViewingInvoiceOrder(null);
+            setSelectedTableForPrecount(null);
+          }}
+          order={viewingInvoiceOrder}
+          tableData={selectedTableForPrecount}
+          inventoryProducts={products}
+          currentUser={user}
+        />
+      )}
+
     </div>
   );
 };
+

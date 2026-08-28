@@ -979,5 +979,140 @@ export const ZENIT_RECIPES = [
       { productName: 'Limón sutil', grams: 20 }
     ],
     accompaniments: ['Copa de vino con hielo', 'Rodajas de naranja y limón']
+  },
+
+  // -------------------------------------------------------------
+  // 12. CERVEZAS ARTESANALES & BAR (CARTA OFICIAL ZÉNIT)
+  // -------------------------------------------------------------
+  {
+    id: 'cer_white_ipa',
+    name: 'WHITE IPA 500ML',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 4.50,
+    abv: '5.50%',
+    description: 'Cerveza rubia con base de trigo, estilo IPA por su extra lúpulo en aroma (5.50% ABV).',
+    image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso cervecero frío', 'Botella 500ml']
+  },
+  {
+    id: 'cer_ginger_blonde',
+    name: 'GINGER BLONDE 500ML',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 4.50,
+    abv: '4.70%',
+    description: 'Cerveza rubia ligera con un toque exótico a jengibre (4.70% ABV).',
+    image: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso cervecero frío', 'Botella 500ml']
+  },
+  {
+    id: 'cer_ruby_ale',
+    name: 'RUBY ALE 500ML',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 4.50,
+    abv: '5.00%',
+    description: 'Cerveza roja, las maltas acarameladas le dan un toque único (5.00% ABV).',
+    image: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso cervecero frío', 'Botella 500ml']
+  },
+  {
+    id: 'cer_extra_sout',
+    name: 'EXTRA SOUT 500ML',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 4.50,
+    abv: '6.00%',
+    description: 'Cerveza negra estilo extra stout cuerpo medio con tonos a café (6.00% ABV).',
+    image: 'https://images.unsplash.com/photo-1527061011665-3652c757a4d4?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso cervecero frío', 'Botella 500ml']
+  },
+  {
+    id: 'cer_mocca',
+    name: 'MOCCA 500ML',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 4.50,
+    abv: '6.10%',
+    description: 'Sweet stout, cerveza negra cremosa con cuerpo ligero y notas intensas a cacao y café (6.10% ABV).',
+    image: 'https://images.unsplash.com/photo-1518176258769-f227c798150e?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso cervecero frío', 'Botella 500ml']
+  },
+  {
+    id: 'cer_honey_strong',
+    name: 'HONEY STRONG 500ML',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.00,
+    abv: '10.00%',
+    description: 'Cerveza rubia refrescante, con toques de miel de abeja (10.00% ABV).',
+    image: 'https://images.unsplash.com/photo-1584225065849-5561a0b3bfa3?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso cervecero frío', 'Botella 500ml']
+  },
+  {
+    id: 'cer_midninght_stout',
+    name: 'MIDNINGHT STOUT 500ML',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.00,
+    abv: '9.00%',
+    description: 'Imperial stout cerveza negra con maltas tostadas y frambuesa (9.00% ABV).',
+    image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso cervecero frío', 'Botella 500ml']
+  },
+  {
+    id: 'cer_zen_ipa',
+    name: 'ZEN IPA 500ML',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 4.50,
+    abv: '4.90%',
+    description: 'Session IPA +9 mg de CBD hidrosoluble refrescante y relajante (4.90% ABV).',
+    image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso cervecero frío', 'Botella 500ml']
+  },
+  {
+    id: 'cer_honey_strong_barril_500',
+    name: 'HONEY STRONG BARRIL (500ML)',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 5.00,
+    abv: '10.00%',
+    description: 'Barril 30 Litros: Cerveza artesanal Honey Strong servida fresca en vaso de 500ml (10.00% ABV).',
+    image: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Vaso cervecero 500ml']
+  },
+  {
+    id: 'cer_honey_strong_barril_1000',
+    name: 'HONEY STRONG BARRIL (1 LITRO)',
+    category: 'Bebidas',
+    destination: 'BAR',
+    persons: 1,
+    price: 7.00,
+    abv: '10.00%',
+    description: 'Barril 30 Litros: Cerveza artesanal Honey Strong servida fresca en jarra de 1 Litro (10.00% ABV).',
+    image: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=600&auto=format&fit=crop&q=80',
+    ingredients: [],
+    accompaniments: ['Jarra cervecera 1 Litro']
   }
 ];
+
