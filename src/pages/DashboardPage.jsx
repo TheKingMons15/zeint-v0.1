@@ -8,24 +8,29 @@ import {
   Plus, 
   FileText, 
   Clock, 
-  ChevronRight,
-  TrendingDown,
-  TrendingUp,
-  Sparkles,
-  Boxes,
-  ShieldCheck,
-  Crown,
-  LogIn,
-  Edit3,
-  Trash2
+  ChevronRight, 
+  TrendingDown, 
+  TrendingUp, 
+  Sparkles, 
+  Boxes, 
+  ShieldCheck, 
+  Crown, 
+  LogIn, 
+  Edit3, 
+  Trash2,
+  DollarSign,
+  UtensilsCrossed
 } from 'lucide-react';
 import { useInventory } from '../hooks/useInventory';
 import { useAuth } from '../hooks/useAuth';
 import { auditService } from '../services/auditService';
+import { orderService } from '../services/orderService';
 import { StatCard } from '../components/common/StatCard';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { DailyBillingSummaryCard } from '../components/admin/DailyBillingSummaryCard';
+import { AdminOrdersCleanModal } from '../components/admin/AdminOrdersCleanModal';
 import { formatNumber, formatTime, formatDate, formatDateTime } from '../utils/formatters';
 
 export const DashboardPage = () => {
@@ -41,15 +46,30 @@ export const DashboardPage = () => {
 
   const { handleOpenMovementModal, setProductModalOpen } = useOutletContext();
   const [recentLogs, setRecentLogs] = useState([]);
+  const [liveOrders, setLiveOrders] = useState([]);
+  const [isCleanModalOpen, setIsCleanModalOpen] = useState(false);
 
   const isSuperAdmin = user?.role === 'superadmin' || user?.isSuperAdmin || user?.email === 'master@zenit.com';
+  const role = (user?.role || '').toUpperCase();
+  const isAdminOrSupervisor = isSuperAdmin || role === 'ADMIN' || role === 'SUPERVISOR' || user?.email === 'karenadmin@zenit.com' || user?.email === 'wladimir@zenit.com';
 
+  const companyId = user?.companyId || 'default_company';
+
+  // Suscripción a bitácora de auditoría
   useEffect(() => {
-    const unsub = auditService.subscribe(user?.companyId || 'default_company', (logs) => {
+    const unsub = auditService.subscribe(companyId, (logs) => {
       setRecentLogs(logs.slice(0, 6));
     });
     return () => unsub();
-  }, [user]);
+  }, [companyId]);
+
+  // Suscripción a pedidos en vivo para facturación diaria
+  useEffect(() => {
+    const unsub = orderService.subscribeOrders(companyId, (orders) => {
+      setLiveOrders(orders);
+    });
+    return () => unsub();
+  }, [companyId]);
 
   if (loading) {
     return <LoadingSpinner fullPage label="Cargando panel de control..." />;
@@ -67,6 +87,8 @@ export const DashboardPage = () => {
         return { label: 'Producto Creado', color: 'bg-sky-500/20 text-sky-300 border-sky-500/30' };
       case 'UPDATE_PRODUCT':
         return { label: 'Stock Editado', color: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
+      case 'DELETE_ORDERS':
+        return { label: 'Limpieza de Pedidos', color: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
       default:
         return { label: type, color: 'bg-slate-800 text-slate-300 border-slate-700' };
     }
@@ -88,12 +110,12 @@ export const DashboardPage = () => {
               </span>
             ) : (
               <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full">
-                En Línea
+                {user?.role?.toUpperCase() || 'Administración'}
               </span>
             )}
           </div>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Hola, <span className="text-slate-200 font-bold">{user?.displayName || 'Usuario'}</span>. Control diario de existencias y movimientos.
+            Hola, <span className="text-slate-200 font-bold">{user?.displayName || 'Usuario'}</span>. Control operativo, inventario y facturación de Zénit.
           </p>
         </div>
 
@@ -117,183 +139,117 @@ export const DashboardPage = () => {
             - Salida
           </Button>
 
+          {isAdminOrSupervisor && (
+            <Button
+              size="sm"
+              variant="outline"
+              icon={Trash2}
+              onClick={() => setIsCleanModalOpen(true)}
+              className="border-rose-500/30 text-rose-300 hover:bg-rose-500/10"
+            >
+              Depurar Pedidos
+            </Button>
+          )}
+
           {isSuperAdmin && (
             <Button
               size="sm"
               variant="outline"
-              icon={Crown}
+              icon={ShieldCheck}
               onClick={() => navigate('/super-admin')}
-              className="border-amber-500/40 text-amber-300 hover:bg-amber-500/10"
             >
-              Consola Director
+              Consola
             </Button>
           )}
         </div>
       </div>
 
-      {/* Grid de KPIs Principales */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
+      {/* 1. FACTURACIÓN TOTAL DIARIA (EXCLUSIVO KAREN, WLADIMIR Y ADMINISTRACIÓN) */}
+      {isAdminOrSupervisor && (
+        <DailyBillingSummaryCard
+          orders={liveOrders}
+          onOpenCleanOrders={() => setIsCleanModalOpen(true)}
+        />
+      )}
+
+      {/* 2. Métricas de Inventario Central */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
-          title="Total Productos"
+          title="Total Alimentos"
           value={stats.totalProducts}
-          subtitle="En catálogo activo"
           icon={Package}
-          color="slate"
-          onClick={() => navigate('/inventario')}
-        />
-
-        <StatCard
-          title="Ingresos del Día"
-          value={`+${formatNumber(stats.todayEntriesQty)}`}
-          subtitle={`${stats.todayEntriesCount} movimiento(s)`}
-          icon={ArrowDownLeft}
           color="emerald"
-          trend="+ Entrada"
-          onClick={() => navigate('/movimientos')}
+          subtitle="Insumos activos en catálogo"
         />
 
         <StatCard
-          title="Salidas del Día"
-          value={`-${formatNumber(stats.todayExitsQty)}`}
-          subtitle={`${stats.todayExitsCount} movimiento(s)`}
-          icon={ArrowUpRight}
+          title="Entradas de Hoy"
+          value={`+${formatNumber(stats.totalEntriesToday)}`}
+          icon={TrendingUp}
+          color="emerald"
+          subtitle="Abastecimiento registrado"
+        />
+
+        <StatCard
+          title="Salidas / Consumo"
+          value={`-${formatNumber(stats.totalExitsToday)}`}
+          icon={TrendingDown}
           color="rose"
-          trend="- Salida"
-          onClick={() => navigate('/movimientos')}
+          subtitle="Consumo del restaurante"
         />
 
         <StatCard
-          title="Stock Mínimo"
-          value={stats.criticalCount}
-          subtitle="Productos a reponer"
+          title="Bajo Stock (Alerta)"
+          value={stats.lowStockCount}
           icon={AlertTriangle}
-          color={stats.criticalCount > 0 ? "rose" : "slate"}
-          onClick={() => navigate('/inventario')}
+          color="amber"
+          subtitle={stats.lowStockCount > 0 ? "Requiere reposición" : "Nivel óptimo"}
+          alert={stats.lowStockCount > 0}
         />
       </div>
 
-      {/* SECCIÓN DE AUDITORÍA Y MONITOREO DEL PERSONAL (QUIÉN ENTRÓ, A QUÉ HORA Y QUÉ HIZO) */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800/80 pb-3 flex-wrap gap-2">
+      {/* 3. Alertas de Productos con Bajo Stock */}
+      {lowStockProducts.length > 0 && (
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
-                Monitoreo del Personal y Bitácora de Accesos
-              </h3>
-              <p className="text-xs text-slate-400">
-                Rastreo en tiempo real de quién ingresó al sistema y qué cambios realizó
-              </p>
-            </div>
+            <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+            <span>
+              <strong>¡Atención!</strong> Hay {lowStockProducts.length} insumo(s) por debajo del stock mínimo ({lowStockProducts.slice(0, 3).map(p => p.name).join(', ')}...).
+            </span>
           </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate('/auditoria')}
-              className="text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20 hover:bg-emerald-500/20 transition-all"
-            >
-              Ver Auditoría Completa
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-            {isSuperAdmin && (
-              <button
-                onClick={() => navigate('/super-admin')}
-                className="text-xs text-amber-300 hover:text-amber-200 font-bold flex items-center gap-1 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/30 hover:bg-amber-500/20 transition-all"
-              >
-                <Crown className="w-3.5 h-3.5 text-amber-400" />
-                Consola Director
-              </button>
-            )}
-          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => navigate('/inventario')}
+            className="text-xs whitespace-nowrap"
+          >
+            Ver Inventario
+          </Button>
         </div>
+      )}
 
-        {recentLogs.length === 0 ? (
-          <div className="p-6 text-center rounded-2xl bg-slate-950/60 border border-slate-800 text-xs text-slate-400">
-            Aún no hay registros de accesos o movimientos recientes.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {recentLogs.map((log) => {
-              const badge = getLogBadge(log.actionType);
-              return (
-                <div
-                  key={log.id}
-                  className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between gap-2"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <span className="font-bold text-xs text-slate-200 block">
-                        {log.userName || 'Usuario'}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-mono">
-                        {log.userEmail}
-                      </span>
-                    </div>
-                    <span className={`px-2 py-0.5 text-[9px] font-bold rounded-full border ${badge.color}`}>
-                      {badge.label}
-                    </span>
-                  </div>
-
-                  {/* Detalles del cambio */}
-                  <div className="text-[11px] text-slate-300 font-medium">
-                    {log.details?.product && (
-                      <span className="text-emerald-400 font-bold mr-1">
-                        {log.details.product}
-                      </span>
-                    )}
-                    {log.details?.quantity && (
-                      <span className="text-slate-100 font-bold mr-1">
-                        ({log.details.quantity})
-                      </span>
-                    )}
-                    {log.details?.message && (
-                      <span>{log.details.message}</span>
-                    )}
-                    {log.details?.reason && (
-                      <span className="text-slate-400 block text-[10px]">
-                        Motivo: {log.details.reason}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Hora exacta */}
-                  <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-mono">
-                    <span>{formatDate(log.timestamp || log.createdAt)}</span>
-                    <span className="text-emerald-400 font-bold flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {formatTime(log.timestamp || log.createdAt)}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Grid Principal: Movimientos del Día y Accesos */}
+      {/* 4. Columnas: Últimos Movimientos y Reporte Diario PDF */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Lista de Movimientos Recientes */}
-        <div className="lg:col-span-2 space-y-3.5">
+        {/* Lista de Movimientos de Hoy */}
+        <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
-              Movimientos del Día ({todayMovements.length})
+            <h3 className="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-emerald-400" />
+              Movimientos Recientes de Inventario
             </h3>
             <button
               onClick={() => navigate('/movimientos')}
-              className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1"
+              className="text-xs text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1"
             >
-              Ver todos los movimientos
+              Ver todos ({todayMovements.length})
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
           {todayMovements.length === 0 ? (
-            <div className="p-8 text-center rounded-2xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400">
-              Aún no se han registrado movimientos el día de hoy.
+            <div className="p-8 text-center rounded-2xl bg-slate-900/60 border border-slate-800 text-xs text-slate-500">
+              No hay movimientos de inventario registrados el día de hoy.
             </div>
           ) : (
             <div className="space-y-2.5">
@@ -342,7 +298,7 @@ export const DashboardPage = () => {
         <div className="space-y-4">
           
           {/* Card Generador de Reporte PDF */}
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-slate-900 border border-emerald-500/30">
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-slate-900 border border-emerald-500/30 shadow-lg">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3">
               <FileText className="w-5 h-5" />
             </div>
@@ -355,7 +311,7 @@ export const DashboardPage = () => {
               variant="primary"
               fullWidth
               onClick={() => navigate('/reportes')}
-              className="mt-4 text-xs"
+              className="mt-4 text-xs font-black"
               icon={FileText}
             >
               Generar Reporte del Día
@@ -369,7 +325,7 @@ export const DashboardPage = () => {
               Bitácora de Auditoría Zenit
             </p>
             <p className="text-[11px] leading-relaxed">
-              Cada acción realizada por Karen, Wladimir o Hernán queda guardada con fecha, hora exacta y usuario responsable.
+              Cada acción realizada por Karen, Wladimir, Hernán o Marlon queda guardada con fecha, hora exacta y usuario responsable.
             </p>
             <button
               onClick={() => navigate('/auditoria')}
@@ -382,6 +338,16 @@ export const DashboardPage = () => {
         </div>
 
       </div>
+
+      {/* Modal de Depuración y Eliminación de Pedidos de Prueba */}
+      {isCleanModalOpen && (
+        <AdminOrdersCleanModal
+          isOpen={isCleanModalOpen}
+          onClose={() => setIsCleanModalOpen(false)}
+          orders={liveOrders}
+          user={user}
+        />
+      )}
 
     </div>
   );

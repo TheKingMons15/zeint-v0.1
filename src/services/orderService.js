@@ -516,5 +516,91 @@ export const orderService = {
     } catch (e) {
       console.warn("Audit error:", e);
     }
+  },
+
+  // 8. Eliminar pedidos de prueba de la base de datos (Exclusivo Karen, Wladimir y Dirección)
+  async deleteOrders(orderIds = [], user) {
+    if (!orderIds || orderIds.length === 0) return;
+
+    if (isDemoMode) {
+      let orders = JSON.parse(localStorage.getItem(DEMO_ORDERS_KEY) || '[]');
+      orders = orders.filter(o => !orderIds.includes(o.id));
+      localStorage.setItem(DEMO_ORDERS_KEY, JSON.stringify(orders));
+      window.dispatchEvent(new Event('demo_orders_updated'));
+
+      try {
+        await auditService.logAction(user, 'DELETE_ORDERS', {
+          count: orderIds.length,
+          orderIds,
+          message: `${user?.displayName || 'Administrador'} eliminó permanentemente ${orderIds.length} pedidos de prueba del sistema.`
+        });
+      } catch (e) {}
+      return;
+    }
+
+    const batch = writeBatch(db);
+    orderIds.forEach(id => {
+      const orderRef = doc(db, 'products', id);
+      batch.delete(orderRef);
+    });
+
+    await batch.commit();
+
+    try {
+      await auditService.logAction(user, 'DELETE_ORDERS', {
+        count: orderIds.length,
+        orderIds,
+        message: `${user?.displayName || 'Administrador'} eliminó permanentemente ${orderIds.length} pedidos de prueba del sistema.`
+      });
+    } catch (e) {
+      console.warn("Audit error:", e);
+    }
+  },
+
+  // 9. Calcular facturación diaria precisa excluyendo cancelados y pruebas
+  calculateBillingStats(orders = [], targetDateStr = getTodayDateString()) {
+    const dayOrders = orders.filter(order => {
+      const orderDateStr = order.date || (
+        order.createdAt?.toDate ? order.createdAt.toDate().toISOString().split('T')[0] : 
+        (typeof order.createdAt === 'string' ? order.createdAt.split('T')[0] : '')
+      );
+      return orderDateStr === targetDateStr;
+    });
+
+    const completedOrders = dayOrders.filter(o => o.status === ORDER_STATUS.DELIVERED);
+    const pendingOrders = dayOrders.filter(o => o.status === ORDER_STATUS.PENDING || o.status === ORDER_STATUS.PREPARING || o.status === ORDER_STATUS.READY);
+    const cancelledOrders = dayOrders.filter(o => o.status === ORDER_STATUS.CANCELLED);
+
+    const totalFacturado = completedOrders.reduce((sum, o) => sum + Number(o.total || 0), 0);
+    const countCompleted = completedOrders.length;
+    const averageTicket = countCompleted > 0 ? totalFacturado / countCompleted : 0;
+
+    let kitchenRevenue = 0;
+    let barRevenue = 0;
+
+    completedOrders.forEach(order => {
+      (order.items || []).forEach(item => {
+        if (!item.cancelled) {
+          const itemTotal = Number(item.price || 0) * Number(item.quantity || 1);
+          if (item.destination === 'BAR') {
+            barRevenue += itemTotal;
+          } else {
+            kitchenRevenue += itemTotal;
+          }
+        }
+      });
+    });
+
+    return {
+      date: targetDateStr,
+      totalFacturado,
+      completedOrdersCount: countCompleted,
+      averageTicket,
+      kitchenRevenue,
+      barRevenue,
+      pendingCount: pendingOrders.length,
+      cancelledCount: cancelledOrders.length,
+      completedOrders
+    };
   }
 };
