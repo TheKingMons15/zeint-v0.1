@@ -187,6 +187,20 @@ export const InventoryProvider = ({ children }) => {
     }
   };
 
+  // Sincronización fresca en segundo plano sin bloquear la pantalla
+  const refreshInBackground = async () => {
+    try {
+      const [freshProducts, freshMovements] = await Promise.all([
+        productService.fetchFreshProducts(companyId),
+        movementService.fetchFreshMovements(companyId)
+      ]);
+      if (freshProducts && freshProducts.length > 0) setProducts(freshProducts);
+      if (freshMovements && freshMovements.length > 0) setMovements(freshMovements);
+    } catch (e) {
+      console.warn("Background sync error:", e);
+    }
+  };
+
   const value = {
     products,
     filteredProducts,
@@ -203,7 +217,8 @@ export const InventoryProvider = ({ children }) => {
     updateProduct,
     deleteProduct,
     registerMovement,
-    importInitialProducts
+    importInitialProducts,
+    refreshInBackground
   };
 
   return (

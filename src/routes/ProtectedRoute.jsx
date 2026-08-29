@@ -7,8 +7,9 @@ export const ProtectedRoute = ({ children, allowedRoles, blockWaiters = false })
   const { user, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
-    return <LoadingSpinner fullPage label="Verificando permisos y área asignada..." />;
+  // Solo mostrar spinner en la carga inicial fría si aún no hay sesión en memoria
+  if (loading && !user) {
+    return <LoadingSpinner fullPage label="Cargando sistema..." />;
   }
 
   if (!user) {

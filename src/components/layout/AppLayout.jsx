@@ -10,7 +10,7 @@ import { useInventory } from '../../hooks/useInventory';
 import { useSafeNavigationReload } from '../../hooks/useSafeNavigationReload';
 
 export const AppLayout = () => {
-  const { products, registerMovement, addProduct } = useInventory();
+  const { products, registerMovement, addProduct, refreshInBackground } = useInventory();
 
   // Modales Globales
   const [movementModalState, setMovementModalState] = useState({
@@ -23,8 +23,8 @@ export const AppLayout = () => {
   const [movementLoading, setMovementLoading] = useState(false);
   const [productLoading, setProductLoading] = useState(false);
 
-  // Recarga automática controlada y segura al cambiar de submenú
-  useSafeNavigationReload(movementModalState.isOpen || productModalOpen);
+  // Sincronización fresca en segundo plano al cambiar de submenú (0ms de latencia, sin pantalla de carga)
+  useSafeNavigationReload(refreshInBackground, movementModalState.isOpen || productModalOpen);
 
   const handleOpenMovementModal = (type = 'ENTRY', defaultProductId = '') => {
     setMovementModalState({
@@ -43,10 +43,10 @@ export const AppLayout = () => {
     try {
       await registerMovement(data);
       handleCloseMovementModal();
-      // Recarga automática de una sola vez para sincronizar inmediatamente el stock actualizado
-      setTimeout(() => {
-        window.location.reload();
-      }, 350);
+      // Actualización silenciosa en segundo plano
+      if (typeof refreshInBackground === 'function') {
+        refreshInBackground();
+      }
     } finally {
       setMovementLoading(false);
     }
@@ -57,10 +57,9 @@ export const AppLayout = () => {
     try {
       await addProduct(data);
       setProductModalOpen(false);
-      // Recarga controlada para mostrar el nuevo producto de inmediato
-      setTimeout(() => {
-        window.location.reload();
-      }, 350);
+      if (typeof refreshInBackground === 'function') {
+        refreshInBackground();
+      }
     } finally {
       setProductLoading(false);
     }

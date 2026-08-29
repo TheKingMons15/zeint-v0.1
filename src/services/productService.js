@@ -91,6 +91,28 @@ export const productService = {
     }
   },
 
+  // Consulta directa y rápida en segundo plano
+  async fetchFreshProducts(companyId = DEFAULT_COMPANY_ID) {
+    if (isDemoMode) {
+      return JSON.parse(localStorage.getItem(DEMO_PRODUCTS_KEY) || '[]');
+    }
+    try {
+      const q = query(
+        collection(db, 'products'),
+        where('companyId', '==', companyId)
+      );
+      const snapshot = await getDocs(q);
+      const items = snapshot.docs
+        .filter(doc => !doc.data().isOrder && !doc.data().isRecipe && !doc.data().isChatMessage)
+        .map(doc => ({ id: doc.id, id_producto: doc.id, ...doc.data() }));
+      items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+      return items;
+    } catch (e) {
+      console.warn("Background product sync notice:", e.message);
+      return [];
+    }
+  },
+
   // Crear producto con validación estricta anti-duplicados y clave única determinista
   async create(productData, user) {
     const rawName = productData.name.trim();

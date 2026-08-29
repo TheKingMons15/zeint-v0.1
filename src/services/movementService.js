@@ -88,6 +88,30 @@ export const movementService = {
     }
   },
 
+  // Consulta directa y rápida de movimientos en segundo plano
+  async fetchFreshMovements(companyId = DEFAULT_COMPANY_ID) {
+    if (isDemoMode) {
+      return JSON.parse(localStorage.getItem(DEMO_MOVEMENTS_KEY) || '[]');
+    }
+    try {
+      const q = query(
+        collection(db, 'movements'),
+        where('companyId', '==', companyId)
+      );
+      const snapshot = await getDocs(q);
+      const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      items.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || a.date || 0);
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || b.date || 0);
+        return dateB - dateA;
+      });
+      return items;
+    } catch (e) {
+      console.warn("Background movement sync notice:", e.message);
+      return [];
+    }
+  },
+
   // Registrar movimiento (Entrada o Salida) con transacción atómica y auditoría
   async registerMovement(movementData, user) {
     const { productId, type, quantity, reason, notes, date } = movementData;
