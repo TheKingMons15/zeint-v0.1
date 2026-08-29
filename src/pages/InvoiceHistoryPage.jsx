@@ -332,7 +332,9 @@ export const InvoiceHistoryPage = () => {
             </thead>
             <tbody>
               ${finalFilteredOrders.map(o => {
-                const orderCost = products ? orderService.calculateOrderCost(o, products) : { totalCost: 0, margin: 0 };
+                const orderCost = products ? orderService.calculateOrderCost(o, products) : null;
+                const totalCostVal = Number(orderCost?.totalCost || 0);
+                const marginVal = Number(orderCost?.margin ?? orderCost?.marginDollars ?? 0);
                 return `
                   <tr>
                     <td>#CMD-${(o.id || '').substring(0, 7)}</td>
@@ -341,8 +343,8 @@ export const InvoiceHistoryPage = () => {
                     <td>${o.waiterName || 'Mesero'}</td>
                     <td>${o.paymentDetails?.paymentMethod || 'EFECTIVO'}</td>
                     <td class="text-right bold">$${Number(o.total || 0).toFixed(2)}</td>
-                    <td class="text-right">$${orderCost.totalCost.toFixed(2)}</td>
-                    <td class="text-right bold">+$${orderCost.margin.toFixed(2)}</td>
+                    <td class="text-right">$${totalCostVal.toFixed(2)}</td>
+                    <td class="text-right bold">+$${marginVal.toFixed(2)}</td>
                   </tr>
                 `;
               }).join('')}
@@ -668,7 +670,10 @@ export const InvoiceHistoryPage = () => {
                 </thead>
                 <tbody className="divide-y divide-slate-800/60">
                   {finalFilteredOrders.map((order) => {
-                    const orderCost = products ? orderService.calculateOrderCost(order, products) : { totalCost: 0, margin: 0, marginPercent: 0 };
+                    const orderCost = products ? orderService.calculateOrderCost(order, products) : null;
+                    const totalCostVal = Number(orderCost?.totalCost || 0);
+                    const marginVal = Number(orderCost?.margin ?? orderCost?.marginDollars ?? 0);
+                    const marginPercentVal = Number(orderCost?.marginPercent || 0);
                     const method = order.paymentDetails?.paymentMethod || 'EFECTIVO';
 
                     return (
@@ -694,10 +699,10 @@ export const InvoiceHistoryPage = () => {
                           ${Number(order.total || 0).toFixed(2)}
                         </td>
                         <td className="py-3 px-3.5 text-right font-mono text-purple-300">
-                          ${orderCost.totalCost.toFixed(2)}
+                          ${totalCostVal.toFixed(2)}
                         </td>
                         <td className="py-3 px-3.5 text-right font-mono font-bold text-teal-300">
-                          +${orderCost.margin.toFixed(2)} ({orderCost.marginPercent}%)
+                          +${marginVal.toFixed(2)} ({marginPercentVal}%)
                         </td>
                         <td className="py-3 px-3.5 text-center">
                           <button

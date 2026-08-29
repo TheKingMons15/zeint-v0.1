@@ -640,6 +640,7 @@ export const orderService = {
     return {
       totalCost: Number(totalCost.toFixed(2)),
       totalRevenue: Number(totalRevenue.toFixed(2)),
+      margin: marginDollars,
       marginDollars,
       marginPercent,
       itemsWithCost
