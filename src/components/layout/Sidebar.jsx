@@ -62,14 +62,15 @@ export const Sidebar = () => {
     );
   }
 
-  // 2. Delimitación Estricta: Módulo Exclusivo de Cocina (Hernán)
+  // 2. Módulo de Cocina e Inventario (Hernán & Diana)
   if (role === 'COCINA') {
     return (
       <aside className="hidden lg:flex flex-col w-64 bg-slate-900/60 border-r border-slate-800/80 p-4 shrink-0 min-h-[calc(100vh-65px)]">
         <div className="space-y-1">
           <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-2">
-            Área de Cocina & Parrilla
+            Área de Cocina & Inventario
           </p>
+
           <NavLink
             to="/cocina"
             className={({ isActive }) =>
@@ -85,11 +86,80 @@ export const Sidebar = () => {
               <span>Pantalla KDS de Cocina</span>
             </div>
           </NavLink>
+
+          <NavLink
+            to="/inventario"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+                isActive
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-md'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`
+            }
+          >
+            <div className="flex items-center gap-3">
+              <Package className="w-4 h-4 text-emerald-400" />
+              <span>Inventario de Insumos</span>
+            </div>
+            {stats.criticalCount > 0 && (
+              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-rose-500/20 text-rose-300 rounded-md">
+                {stats.criticalCount}
+              </span>
+            )}
+          </NavLink>
+
+          <NavLink
+            to="/movimientos"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+                isActive
+                  ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 shadow-md'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`
+            }
+          >
+            <div className="flex items-center gap-3">
+              <ArrowLeftRight className="w-4 h-4 text-sky-400" />
+              <span>Movimientos (Stock)</span>
+            </div>
+          </NavLink>
+
+          <NavLink
+            to="/recetas"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+                isActive
+                  ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-md'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`
+            }
+          >
+            <div className="flex items-center gap-3">
+              <BookOpen className="w-4 h-4 text-indigo-400" />
+              <span>Fichas Técnicas & Recetas</span>
+            </div>
+          </NavLink>
+
+          <NavLink
+            to="/reporte-consumo"
+            className={({ isActive }) =>
+              `flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+                isActive
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-md'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`
+            }
+          >
+            <div className="flex items-center gap-3">
+              <FileSpreadsheet className="w-4 h-4 text-amber-400" />
+              <span>Reporte de Consumo</span>
+            </div>
+          </NavLink>
         </div>
 
         <div className="mt-auto pt-4 border-t border-slate-800/60 text-center">
           <p className="text-[11px] text-slate-300 font-bold">Inventario Zenit, Cocina</p>
-          <p className="text-[9px] text-amber-400/90 font-medium">Operador de Cocina • Hernán</p>
+          <p className="text-[9px] text-amber-400/90 font-medium">{user?.displayName || 'Equipo de Cocina'}</p>
         </div>
       </aside>
     );

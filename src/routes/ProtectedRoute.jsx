@@ -26,9 +26,21 @@ export const ProtectedRoute = ({ children, allowedRoles, blockWaiters = false })
     return children;
   }
 
-  // 2. Delimitación Estricta: COCINA (Hernán) - Solo accede a /cocina
+  // 2. Delimitación de COCINA (Hernán, Diana): Acceso a Cocina, Inventario, Productos, Movimientos, Recetas
   if (role === 'COCINA') {
-    if (path !== '/cocina') {
+    const blockedForCocina = [
+      '/bar',
+      '/mesero',
+      '/super-admin',
+      '/auditoria',
+      '/historico-facturas',
+      '/historial-facturas',
+      '/facturas',
+      '/facturacion',
+      '/configuracion'
+    ];
+
+    if (blockedForCocina.some(p => path === p || path.startsWith(p + '/'))) {
       return <Navigate to="/cocina" replace />;
     }
     return children;

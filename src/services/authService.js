@@ -44,7 +44,7 @@ export const authService = {
           
           if (emailLower === 'marlon@zenit.com' || calculatedRole.toUpperCase() === 'BAR') {
             calculatedRole = 'BAR';
-          } else if (emailLower === 'hernan@zenit.com' || calculatedRole.toUpperCase() === 'COCINA') {
+          } else if (emailLower === 'hernan@zenit.com' || emailLower.startsWith('diana') || calculatedRole.toUpperCase() === 'COCINA') {
             calculatedRole = 'COCINA';
           } else if (emailLower.includes('mesero') || calculatedRole.toUpperCase() === 'MESERO') {
             calculatedRole = 'MESERO';
@@ -61,6 +61,7 @@ export const authService = {
             email: firebaseUser.email,
             displayName: firebaseUser.displayName || profileData.displayName || (
               calculatedRole === 'BAR' ? 'Marlon (Bar & Coctelería)' :
+              emailLower.startsWith('diana') ? 'Diana (Cocina & Inventario)' :
               calculatedRole === 'COCINA' ? 'Hernán (Cocina)' :
               calculatedRole === 'MESERO' ? 'Mesero (Sala)' : 'Usuario'
             ),
@@ -77,14 +78,14 @@ export const authService = {
           const emailLower = (firebaseUser.email || '').toLowerCase();
           const fallbackRole = (
             emailLower === 'marlon@zenit.com' ? 'BAR' :
-            emailLower === 'hernan@zenit.com' ? 'COCINA' :
+            (emailLower === 'hernan@zenit.com' || emailLower.startsWith('diana')) ? 'COCINA' :
             emailLower.includes('mesero') ? 'MESERO' : USER_ROLES.OPERATOR
           );
 
           callback({
             uid: firebaseUser.uid,
             email: firebaseUser.email,
-            displayName: firebaseUser.displayName || 'Usuario',
+            displayName: firebaseUser.displayName || (emailLower.startsWith('diana') ? 'Diana (Cocina)' : 'Usuario'),
             role: fallbackRole,
             companyId: DEFAULT_COMPANY_ID
           });

@@ -40,20 +40,109 @@ export const BottomNav = ({ onOpenMovementModal }) => {
     );
   }
 
-  // 2. Barra inferior exclusiva para Cocina (Hernán)
+  // 2. Barra inferior para Cocina & Inventario (Hernán y Diana)
   if (role === 'COCINA') {
     return (
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-amber-500/30 lg:hidden px-4 py-2.5 shadow-2xl">
-        <div className="flex items-center justify-center max-w-md mx-auto">
-          <NavLink
-            to="/cocina"
-            className="flex items-center gap-2 py-2 px-6 rounded-2xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-black text-xs shadow-lg shadow-amber-950/50"
+      <>
+        {/* Mobile Quick Action Overlay */}
+        {showQuickActions && (
+          <div 
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden animate-fade-in"
+            onClick={() => setShowQuickActions(false)}
           >
-            <ChefHat className="w-5 h-5 text-amber-400" />
-            <span>Pantalla KDS de Cocina</span>
-          </NavLink>
-        </div>
-      </nav>
+            <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex items-center gap-4 animate-slide-up">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowQuickActions(false);
+                  onOpenMovementModal('ENTRY');
+                }}
+                className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-2xl shadow-emerald-950/80 active:scale-95 transition-all border border-emerald-400/40"
+              >
+                <div className="p-3 bg-white/20 rounded-xl">
+                  <ArrowDownLeft className="w-6 h-6" />
+                </div>
+                <span>+ ENTRADA</span>
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowQuickActions(false);
+                  onOpenMovementModal('EXIT');
+                }}
+                className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-rose-600 text-white font-bold text-xs shadow-2xl shadow-rose-950/80 active:scale-95 transition-all border border-rose-400/40"
+              >
+                <div className="p-3 bg-white/20 rounded-xl">
+                  <ArrowUpRight className="w-6 h-6" />
+                </div>
+                <span>- SALIDA</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        <nav className="fixed bottom-0 left-0 right-0 z-30 bg-slate-900/95 backdrop-blur-lg border-t border-amber-500/30 lg:hidden px-3 py-2 shadow-2xl">
+          <div className="flex items-center justify-around max-w-md mx-auto">
+            <NavLink
+              to="/cocina"
+              className={({ isActive }) =>
+                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+                  isActive ? 'text-amber-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                }`
+              }
+            >
+              <ChefHat className="w-5 h-5" />
+              <span className="text-[10px] mt-0.5">Cocina</span>
+            </NavLink>
+
+            <NavLink
+              to="/movimientos"
+              className={({ isActive }) =>
+                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+                  isActive ? 'text-sky-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                }`
+              }
+            >
+              <ArrowDownLeft className="w-5 h-5" />
+              <span className="text-[10px] mt-0.5">Movimientos</span>
+            </NavLink>
+
+            {/* Floating Action Button */}
+            <button
+              onClick={() => setShowQuickActions(!showQuickActions)}
+              className="relative -top-3 p-3.5 bg-gradient-to-tr from-amber-500 to-amber-400 text-slate-950 rounded-2xl shadow-xl shadow-amber-950/60 active:scale-95 transition-all border-2 border-slate-950"
+              aria-label="Registrar Movimiento"
+            >
+              <Plus className={`w-6 h-6 stroke-[2.5] transition-transform duration-200 ${showQuickActions ? 'rotate-45' : ''}`} />
+            </button>
+
+            <NavLink
+              to="/inventario"
+              className={({ isActive }) =>
+                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+                  isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                }`
+              }
+            >
+              <Package className="w-5 h-5" />
+              <span className="text-[10px] mt-0.5">Inventario</span>
+            </NavLink>
+
+            <NavLink
+              to="/recetas"
+              className={({ isActive }) =>
+                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
+                  isActive ? 'text-indigo-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                }`
+              }
+            >
+              <FileText className="w-5 h-5" />
+              <span className="text-[10px] mt-0.5">Recetas</span>
+            </NavLink>
+          </div>
+        </nav>
+      </>
     );
   }
 

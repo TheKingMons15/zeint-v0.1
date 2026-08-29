@@ -7,6 +7,7 @@ import { MovementModal } from '../movements/MovementModal';
 import { ProductFormModal } from '../products/ProductFormModal';
 import { GlobalNotificationManager } from '../notifications/GlobalNotificationManager';
 import { useInventory } from '../../hooks/useInventory';
+import { useSafeNavigationReload } from '../../hooks/useSafeNavigationReload';
 
 export const AppLayout = () => {
   const { products, registerMovement, addProduct } = useInventory();
@@ -21,6 +22,9 @@ export const AppLayout = () => {
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [movementLoading, setMovementLoading] = useState(false);
   const [productLoading, setProductLoading] = useState(false);
+
+  // Recarga automática controlada y segura al cambiar de submenú
+  useSafeNavigationReload(movementModalState.isOpen || productModalOpen);
 
   const handleOpenMovementModal = (type = 'ENTRY', defaultProductId = '') => {
     setMovementModalState({
@@ -39,6 +43,10 @@ export const AppLayout = () => {
     try {
       await registerMovement(data);
       handleCloseMovementModal();
+      // Recarga automática de una sola vez para sincronizar inmediatamente el stock actualizado
+      setTimeout(() => {
+        window.location.reload();
+      }, 350);
     } finally {
       setMovementLoading(false);
     }
@@ -49,6 +57,10 @@ export const AppLayout = () => {
     try {
       await addProduct(data);
       setProductModalOpen(false);
+      // Recarga controlada para mostrar el nuevo producto de inmediato
+      setTimeout(() => {
+        window.location.reload();
+      }, 350);
     } finally {
       setProductLoading(false);
     }

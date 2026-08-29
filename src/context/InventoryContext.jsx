@@ -145,13 +145,25 @@ export const InventoryProvider = ({ children }) => {
     }
   };
 
-  // Registro de Movimientos de Entrada / Salida
+  // Registro de Movimientos de Entrada / Salida con actualización inmediata
   const registerMovement = async (movementData) => {
     try {
       const result = await movementService.registerMovement(movementData, user);
+      
+      // Actualización inmediata del stock en memoria para reflejo instantáneo en pantalla
+      setProducts(prevProducts => prevProducts.map(p => {
+        if (p.id === movementData.productId || p.id_producto === movementData.productId) {
+          const prev = Number(p.currentStock || 0);
+          const qty = Number(movementData.quantity || 0);
+          const delta = movementData.type === 'ENTRY' ? qty : -qty;
+          return { ...p, currentStock: Math.max(0, prev + delta) };
+        }
+        return p;
+      }));
+
       const isEntry = movementData.type === 'ENTRY';
       showToast(
-        `${isEntry ? 'Entrada' : 'Salida'} de ${movementData.quantity} ${movementData.unit || 'und'} registrada`,
+        `${isEntry ? 'Entrada' : 'Salida'} de ${movementData.quantity} ${movementData.unit || 'und'} registrada exitosamente`,
         'success'
       );
       return result;

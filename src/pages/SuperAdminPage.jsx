@@ -49,7 +49,8 @@ export const SuperAdminPage = () => {
     const staff = [
       { name: 'Karen (Administrador)', email: 'karenadmin@zenit.com', role: 'admin' },
       { name: 'Wladimir (Supervisor)', email: 'wladimir@zenit.com', role: 'supervisor' },
-      { name: 'Hernán (Operador)', email: 'hernan@zenit.com', role: 'operator' }
+      { name: 'Hernán (Cocina & Inventario)', email: 'hernan@zenit.com', role: 'operator' },
+      { name: 'Diana (Cocina & Inventario)', email: 'diana@zenit.com', role: 'operator' }
     ];
 
     return staff.map(s => {
