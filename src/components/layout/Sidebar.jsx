@@ -15,11 +15,12 @@ import {
   ChefHat,
   Wine,
   BookOpen,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Receipt
 } from 'lucide-react';
 import { useInventory } from '../../hooks/useInventory';
 import { useAuth } from '../../hooks/useAuth';
-import { FOOD_CATEGORIES } from '../../utils/constants';
+import { FOOD_CATEGORIES, isAuthorizedBillingUser } from '../../utils/constants';
 
 export const Sidebar = () => {
   const { stats, selectedCategory, setSelectedCategory } = useInventory();
@@ -127,9 +128,18 @@ export const Sidebar = () => {
     );
   }
 
+  const isBillingUser = isAuthorizedBillingUser(user);
+
   // 4. Menú Completo para Administradores, Supervisores y Dirección
   const navItems = [
     { to: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+    ...(isBillingUser ? [{ 
+      to: '/historico-facturas', 
+      label: 'Histórico Facturación', 
+      icon: Receipt,
+      isSpecial: true,
+      badge: 'Exclusivo'
+    }] : []),
     { to: '/mesero', label: 'Toma de Pedidos (Sala)', icon: UtensilsCrossed },
     { to: '/cocina', label: 'Pantalla Cocina KDS', icon: ChefHat },
     { to: '/bar', label: 'Pantalla Bar KDS', icon: Wine },
@@ -161,15 +171,24 @@ export const Sidebar = () => {
               className={({ isActive }) =>
                 `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm'
+                    ? item.isSpecial
+                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-lg shadow-purple-950/50 font-bold'
+                      : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm font-bold'
+                    : item.isSpecial
+                    ? 'text-purple-300/80 hover:text-purple-200 hover:bg-purple-950/30'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
                 }`
               }
             >
               <div className="flex items-center gap-3">
-                <Icon className="w-4 h-4" />
+                <Icon className={`w-4 h-4 ${item.isSpecial ? 'text-purple-400' : ''}`} />
                 <span>{item.label}</span>
               </div>
+              {item.badge && (
+                <span className="px-1.5 py-0.5 text-[9px] font-black uppercase rounded bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                  {item.badge}
+                </span>
+              )}
             </NavLink>
           );
         })}

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -111,6 +112,14 @@ export const DailyBillingSummaryCard = ({ orders = [], onOpenCleanOrders }) => {
 
         {/* Controles de Fecha y Atajos */}
         <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+          <Link
+            to="/historico-facturas"
+            className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/40 text-xs font-black transition-all shadow-md flex items-center gap-1.5"
+          >
+            <Receipt className="w-3.5 h-3.5" />
+            <span>📅 Histórico General</span>
+          </Link>
+
           {!isToday && (
             <button
               onClick={() => setSelectedDate(getTodayDateString())}

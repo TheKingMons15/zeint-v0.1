@@ -15,6 +15,7 @@ import { KitchenPage } from '../pages/KitchenPage';
 import { BarPage } from '../pages/BarPage';
 import { RecipesPage } from '../pages/RecipesPage';
 import { ConsumptionReportPage } from '../pages/ConsumptionReportPage';
+import { InvoiceHistoryPage } from '../pages/InvoiceHistoryPage';
 import { SettingsPage } from '../pages/SettingsPage';
 
 export const AppRoutes = () => {
@@ -57,6 +58,16 @@ export const AppRoutes = () => {
           element={
             <ProtectedRoute blockWaiters>
               <ConsumptionReportPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Histórico de Facturación & Movimientos (Exclusivo Karen y Wladimir) */}
+        <Route
+          path="historico-facturas"
+          element={
+            <ProtectedRoute blockWaiters>
+              <InvoiceHistoryPage />
             </ProtectedRoute>
           }
         />
