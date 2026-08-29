@@ -135,7 +135,7 @@ export const Sidebar = () => {
     { to: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
     ...(isBillingUser ? [{ 
       to: '/historico-facturas', 
-      label: 'Histórico Facturación', 
+      label: 'Historial Facturas', 
       icon: Receipt,
       isSpecial: true,
       badge: 'Exclusivo'

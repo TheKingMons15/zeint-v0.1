@@ -117,7 +117,7 @@ export const DailyBillingSummaryCard = ({ orders = [], onOpenCleanOrders }) => {
             className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/40 text-xs font-black transition-all shadow-md flex items-center gap-1.5"
           >
             <Receipt className="w-3.5 h-3.5" />
-            <span>📅 Histórico General</span>
+            <span>📅 Historial Facturas</span>
           </Link>
 
           {!isToday && (

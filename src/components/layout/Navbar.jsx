@@ -113,15 +113,15 @@ export const Navbar = ({ onOpenMovementModal, onOpenProductModal }) => {
             </button>
           )}
 
-          {/* Botón Histórico Facturación para Karen & Wladimir */}
+          {/* Botón Historial Facturas para Karen & Wladimir */}
           {isBillingUser && (
             <button
               onClick={() => navigate('/historico-facturas')}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-black hover:bg-purple-600 hover:text-white transition-all shadow-md shadow-purple-950/40"
-              title="Histórico de Facturación y Movimientos Anteriores"
+              title="Historial de Facturas y Movimientos Anteriores"
             >
               <Receipt className="w-4 h-4 text-purple-400" />
-              <span className="hidden sm:inline">Histórico Facturas</span>
+              <span className="hidden sm:inline">Historial Facturas</span>
             </button>
           )}
 
@@ -165,7 +165,7 @@ export const Navbar = ({ onOpenMovementModal, onOpenProductModal }) => {
                       className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-purple-300 hover:bg-purple-950/40 rounded-xl transition-colors font-bold text-left border border-purple-500/30 mb-1"
                     >
                       <Receipt className="w-4 h-4 text-purple-400" />
-                      Histórico de Facturación
+                      Historial Facturas
                     </button>
                   )}
                   {isSuperAdmin && (

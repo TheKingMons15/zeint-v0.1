@@ -384,7 +384,7 @@ export const InvoiceHistoryPage = () => {
           <div className="flex items-center gap-2">
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
               <Receipt className="w-6 h-6 text-purple-400" />
-              Histórico de Facturación & Movimientos
+              Historial de Facturas & Movimientos
             </h2>
             <span className="px-2.5 py-0.5 text-[10px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/40 rounded-full">
               KAREN & WLADIMIR

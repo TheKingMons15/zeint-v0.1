@@ -148,7 +148,7 @@ export const DashboardPage = () => {
               onClick={() => navigate('/historico-facturas')}
               className="bg-purple-600 hover:bg-purple-500 text-white font-black shadow-lg shadow-purple-950/40"
             >
-              Histórico Facturas
+              Historial Facturas
             </Button>
           )}
 
