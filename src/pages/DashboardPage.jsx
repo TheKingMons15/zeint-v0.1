@@ -338,7 +338,7 @@ export const DashboardPage = () => {
               Bitácora de Auditoría Zenit
             </p>
             <p className="text-[11px] leading-relaxed">
-              Cada acción realizada por Karen, Wladimir, Hernán o Marlon queda guardada con fecha, hora exacta y usuario responsable.
+              Cada acción realizada por el personal queda guardada con fecha, hora exacta y usuario responsable.
             </p>
             <button
               onClick={() => navigate('/auditoria')}

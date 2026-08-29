@@ -4,6 +4,7 @@ export const Input = ({
   label,
   error,
   icon: Icon,
+  rightElement,
   helperText,
   className = '',
   id,
@@ -30,13 +31,18 @@ export const Input = ({
           type={type}
           className={`block w-full rounded-xl bg-slate-900/90 border text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/50 focus:outline-none transition-colors text-sm py-2.5 ${
             Icon ? 'pl-10' : 'pl-3.5'
-          } pr-3.5 ${
+          } ${rightElement ? 'pr-11' : 'pr-3.5'} ${
             error
               ? 'border-rose-500/80 focus:border-rose-500'
               : 'border-slate-700/80 focus:border-emerald-500 hover:border-slate-600'
           } ${className}`}
           {...props}
         />
+        {rightElement && (
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+            {rightElement}
+          </div>
+        )}
       </div>
       {error && (
         <p className="mt-1 text-xs text-rose-400 font-medium">{error}</p>

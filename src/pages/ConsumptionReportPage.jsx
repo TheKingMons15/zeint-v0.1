@@ -296,7 +296,7 @@ export const ConsumptionReportPage = () => {
                 <h3 className="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
                   Costos de Insumos & Rentabilidad por Mesa
                   <span className="px-2 py-0.2 text-[9px] font-black uppercase rounded bg-purple-500/30 text-purple-200 border border-purple-400/40">
-                    Karen & Wladimir
+                    Administración
                   </span>
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">

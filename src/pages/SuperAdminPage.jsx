@@ -158,8 +158,8 @@ export const SuperAdminPage = () => {
 
         <StatCard
           title="Personal Monitoreado"
-          value="3 Usuarios"
-          subtitle="Karen, Wladimir, Hernán"
+          value="Usuarios Activos"
+          subtitle="Cocina, Bar y Sala"
           icon={Users}
           color="amber"
         />
@@ -173,7 +173,7 @@ export const SuperAdminPage = () => {
         />
       </div>
 
-      {/* 1. Monitoreo de Personal (Karen, Wladimir, Hernán) */}
+      {/* 1. Monitoreo de Personal */}
       <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
         <div className="flex items-center justify-between border-b border-slate-800 pb-3">
           <div className="flex items-center gap-2.5">

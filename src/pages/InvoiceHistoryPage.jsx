@@ -294,7 +294,7 @@ export const InvoiceHistoryPage = () => {
           <div class="header">
             <div class="title">RESTAURANTE ZÉNIT</div>
             <div class="subtitle">Reporte Oficial de Facturación y Costos de Insumos</div>
-            <div class="subtitle"><strong>${titleDate}</strong> • Generado por: ${user?.displayName || 'Karen & Wladimir'}</div>
+            <div class="subtitle"><strong>${titleDate}</strong> • Generado por: ${user?.displayName || 'Administración Zénit'}</div>
           </div>
 
           <div class="metrics-grid">
@@ -376,7 +376,7 @@ export const InvoiceHistoryPage = () => {
         </div>
         <h3 className="text-lg font-black text-white">Módulo Exclusivo y Confidencial</h3>
         <p className="text-xs text-slate-400">
-          El histórico de facturas, balances de costos y auditoría de recaudación está reservado exclusivamente para la administración (**Wladimir y Karen**).
+          El histórico de facturas, balances de costos y auditoría de recaudación está reservado exclusivamente para la administración.
         </p>
       </div>
     );
@@ -394,7 +394,7 @@ export const InvoiceHistoryPage = () => {
               Historial de Facturas & Movimientos
             </h2>
             <span className="px-2.5 py-0.5 text-[10px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/40 rounded-full">
-              KAREN & WLADIMIR
+              ADMINISTRACIÓN
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-1">

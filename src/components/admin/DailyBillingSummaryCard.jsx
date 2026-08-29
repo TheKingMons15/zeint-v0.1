@@ -100,7 +100,7 @@ export const DailyBillingSummaryCard = ({ orders = [], onOpenCleanOrders }) => {
                 </h3>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" /> Karen & Wladimir
+                  <ShieldCheck className="w-3 h-3" /> Administración
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">

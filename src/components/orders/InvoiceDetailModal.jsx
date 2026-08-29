@@ -278,7 +278,7 @@ export const InvoiceDetailModal = ({
                 </span>
                 {isAuthorized && (
                   <span className="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1">
-                    <ShieldCheck className="w-3 h-3" /> Exclusivo Karen & Wladimir
+                    <ShieldCheck className="w-3 h-3" /> Exclusivo Administración
                   </span>
                 )}
               </div>
@@ -570,7 +570,7 @@ export const InvoiceDetailModal = ({
                     <h5 className="text-xs sm:text-sm font-black text-white flex items-center gap-2">
                       Análisis de Costos y Rentabilidad de la Mesa
                       <span className="px-2 py-0.2 text-[9px] font-black uppercase rounded bg-purple-500/30 text-purple-200 border border-purple-400/40">
-                        Karen & Wladimir
+                        Administración
                       </span>
                     </h5>
                     <p className="text-[10px] text-slate-400">
