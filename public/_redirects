@@ -1,2 +1,3 @@
-# Redirección SPA para Netlify
-/*    /index.html   200
+# Redirección SPA para Cloudflare Pages / Workers & Netlify
+/*    /index.html   200!
+
