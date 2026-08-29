@@ -123,6 +123,7 @@ export const InvoiceDetailModal = ({
       subtotalNeto: Number(subtotalNeto.toFixed(2)),
       tipAmount: Number(tipAmount.toFixed(2)),
       totalPagar: Number(totalPagar.toFixed(2)),
+      totalAPagar: Number(totalPagar.toFixed(2)),
       totalCostoKitchen: Number(totalCostoKitchen.toFixed(2)),
       totalCostoBar: Number(totalCostoBar.toFixed(2)),
       totalCostoInsumos: Number(totalCostoInsumos.toFixed(2)),
@@ -439,15 +440,15 @@ export const InvoiceDetailModal = ({
                           {isAuthorized && showCostDetails && (
                             <>
                               <td className="py-2.5 px-3.5 text-right font-mono text-purple-300 bg-purple-950/10">
-                                ${item.costData?.totalCost.toFixed(2)}
+                                ${Number(item.costData?.totalCost || 0).toFixed(2)}
                                 <span className="block text-[9px] text-slate-500">
-                                  (${item.costData?.unitCost.toFixed(2)} c/u)
+                                  (${Number(item.costData?.unitCost || 0).toFixed(2)} c/u)
                                 </span>
                               </td>
                               <td className="py-2.5 px-3.5 text-right font-mono text-teal-300 bg-teal-950/10">
-                                +${item.costData?.marginDollars.toFixed(2)}
+                                +${Number(item.costData?.marginDollars ?? item.costData?.margin ?? 0).toFixed(2)}
                                 <span className="block text-[9px] text-teal-400/80">
-                                  {item.costData?.marginPercent}%
+                                  {Number(item.costData?.marginPercent || 0)}%
                                 </span>
                               </td>
                             </>
@@ -669,7 +670,7 @@ export const InvoiceDetailModal = ({
               onClick={() => setIsCheckoutOpen(true)}
               className="text-xs py-2 px-4 font-black bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-950/40"
             >
-              💳 Cobrar / Cerrar Mesa (${totals.totalAPagar.toFixed(2)})
+              💳 Cobrar / Cerrar Mesa (${Number(totals?.totalPagar || totals?.totalAPagar || 0).toFixed(2)})
             </Button>
           </div>
         </div>

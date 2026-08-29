@@ -114,11 +114,11 @@ export const auditService = {
 
         callback(logs);
       }, (error) => {
-        console.error("Error subscribing to audit logs in Firestore:", error);
+        console.warn("Audit logs subscription notice:", error.message);
         callback([]);
       });
     } catch (e) {
-      console.error("Exception in auditService.subscribe:", e);
+      console.warn("Exception in auditService.subscribe:", e);
       callback([]);
       return () => {};
     }
