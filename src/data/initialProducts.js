@@ -88,7 +88,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
   { name: 'Papel aluminio', category: 'Otros', unit: 'rollo', initialStock: 0, minStock: 2 },
   { name: 'Hojas de achira', category: 'Otros', unit: 'paquete', initialStock: 0, minStock: 3 },
 
-  // 10. Cervezas Artesanales & Bar (Catálogo Oficial Zénit)
+  // 10. Cervezas Artesanales & Bar (Catálogo Oficial Zénit según PDF)
   { 
     name: 'WHITE IPA 500ML', 
     category: 'Vinos & Cervezas', 
@@ -99,7 +99,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
     price: 4.50, 
     abv: '5.50%', 
     description: 'Cerveza rubia con base de trigo, estilo IPA por su extra lúpulo en aroma.',
-    location: 'Bar',
+    location: 'Bar / Coctelería',
     presentation: '500ml'
   },
   { 
@@ -112,7 +112,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
     price: 4.50, 
     abv: '4.70%', 
     description: 'Cerveza rubia ligera con un toque exótico a jengibre.',
-    location: 'Bar',
+    location: 'Bar / Coctelería',
     presentation: '500ml'
   },
   { 
@@ -125,7 +125,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
     price: 4.50, 
     abv: '5.00%', 
     description: 'Cerveza roja, las maltas acarameladas le dan un toque único.',
-    location: 'Bar',
+    location: 'Bar / Coctelería',
     presentation: '500ml'
   },
   { 
@@ -138,7 +138,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
     price: 4.50, 
     abv: '6.00%', 
     description: 'Cerveza negra estilo extra stout cuerpo medio con tonos a café.',
-    location: 'Bar',
+    location: 'Bar / Coctelería',
     presentation: '500ml'
   },
   { 
@@ -151,20 +151,20 @@ export const ZENIT_INITIAL_PRODUCTS = [
     price: 4.50, 
     abv: '6.10%', 
     description: 'Sweet stout, cerveza negra cremosa con cuerpo ligero y notas intensas a cacao y café.',
-    location: 'Bar',
+    location: 'Bar / Coctelería',
     presentation: '500ml'
   },
   { 
     name: 'HONEY STRONG 500ML', 
     category: 'Vinos & Cervezas', 
     unit: 'botella', 
-    initialStock: 24, 
+    initialStock: 0, 
     minStock: 12, 
     cost: 2.50,
     price: 5.00, 
     abv: '10.00%', 
     description: 'Cerveza rubia refrescante, con toques de miel de abeja.',
-    location: 'Bar',
+    location: 'Bar / Coctelería',
     presentation: '500ml'
   },
   { 
@@ -177,7 +177,7 @@ export const ZENIT_INITIAL_PRODUCTS = [
     price: 5.00, 
     abv: '9.00%', 
     description: 'Imperial stout cerveza negra con maltas tostadas y frambuesa.',
-    location: 'Bar',
+    location: 'Bar / Coctelería',
     presentation: '500ml'
   },
   { 
@@ -190,34 +190,21 @@ export const ZENIT_INITIAL_PRODUCTS = [
     price: 4.50, 
     abv: '4.90%', 
     description: 'Session IPA +9 mg de CBD hidrosoluble refrescante y relajante.',
-    location: 'Bar',
+    location: 'Bar / Coctelería',
     presentation: '500ml'
   },
   { 
-    name: 'HONEY STRONG BARRIL (500ML)', 
+    name: 'BARRIL HONEY STRONG 30 LITROS', 
     category: 'Vinos & Cervezas', 
     unit: 'litro', 
     initialStock: 30, 
-    minStock: 6, 
-    cost: 2.00,
+    minStock: 5, 
+    cost: 1.80,
     price: 5.00, 
     abv: '10.00%', 
-    description: 'Barril 30 Litros de cerveza Honey Strong artesanal (Servicio en Vaso 500ml).',
-    location: 'Bar',
-    presentation: 'Barril 30 Litros (500ml)'
-  },
-  { 
-    name: 'HONEY STRONG BARRIL (1 LITRO)', 
-    category: 'Vinos & Cervezas', 
-    unit: 'litro', 
-    initialStock: 30, 
-    minStock: 6, 
-    cost: 3.50,
-    price: 7.00, 
-    abv: '10.00%', 
-    description: 'Barril 30 Litros de cerveza Honey Strong artesanal (Servicio en Jarra 1 Litro).',
-    location: 'Bar',
-    presentation: 'Barril 30 Litros (1 Litro)'
+    description: 'Barril 30 Litros de cerveza Honey Strong artesanal (Servicio en Vaso 500ml a $5.00 y Jarra 1L a $7.00).',
+    location: 'Bar / Coctelería',
+    presentation: 'Barril 30 Litros'
   }
 ];
 
