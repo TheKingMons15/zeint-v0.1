@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { 
   Receipt, 
   Printer, 
@@ -21,10 +21,12 @@ import {
   Sparkles,
   ChevronDown,
   ChevronRight,
-  Info
+  Info,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
+import { TableCheckoutModal } from './TableCheckoutModal';
 import { orderService, ORDER_STATUS } from '../../services/orderService';
 import { isAuthorizedBillingUser } from '../../utils/constants';
 import { formatDateTime, formatTime, formatNumber, formatDate } from '../../utils/formatters';
@@ -42,6 +44,7 @@ export const InvoiceDetailModal = ({
   const [selectedOrderTab, setSelectedOrderTab] = useState('ALL'); // 'ALL' | orderId
   const [showCostDetails, setShowCostDetails] = useState(false);
   const [tipPercentage, setTipPercentage] = useState(0); // 0% | 10%
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const printRef = useRef(null);
 
   const isAuthorized = isAuthorizedBillingUser(currentUser);
@@ -646,23 +649,48 @@ export const InvoiceDetailModal = ({
             <Button
               variant="outline"
               onClick={onClose}
-              className="text-xs py-2 px-4"
+              className="text-xs py-2 px-3"
             >
               Cerrar
             </Button>
 
             <Button
-              variant="primary"
+              variant="outline"
               icon={Printer}
               onClick={handlePrint}
-              className="text-xs py-2 px-4 font-bold shadow-lg"
+              className="text-xs py-2 px-3 font-bold"
             >
-              Imprimir Ticket Precuenta
+              Imprimir Precuenta
+            </Button>
+
+            <Button
+              variant="success"
+              icon={CreditCard}
+              onClick={() => setIsCheckoutOpen(true)}
+              className="text-xs py-2 px-4 font-black bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-950/40"
+            >
+              💳 Cobrar / Cerrar Mesa (${totals.totalAPagar.toFixed(2)})
             </Button>
           </div>
         </div>
 
       </div>
+
+      {/* Modal de Cierre de Cuenta & División de Cuenta Individual */}
+      {isCheckoutOpen && (
+        <TableCheckoutModal
+          isOpen={isCheckoutOpen}
+          onClose={() => setIsCheckoutOpen(false)}
+          tableName={tableName}
+          orders={effectiveOrders}
+          currentUser={currentUser}
+          onTableClosed={() => {
+            setIsCheckoutOpen(false);
+            onClose();
+          }}
+        />
+      )}
+
     </div>
   );
 };

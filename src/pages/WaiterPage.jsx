@@ -23,7 +23,8 @@ import {
   Trash2,
   AlertCircle,
   RotateCcw,
-  Receipt
+  Receipt,
+  CreditCard
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useInventory } from '../hooks/useInventory';
@@ -37,13 +38,11 @@ import { ItemCustomizationModal } from '../components/orders/ItemCustomizationMo
 import { DishIngredientsModal } from '../components/orders/DishIngredientsModal';
 import { OrderCancellationModal } from '../components/orders/OrderCancellationModal';
 import { InvoiceDetailModal } from '../components/orders/InvoiceDetailModal';
+import { TableCheckoutModal } from '../components/orders/TableCheckoutModal';
+import { ALL_RESTAURANT_TABLES } from '../utils/constants';
 import { formatNumber, formatTime, formatDateTime } from '../utils/formatters';
 
-const TABLES = [
-  'Mesa 1', 'Mesa 2', 'Mesa 3', 'Mesa 4', 'Mesa 5',
-  'Mesa 6', 'Mesa 7', 'Mesa 8', 'Mesa 9', 'Mesa 10',
-  'Mesa 11', 'Mesa 12', 'Barra 1', 'Barra 2', 'Terraza 1', 'Terraza 2'
-];
+const TABLES = ALL_RESTAURANT_TABLES;
 
 export const WaiterPage = () => {
   const { user } = useAuth();
@@ -70,6 +69,7 @@ export const WaiterPage = () => {
   const [itemToDeleteFromCart, setItemToDeleteFromCart] = useState(null);
   const [viewingInvoiceOrder, setViewingInvoiceOrder] = useState(null);
   const [selectedTableForPrecount, setSelectedTableForPrecount] = useState(null);
+  const [tableForCheckout, setTableForCheckout] = useState(null);
 
   const companyId = user?.companyId || 'default_company';
 
@@ -913,19 +913,35 @@ export const WaiterPage = () => {
                         <span className="text-sm font-black text-emerald-400">${Number(order.total || 0).toFixed(2)}</span>
                       </div>
 
-                      {/* Botón de Ver Factura / Precuenta */}
-                      <Button
-                        fullWidth
-                        variant="outline"
-                        onClick={() => {
-                          setViewingInvoiceOrder(order);
-                          setSelectedTableForPrecount(null);
-                        }}
-                        icon={Receipt}
-                        className="py-2 text-xs font-bold text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/50 bg-slate-950/60"
-                      >
-                        Ver Factura / Precuenta
-                      </Button>
+                      {/* Botones de Factura y Cobro */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setViewingInvoiceOrder(order);
+                            setSelectedTableForPrecount(null);
+                          }}
+                          icon={Receipt}
+                          className="py-2 text-[11px] font-bold text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/50 bg-slate-950/60"
+                        >
+                          Precuenta
+                        </Button>
+
+                        <Button
+                          variant="success"
+                          onClick={() => {
+                            const tblOrders = liveOrders.filter(o => o.table === order.table && o.status !== ORDER_STATUS.CANCELLED);
+                            setTableForCheckout({
+                              tableName: order.table,
+                              orders: tblOrders.length > 0 ? tblOrders : [order]
+                            });
+                          }}
+                          icon={CreditCard}
+                          className="py-2 text-[11px] font-black bg-emerald-600 hover:bg-emerald-500 shadow-md"
+                        >
+                          Cobrar Mesa
+                        </Button>
+                      </div>
 
                       {isReady && (
                         <Button
@@ -1027,6 +1043,18 @@ export const WaiterPage = () => {
           tableData={selectedTableForPrecount}
           inventoryProducts={products}
           currentUser={user}
+        />
+      )}
+
+      {/* Modal de Cierre de Cuenta & División de Mesa */}
+      {tableForCheckout && (
+        <TableCheckoutModal
+          isOpen={Boolean(tableForCheckout)}
+          onClose={() => setTableForCheckout(null)}
+          tableName={tableForCheckout.tableName}
+          orders={tableForCheckout.orders}
+          currentUser={user}
+          onTableClosed={() => setTableForCheckout(null)}
         />
       )}
 

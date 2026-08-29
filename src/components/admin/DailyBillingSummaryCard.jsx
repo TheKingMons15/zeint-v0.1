@@ -21,12 +21,14 @@ import {
   UtensilsCrossed,
   FileText,
   Search,
-  Filter
+  Filter,
+  CreditCard
 } from 'lucide-react';
 import { orderService, ORDER_STATUS } from '../../services/orderService';
 import { isAuthorizedBillingUser, ALL_RESTAURANT_TABLES } from '../../utils/constants';
 import { getTodayDateString, formatTime, formatDate, formatNumber } from '../../utils/formatters';
 import { InvoiceDetailModal } from '../orders/InvoiceDetailModal';
+import { TableCheckoutModal } from '../orders/TableCheckoutModal';
 import { useAuth } from '../../hooks/useAuth';
 import { useInventory } from '../../hooks/useInventory';
 
@@ -41,6 +43,7 @@ export const DailyBillingSummaryCard = ({ orders = [], onOpenCleanOrders }) => {
   // Estado para el modal de factura
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState(null);
   const [selectedInvoiceTable, setSelectedInvoiceTable] = useState(null);
+  const [checkoutTableData, setCheckoutTableData] = useState(null);
 
   const isToday = selectedDate === getTodayDateString();
   const isAuthorized = isAuthorizedBillingUser(user);
@@ -323,17 +326,27 @@ export const DailyBillingSummaryCard = ({ orders = [], onOpenCleanOrders }) => {
 
                     </div>
 
-                    {/* Botón de Acción Principal: Ver Detalle Factura de la Mesa */}
-                    <div className="pt-3 border-t border-slate-800">
+                    {/* Botones de Acción: Ver Detalle Factura y Cobrar Mesa */}
+                    <div className="pt-3 border-t border-slate-800 grid grid-cols-2 gap-2">
                       <button
                         onClick={() => {
                           setSelectedInvoiceTable(table);
                           setSelectedInvoiceOrder(null);
                         }}
-                        className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 text-xs font-black transition-all flex items-center justify-center gap-1.5 shadow-md"
+                        className="py-2 px-2.5 rounded-xl bg-slate-900 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 text-[11px] font-black transition-all flex items-center justify-center gap-1 shadow-md"
                       >
-                        <Receipt className="w-4 h-4" />
-                        <span>Ver Factura & Detalle Completo</span>
+                        <Receipt className="w-3.5 h-3.5" />
+                        <span>Ver Factura</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setCheckoutTableData(table);
+                        }}
+                        className="py-2 px-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black transition-all flex items-center justify-center gap-1 shadow-md"
+                      >
+                        <CreditCard className="w-3.5 h-3.5" />
+                        <span>Cobrar Mesa</span>
                       </button>
                     </div>
 
@@ -520,6 +533,18 @@ export const DailyBillingSummaryCard = ({ orders = [], onOpenCleanOrders }) => {
           tableData={selectedInvoiceTable}
           inventoryProducts={products}
           currentUser={user}
+        />
+      )}
+
+      {/* MODAL DE COBRO Y CIERRE DE MESA */}
+      {checkoutTableData && (
+        <TableCheckoutModal
+          isOpen={Boolean(checkoutTableData)}
+          onClose={() => setCheckoutTableData(null)}
+          tableName={checkoutTableData.tableName}
+          orders={checkoutTableData.orders || []}
+          currentUser={user}
+          onTableClosed={() => setCheckoutTableData(null)}
         />
       )}
 

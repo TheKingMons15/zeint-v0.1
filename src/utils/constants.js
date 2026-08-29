@@ -147,11 +147,13 @@ export const USER_ROLES = {
   MESERO: 'MESERO'
 };
 
-// Lista oficial de mesas y estaciones de atención en Sala Zénit
+// Lista oficial de mesas y estaciones de atención en Sala Zénit (21 Mesas + Barras + Terrazas)
 export const ALL_RESTAURANT_TABLES = [
   'Mesa 1', 'Mesa 2', 'Mesa 3', 'Mesa 4', 'Mesa 5',
   'Mesa 6', 'Mesa 7', 'Mesa 8', 'Mesa 9', 'Mesa 10',
-  'Mesa 11', 'Mesa 12', 'Barra 1', 'Barra 2', 'Terraza 1', 'Terraza 2'
+  'Mesa 11', 'Mesa 12', 'Mesa 13', 'Mesa 14', 'Mesa 15',
+  'Mesa 16', 'Mesa 17', 'Mesa 18', 'Mesa 19', 'Mesa 20',
+  'Mesa 21', 'Barra 1', 'Barra 2', 'Terraza 1', 'Terraza 2'
 ];
 
 // Helper de Autorización Estricta: Exclusivo Wladimir y Karen (y Superadministración)

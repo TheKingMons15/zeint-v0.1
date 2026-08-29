@@ -875,6 +875,123 @@ export const orderService = {
       cancelledCount: cancelledOrders.length,
       completedOrders
     };
+  },
+
+  // 12. Cerrar cuenta de una mesa (Cobro Total / Cierre de Comandas / División)
+  async closeTableAccount(tableName, paymentData, user) {
+    const {
+      paymentMethod = 'EFECTIVO',
+      tip = 0,
+      discount = 0,
+      totalPaid = 0,
+      receivedAmount = 0,
+      change = 0,
+      reference = '',
+      splitPayments = [],
+      notes = ''
+    } = paymentData || {};
+
+    const closedAt = new Date().toISOString();
+    const closedBy = user?.displayName || user?.email || 'Cajero / Mesero';
+
+    if (isDemoMode) {
+      const orders = JSON.parse(localStorage.getItem(DEMO_ORDERS_KEY) || '[]');
+      let affectedOrders = 0;
+
+      orders.forEach(order => {
+        if (order.table === tableName && order.status !== ORDER_STATUS.CANCELLED) {
+          order.status = ORDER_STATUS.DELIVERED;
+          order.isTableClosed = true;
+          order.closedAt = closedAt;
+          order.closedBy = closedBy;
+          order.paymentDetails = {
+            paymentMethod,
+            tip: Number(tip || 0),
+            discount: Number(discount || 0),
+            totalPaid: Number(totalPaid || 0),
+            receivedAmount: Number(receivedAmount || 0),
+            change: Number(change || 0),
+            reference: reference || '',
+            splitPayments: splitPayments || [],
+            notes: notes || ''
+          };
+          order.updatedAt = closedAt;
+          affectedOrders++;
+        }
+      });
+
+      localStorage.setItem(DEMO_ORDERS_KEY, JSON.stringify(orders));
+      window.dispatchEvent(new Event('demo_orders_updated'));
+
+      try {
+        await auditService.logAction(user, 'CLOSE_TABLE_ACCOUNT', {
+          table: tableName,
+          totalPaid: `$${Number(totalPaid || 0).toFixed(2)}`,
+          paymentMethod,
+          tip: `$${Number(tip || 0).toFixed(2)}`,
+          affectedOrders,
+          message: `Cuenta de ${tableName} cerrada exitosamente con método ${paymentMethod}`
+        });
+      } catch (e) {
+        console.warn("Audit error:", e);
+      }
+
+      return { success: true, affectedOrders };
+    }
+
+    // Modo Firestore
+    const q = query(
+      collection(db, 'products'),
+      where('isOrder', '==', true),
+      where('table', '==', tableName)
+    );
+
+    const snapshot = await getDocs(q);
+    const batch = writeBatch(db);
+    let count = 0;
+
+    snapshot.docs.forEach(docSnap => {
+      const order = docSnap.data();
+      if (order.status !== ORDER_STATUS.CANCELLED) {
+        batch.update(docSnap.ref, {
+          status: ORDER_STATUS.DELIVERED,
+          isTableClosed: true,
+          closedAt: serverTimestamp(),
+          closedBy,
+          paymentDetails: {
+            paymentMethod,
+            tip: Number(tip || 0),
+            discount: Number(discount || 0),
+            totalPaid: Number(totalPaid || 0),
+            receivedAmount: Number(receivedAmount || 0),
+            change: Number(change || 0),
+            reference: reference || '',
+            splitPayments: splitPayments || [],
+            notes: notes || ''
+          },
+          updatedAt: serverTimestamp()
+        });
+        count++;
+      }
+    });
+
+    if (count > 0) {
+      await batch.commit();
+    }
+
+    try {
+      await auditService.logAction(user, 'CLOSE_TABLE_ACCOUNT', {
+        table: tableName,
+        totalPaid: `$${Number(totalPaid || 0).toFixed(2)}`,
+        paymentMethod,
+        affectedOrders: count,
+        message: `Cuenta de ${tableName} cerrada exitosamente`
+      });
+    } catch (e) {
+      console.warn("Audit error:", e);
+    }
+
+    return { success: true, affectedOrders: count };
   }
 };
 
