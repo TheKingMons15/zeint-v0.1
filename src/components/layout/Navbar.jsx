@@ -11,11 +11,13 @@ import {
   ShieldCheck, 
   Crown,
   Boxes,
-  FileText
+  FileText,
+  Receipt
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useInventory } from '../../hooks/useInventory';
 import { Button } from '../common/Button';
+import { isAuthorizedBillingUser } from '../../utils/constants';
 
 export const Navbar = ({ onOpenMovementModal, onOpenProductModal }) => {
   const navigate = useNavigate();
@@ -24,6 +26,7 @@ export const Navbar = ({ onOpenMovementModal, onOpenProductModal }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const isSuperAdmin = user?.role === 'superadmin' || user?.isSuperAdmin || user?.email === 'master@zenit.com';
+  const isBillingUser = isAuthorizedBillingUser(user);
 
   return (
     <header className="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 sm:px-6 py-3">
@@ -110,6 +113,18 @@ export const Navbar = ({ onOpenMovementModal, onOpenProductModal }) => {
             </button>
           )}
 
+          {/* Botón Histórico Facturación para Karen & Wladimir */}
+          {isBillingUser && (
+            <button
+              onClick={() => navigate('/historico-facturas')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-black hover:bg-purple-600 hover:text-white transition-all shadow-md shadow-purple-950/40"
+              title="Histórico de Facturación y Movimientos Anteriores"
+            >
+              <Receipt className="w-4 h-4 text-purple-400" />
+              <span className="hidden sm:inline">Histórico Facturas</span>
+            </button>
+          )}
+
           {/* User Menu Dropdown */}
           <div className="relative">
             <button
@@ -131,7 +146,7 @@ export const Navbar = ({ onOpenMovementModal, onOpenProductModal }) => {
 
             {/* Dropdown popup */}
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-60 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl py-2 z-50 animate-fade-in">
+              <div className="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl py-2 z-50 animate-fade-in">
                 <div className="px-4 py-2 border-b border-slate-800">
                   <p className="text-xs font-bold text-slate-200">{user?.displayName || 'Usuario'}</p>
                   <p className="text-[11px] text-slate-400 truncate">{user?.email || 'usuario@zenit.com'}</p>
@@ -141,6 +156,18 @@ export const Navbar = ({ onOpenMovementModal, onOpenProductModal }) => {
                 </div>
 
                 <div className="p-1 space-y-0.5">
+                  {isBillingUser && (
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        navigate('/historico-facturas');
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-purple-300 hover:bg-purple-950/40 rounded-xl transition-colors font-bold text-left border border-purple-500/30 mb-1"
+                    >
+                      <Receipt className="w-4 h-4 text-purple-400" />
+                      Histórico de Facturación
+                    </button>
+                  )}
                   {isSuperAdmin && (
                     <button
                       onClick={() => {

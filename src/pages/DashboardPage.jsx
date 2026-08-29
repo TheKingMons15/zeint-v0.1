@@ -19,7 +19,8 @@ import {
   Edit3, 
   Trash2,
   DollarSign,
-  UtensilsCrossed
+  UtensilsCrossed,
+  Receipt
 } from 'lucide-react';
 import { useInventory } from '../hooks/useInventory';
 import { useAuth } from '../hooks/useAuth';
@@ -138,6 +139,18 @@ export const DashboardPage = () => {
           >
             - Salida
           </Button>
+
+          {isAdminOrSupervisor && (
+            <Button
+              size="sm"
+              variant="primary"
+              icon={Receipt}
+              onClick={() => navigate('/historico-facturas')}
+              className="bg-purple-600 hover:bg-purple-500 text-white font-black shadow-lg shadow-purple-950/40"
+            >
+              Histórico Facturas
+            </Button>
+          )}
 
           {isAdminOrSupervisor && (
             <Button
