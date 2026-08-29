@@ -327,47 +327,30 @@ export const WaiterPage = () => {
           </p>
         </div>
 
-        {/* Pestañas: Carta / Menú vs Comandas Activas */}
-        <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
-          <button
-            onClick={() => {
-              setActiveTab('menu');
+        {/* Pestañas: Carta / Menú vs Comandas Activas (Apple Segmented Control) */}
+        <div>
+          <SegmentedControl
+            options={[
+              { 
+                value: 'menu', 
+                label: 'Carta / Tomar Pedido', 
+                icon: UtensilsCrossed, 
+                count: totalItemsCount > 0 ? totalItemsCount : undefined 
+              },
+              { 
+                value: 'orders', 
+                label: 'Comandas en Sala', 
+                icon: Clock, 
+                count: activeOrdersCount > 0 ? activeOrdersCount : undefined 
+              }
+            ]}
+            value={activeTab}
+            onChange={(val) => {
+              setActiveTab(val);
               setSearch('');
             }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'menu'
-                ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <UtensilsCrossed className="w-4 h-4" />
-            <span>Carta / Tomar Pedido</span>
-            {cart.length > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-slate-950 text-emerald-400 text-[10px] font-black">
-                {totalItemsCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab('orders');
-              setSearch('');
-            }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'orders'
-                ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Clock className="w-4 h-4" />
-            <span>Comandas en Sala</span>
-            {activeOrdersCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black animate-pulse">
-                {activeOrdersCount}
-              </span>
-            )}
-          </button>
+            size="md"
+          />
         </div>
       </div>
 
@@ -506,40 +489,40 @@ export const WaiterPage = () => {
               </div>
             </div>
 
-            {/* Grid de Platos y Cócteles (Vista Rápida sin fotos para meseros) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Grid de Platos y Cócteles (Apple HIG Cards) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {filteredDishes.map(dish => {
                 const isBar = dish.destination === 'BAR';
 
                 return (
                   <div
                     key={dish.id}
-                    className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-2.5 ${
+                    className={`p-4 sm:p-5 rounded-3xl border transition-all duration-200 flex flex-col justify-between gap-3 ${
                       dish.isAvailable
-                        ? 'bg-slate-900/95 border-slate-800 hover:border-emerald-500/40 shadow-md'
-                        : 'bg-slate-950/60 border-slate-900 opacity-60'
+                        ? 'apple-glass-card hover:border-white/20 shadow-apple-sm hover:shadow-apple-md'
+                        : 'bg-black/40 border-white/5 opacity-50'
                     }`}
                   >
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {/* Cabecera con Categoría, Estación y Disponibilidad */}
                       <div className="flex items-center justify-between gap-1.5 flex-wrap">
                         <div className="flex items-center gap-1.5">
-                          <span className="px-2 py-0.5 text-[10px] font-bold bg-slate-950 text-emerald-400 rounded-lg border border-slate-800">
+                          <span className="px-2.5 py-0.5 text-[10px] font-bold bg-black/50 text-emerald-300 rounded-full border border-white/10">
                             {dish.category}
                           </span>
-                          <span className={`px-2 py-0.5 text-[9px] font-bold rounded-lg border ${
+                          <span className={`px-2.5 py-0.5 text-[9px] font-extrabold rounded-full border ${
                             isBar 
-                              ? 'bg-purple-950 text-purple-300 border-purple-500/40' 
-                              : 'bg-amber-950 text-amber-300 border-amber-500/40'
+                              ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' 
+                              : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
                           }`}>
                             {isBar ? '🍸 Bar' : '🍳 Cocina'}
                           </span>
                         </div>
 
-                        <span className={`px-2 py-0.5 text-[9px] font-black uppercase rounded-full border ${
+                        <span className={`px-2.5 py-0.5 text-[9px] font-black uppercase rounded-full border ${
                           dish.isAvailable
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                            : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                            ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                            : 'bg-rose-500/15 text-rose-300 border-rose-500/30'
                         }`}>
                           {dish.isAvailable ? '🟢 Disponible' : '🔴 Agotado'}
                         </span>
@@ -548,37 +531,37 @@ export const WaiterPage = () => {
                       {/* Nombre y Precio */}
                       <div>
                         <div className="flex items-baseline justify-between gap-2">
-                          <h4 className="text-sm font-black text-slate-100 leading-snug">{dish.name}</h4>
-                          <span className="text-sm font-black text-emerald-400 shrink-0">${dish.price?.toFixed(2)}</span>
+                          <h4 className="text-sm font-extrabold text-white leading-snug tracking-tight">{dish.name}</h4>
+                          <span className="text-sm font-extrabold text-emerald-400 font-mono shrink-0">${dish.price?.toFixed(2)}</span>
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">{dish.description}</p>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed font-medium">{dish.description}</p>
                       </div>
 
                       {/* Insumos resumidos */}
                       {dish.ingredients && dish.ingredients.length > 0 && (
-                        <div className="pt-1.5 border-t border-slate-800/60 text-[10px] text-slate-400">
-                          <span className="font-semibold text-slate-300">Insumos: </span>
+                        <div className="pt-2 border-t border-white/10 text-[10px] text-slate-400 font-medium">
+                          <span className="font-bold text-slate-300">Insumos: </span>
                           {dish.ingredients.map(i => `${i.productName}`).join(', ')}
                         </div>
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-800/80">
+                    <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-white/10">
                       <button
                         type="button"
                         onClick={() => setViewingDishIngredients(dish)}
-                        className="text-[11px] text-slate-400 hover:text-slate-200 underline"
+                        className="text-[11px] text-slate-400 hover:text-white font-medium underline transition-colors"
                       >
                         🔍 Ver ingredientes
                       </button>
 
                       <Button
-                        size="sm"
+                        size="xs"
                         variant={dish.isAvailable ? "primary" : "secondary"}
                         disabled={!dish.isAvailable}
                         onClick={() => addToCart(dish)}
                         icon={Plus}
-                        className="text-xs py-1.5 px-3 font-bold"
+                        className="text-xs py-1.5 px-3.5 font-bold"
                       >
                         {dish.isAvailable ? '+ Agregar' : 'Sin Stock'}
                       </Button>
@@ -593,16 +576,18 @@ export const WaiterPage = () => {
 
           {/* COLUMNA DERECHA (1/3): COMANDA / CARRITO DE LA MESA */}
           <div className="space-y-4">
-            <div className="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl sticky top-20 space-y-4">
+            <div className="p-5 sm:p-6 rounded-3xl apple-glass-sheet border border-white/15 shadow-apple-lg sticky top-20 space-y-4">
               
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5 text-emerald-400" />
-                  <h3 className="text-sm font-black text-white">
+                  <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <ShoppingBag className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-sm font-extrabold text-white tracking-tight">
                     Comanda - {selectedTable}
                   </h3>
                 </div>
-                <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                   {totalItemsCount} Item(s)
                 </span>
               </div>

@@ -5,8 +5,7 @@ import {
   Edit2, 
   Trash2, 
   AlertTriangle, 
-  CheckCircle2,
-  Package
+  CheckCircle2
 } from 'lucide-react';
 import { Badge } from '../common/Badge';
 import { formatNumber } from '../../utils/formatters';
@@ -26,10 +25,10 @@ export const ProductCard = ({
   const progressPercent = min > 0 ? Math.min(100, Math.round((current / (min * 2)) * 100)) : 100;
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl bg-slate-900/90 border transition-all duration-200 p-4 flex flex-col justify-between ${
+    <div className={`relative overflow-hidden rounded-3xl transition-all duration-200 p-5 flex flex-col justify-between border ${
       isLowStock 
-        ? 'border-rose-500/40 shadow-lg shadow-rose-950/20' 
-        : 'border-slate-800 hover:border-slate-700 shadow-md'
+        ? 'apple-glass-card border-rose-500/40 shadow-apple-md' 
+        : 'apple-glass-card border-white/10 hover:border-white/20 shadow-apple-sm'
     }`}>
       
       {/* Top Header: Category & Actions */}
@@ -41,8 +40,8 @@ export const ProductCard = ({
             {onEdit && (
               <button
                 onClick={() => onEdit(product)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
-                title="Editar Producto"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all active:scale-95"
+                title="Editar Insumo"
               >
                 <Edit2 className="w-3.5 h-3.5" />
               </button>
@@ -50,8 +49,8 @@ export const ProductCard = ({
             {onDelete && (
               <button
                 onClick={() => onDelete(product)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                title="Eliminar Producto"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all active:scale-95"
+                title="Eliminar Insumo"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -60,41 +59,39 @@ export const ProductCard = ({
         </div>
 
         {/* Product Name & ID */}
-        <div className="mt-2">
-          <div className="flex items-center justify-between gap-1">
-            <h4 className="text-base font-bold text-slate-100 tracking-tight line-clamp-1">
-              {product.name}
-            </h4>
-          </div>
-          <div className="flex items-center gap-2 text-[10px] text-slate-500 font-mono mt-0.5">
+        <div className="mt-2.5">
+          <h4 className="text-base font-extrabold text-white tracking-tight line-clamp-1">
+            {product.name}
+          </h4>
+          <div className="flex items-center gap-2 text-[10px] text-slate-400 font-mono mt-0.5">
             <span>ID: {product.id_producto || product.id}</span>
             {product.supplier && <span>• {product.supplier}</span>}
           </div>
         </div>
 
         {product.notes && (
-          <p className="text-[11px] text-slate-400 line-clamp-1 mt-1">
+          <p className="text-[11px] text-slate-400 line-clamp-1 mt-1 font-medium">
             {product.notes}
           </p>
         )}
       </div>
 
       {/* Center: Stock Display & Progress */}
-      <div className="mt-4 pt-3 border-t border-slate-800/80">
+      <div className="mt-4 pt-3 border-t border-white/10">
         <div className="flex items-baseline justify-between">
           <div className="flex items-baseline gap-1.5">
-            <span className={`text-2xl font-extrabold tracking-tight ${
-              isLowStock ? 'text-rose-400' : 'text-slate-100'
+            <span className={`text-2xl font-extrabold tracking-tight font-sans ${
+              isLowStock ? 'text-rose-400' : 'text-white'
             }`}>
               {formatNumber(current)}
             </span>
-            <span className="text-xs font-semibold text-slate-400">
+            <span className="text-xs font-bold text-slate-400">
               {product.unit}
             </span>
           </div>
 
           <div className="text-right">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block">
+            <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
               Mín: {formatNumber(min)} {product.unit}
             </span>
             <span className={`text-[11px] font-bold inline-flex items-center gap-1 ${
@@ -102,46 +99,50 @@ export const ProductCard = ({
             }`}>
               {isLowStock ? (
                 <>
-                  <AlertTriangle className="w-3 h-3 animate-pulse" />
-                  Bajo Stock
+                  <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                  <span>Crítico</span>
                 </>
               ) : (
                 <>
-                  <CheckCircle2 className="w-3 h-3" />
-                  Óptimo
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>Óptimo</span>
                 </>
               )}
             </span>
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-2.5">
-          <div
+        {/* Apple HIG Smooth Progress Bar */}
+        <div className="w-full bg-black/40 h-1.5 rounded-full mt-2.5 overflow-hidden border border-white/5">
+          <div 
             className={`h-full rounded-full transition-all duration-300 ${
-              isLowStock ? 'bg-rose-500' : 'bg-emerald-500'
+              isLowStock 
+                ? 'bg-rose-500 shadow-apple-glow-amber' 
+                : progressPercent > 60 
+                ? 'bg-emerald-500 shadow-apple-glow-emerald' 
+                : 'bg-amber-500'
             }`}
-            style={{ width: `${Math.max(5, progressPercent)}%` }}
+            style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>
 
-      {/* Bottom: Quick Entry / Quick Exit Buttons */}
-      <div className="grid grid-cols-2 gap-2 mt-4 pt-2">
+      {/* Bottom Quick Action Buttons */}
+      <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/10">
         <button
-          onClick={() => onQuickEntry(product)}
-          className="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all active:scale-95"
+          onClick={() => onQuickEntry && onQuickEntry(product)}
+          className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500 hover:text-slate-950 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition-all duration-150 active:scale-95 shadow-sm"
         >
           <ArrowDownLeft className="w-3.5 h-3.5" />
-          + Entrada
+          <span>+ Entrada</span>
         </button>
 
         <button
-          onClick={() => onQuickExit(product)}
-          className="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold transition-all active:scale-95"
+          onClick={() => onQuickExit && onQuickExit(product)}
+          className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-2xl bg-rose-500/15 hover:bg-rose-500 hover:text-white text-rose-300 border border-rose-500/30 text-xs font-bold transition-all duration-150 active:scale-95 shadow-sm"
         >
           <ArrowUpRight className="w-3.5 h-3.5" />
-          - Salida
+          <span>- Salida</span>
         </button>
       </div>
 

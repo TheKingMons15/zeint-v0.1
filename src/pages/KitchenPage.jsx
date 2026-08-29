@@ -25,6 +25,7 @@ import { orderService, ORDER_STATUS } from '../services/orderService';
 import { Button } from '../components/common/Button';
 import { ProductFormModal } from '../components/products/ProductFormModal';
 import { DishIngredientsModal } from '../components/orders/DishIngredientsModal';
+import { SegmentedControl } from '../components/common/SegmentedControl';
 import { formatTime, formatDateTime } from '../utils/formatters';
 
 export const KitchenPage = () => {
@@ -100,15 +101,16 @@ export const KitchenPage = () => {
         if (order.status !== filterStatus) return false;
       }
 
-      // Filtro de texto
-      const q = search.toLowerCase().trim();
-      if (!q) return true;
+      // Buscador
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        const matchTable = (order.table || '').toLowerCase().includes(q);
+        const matchItems = order.kitchenItems?.some(i => i.name.toLowerCase().includes(q) || (i.notes && i.notes.toLowerCase().includes(q)));
+        const matchWaiter = (order.waiterName || '').toLowerCase().includes(q);
+        return matchTable || matchItems || matchWaiter;
+      }
 
-      const matchTable = order.table?.toLowerCase().includes(q);
-      const matchDish = order.kitchenItems?.some(i => i.name?.toLowerCase().includes(q));
-      const matchNotes = order.notes?.toLowerCase().includes(q) || order.kitchenItems?.some(i => i.notes?.toLowerCase().includes(q));
-
-      return matchTable || matchDish || matchNotes;
+      return true;
     });
   }, [kitchenOrders, filterStatus, search]);
 
@@ -120,50 +122,64 @@ export const KitchenPage = () => {
   const getStatusCardStyle = (status) => {
     switch (status) {
       case ORDER_STATUS.PENDING:
-        return 'bg-amber-950/20 border-amber-500/50 shadow-amber-950/40 ring-1 ring-amber-500/30';
+        return 'apple-glass-card border-amber-500/40 shadow-apple-glow-amber';
       case ORDER_STATUS.PREPARING:
-        return 'bg-sky-950/20 border-sky-500/50 shadow-sky-950/40 ring-1 ring-sky-500/30';
+        return 'apple-glass-card border-sky-500/40 shadow-apple-glow-blue';
       case ORDER_STATUS.READY:
-        return 'bg-emerald-950/30 border-emerald-500/60 shadow-emerald-950/50 ring-2 ring-emerald-500/50';
+        return 'apple-glass-card border-emerald-500/40 shadow-apple-glow-emerald';
       case ORDER_STATUS.CANCELLED:
-        return 'bg-rose-950/30 border-rose-900/60 opacity-60';
-      case ORDER_STATUS.DELIVERED:
-        return 'bg-slate-900/60 border-slate-800 opacity-60';
+        return 'bg-black/50 border-rose-500/30 opacity-70';
       default:
-        return 'bg-slate-900 border-slate-800';
+        return 'apple-glass border-white/10 opacity-70';
     }
   };
 
   const handleInspectDish = (item, order) => {
-    setInspectingDish(item);
+    setInspectingDish({
+      id: item.recipeId || item.id,
+      name: item.name,
+      category: item.category || 'Cocina',
+      price: item.price,
+      destination: item.destination || 'KITCHEN'
+    });
     setInspectingOrderContext({
       table: order.table,
-      waiterName: order.waiterName,
-      status: order.status
+      waiter: order.waiterName,
+      time: order.createdAt
     });
   };
 
+  const filterOptions = [
+    { value: 'ACTIVE', label: 'Activas', count: pendingCount + preparingCount + readyCount },
+    { value: ORDER_STATUS.PENDING, label: 'Pendientes', count: pendingCount },
+    { value: ORDER_STATUS.PREPARING, label: 'En Parrilla', count: preparingCount },
+    { value: ORDER_STATUS.READY, label: 'Listas', count: readyCount },
+    { value: 'ALL', label: 'Historial', count: kitchenOrders.length }
+  ];
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in pb-20">
+    <div className="space-y-6 max-w-7xl mx-auto animate-apple-fade pb-20">
       
-      {/* Header KDS Cocina */}
-      <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="p-3 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-lg shadow-amber-950/50">
-            <Flame className="w-7 h-7" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                Pantalla KDS de Cocina & Parrilla
-              </h2>
-              <span className="px-2.5 py-0.5 text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full animate-pulse">
-                EN VIVO
-              </span>
+      {/* Header Operativo de Cocina */}
+      <div className="p-6 sm:p-7 rounded-3xl apple-glass-sheet border border-white/15 shadow-apple-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-apple-glow-amber">
+              <ChefHat className="w-6 h-6 text-amber-400" />
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Control de tiempos, preparación y consulta de ingredientes de comandas
-            </p>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                  Pantalla Cocina KDS
+                </h2>
+                <span className="px-2.5 py-0.5 text-[10px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full">
+                  {user?.displayName || 'Cocina Zénit'}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5 font-medium">
+                Despacho en tiempo real de platos y parrilla
+              </p>
+            </div>
           </div>
         </div>
 
@@ -171,81 +187,35 @@ export const KitchenPage = () => {
         <div className="flex items-center gap-3 flex-wrap">
           <Button
             size="sm"
-            variant="outline"
+            variant="amber"
             onClick={() => setIsProductModalOpen(true)}
             icon={PackagePlus}
-            className="border-amber-500/40 text-amber-300 hover:bg-amber-500/10 text-xs font-bold"
+            className="text-xs font-black"
           >
-            + Registrar Insumo (Cocina)
+            + Insumo Cocina
           </Button>
 
-          <div className="flex items-center gap-2 flex-wrap bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
-            <button
-              onClick={() => setFilterStatus('ACTIVE')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                filterStatus === 'ACTIVE'
-                  ? 'bg-slate-800 text-white shadow-md'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Activas ({pendingCount + preparingCount + readyCount})
-            </button>
-            <button
-              onClick={() => setFilterStatus(ORDER_STATUS.PENDING)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                filterStatus === ORDER_STATUS.PENDING
-                  ? 'bg-amber-500 text-slate-950 shadow-md font-black'
-                  : 'text-amber-400/80 hover:text-amber-300'
-              }`}
-            >
-              🟡 Pendientes ({pendingCount})
-            </button>
-            <button
-              onClick={() => setFilterStatus(ORDER_STATUS.PREPARING)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                filterStatus === ORDER_STATUS.PREPARING
-                  ? 'bg-sky-500 text-slate-950 shadow-md font-black'
-                  : 'text-sky-400/80 hover:text-sky-300'
-              }`}
-            >
-              🔵 En Preparación ({preparingCount})
-            </button>
-            <button
-              onClick={() => setFilterStatus(ORDER_STATUS.READY)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                filterStatus === ORDER_STATUS.READY
-                  ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
-                  : 'text-emerald-400/80 hover:text-emerald-300'
-              }`}
-            >
-              🟢 Listas ({readyCount})
-            </button>
-            <button
-              onClick={() => setFilterStatus('ALL')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                filterStatus === 'ALL'
-                  ? 'bg-slate-700 text-white shadow-md'
-                  : 'text-slate-500 hover:text-slate-300'
-              }`}
-            >
-              Historial ({kitchenOrders.length})
-            </button>
-          </div>
+          <SegmentedControl
+            options={filterOptions}
+            value={filterStatus}
+            onChange={setFilterStatus}
+            size="sm"
+          />
         </div>
       </div>
 
       {/* Buscador Rápido de Cocina */}
-      <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center gap-3">
+      <div className="p-3.5 rounded-2xl apple-glass-card border border-white/10 flex items-center gap-3">
         <Search className="w-4 h-4 text-slate-400 shrink-0" />
         <input
           type="text"
           placeholder="Buscar por mesa (ej: Mesa 3), plato o instrucción..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 bg-transparent text-xs text-slate-100 placeholder-slate-500 focus:outline-none"
+          className="flex-1 bg-transparent text-xs text-slate-100 placeholder-slate-500 focus:outline-none font-medium"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="p-1 text-slate-400 hover:text-white">
+          <button onClick={() => setSearch('')} className="p-1 text-slate-400 hover:text-white rounded-full bg-white/10">
             <X className="w-3.5 h-3.5" />
           </button>
         )}

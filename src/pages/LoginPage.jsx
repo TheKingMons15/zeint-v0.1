@@ -69,38 +69,38 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-10 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#05070B] flex flex-col justify-center py-10 sm:px-6 lg:px-8 relative overflow-hidden">
       
-      {/* Background ambient gradient */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Background ambient Apple glows */}
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header Container */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md px-4 text-center">
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-2xl shadow-emerald-950/60 flex items-center justify-center">
-          <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+        <div className="mx-auto w-16 h-16 rounded-3xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-emerald-300 p-0.5 shadow-apple-glow-emerald flex items-center justify-center">
+          <div className="w-full h-full bg-[#090b10] rounded-[22px] flex items-center justify-center">
             <ChefHat className="w-9 h-9 text-emerald-400" />
           </div>
         </div>
 
-        <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-          Inventario Zenit, Cocina y Bar
+        <h2 className="mt-5 text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+          Zénit Cocina & Bar
         </h2>
         <p className="mt-1.5 text-xs text-slate-400 font-medium">
-          Sistema de Control de Existencias, Pedidos y Facturación
+          Sistema Central de Existencias, Comandas y Facturación
         </p>
       </div>
 
-      {/* Card Formulario Privado */}
+      {/* Apple Glass Auth Card */}
       <div className="mt-7 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-slate-900/90 border border-slate-800 backdrop-blur-xl py-8 px-6 sm:px-10 shadow-2xl rounded-3xl space-y-6">
+        <div className="apple-glass-sheet border border-white/15 py-8 px-6 sm:px-10 shadow-apple-lg rounded-3xl space-y-6">
           
-          <div className="text-center border-b border-slate-800 pb-4">
+          <div className="text-center border-b border-white/10 pb-4">
             <h3 className="text-base font-bold text-white flex items-center justify-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               {mode === 'login' ? 'Acceso al Sistema' : 'Recuperar Contraseña'}
             </h3>
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[11px] text-slate-400 mt-1 font-medium">
               {mode === 'login' 
                 ? 'Ingresa tus credenciales autorizadas' 
                 : 'Ingresa tu correo para recibir el enlace de recuperación'}
@@ -109,7 +109,7 @@ export const LoginPage = () => {
 
           {/* Error Alert */}
           {error && (
-            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center gap-3 text-xs text-rose-300 animate-shake">
+            <div className="p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center gap-3 text-xs text-rose-300 animate-apple-fade">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{error}</span>
             </div>
@@ -144,13 +144,13 @@ export const LoginPage = () => {
                     type="button"
                     tabIndex="-1"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="p-1 rounded-lg text-slate-400 hover:text-slate-200 focus:outline-none transition-colors"
+                    className="p-1 rounded-xl text-slate-400 hover:text-white bg-white/5 hover:bg-white/15 transition-all"
                     title={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
                   >
                     {showPassword ? (
                       <EyeOff className="w-4 h-4 text-emerald-400" />
                     ) : (
-                      <Eye className="w-4 h-4 text-slate-400 hover:text-slate-200" />
+                      <Eye className="w-4 h-4 text-slate-400 hover:text-white" />
                     )}
                   </button>
                 }
@@ -163,7 +163,7 @@ export const LoginPage = () => {
                 <button
                   type="button"
                   onClick={() => { setMode('forgot'); setError(''); }}
-                  className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors ml-auto"
+                  className="text-emerald-400 hover:text-emerald-300 font-bold transition-colors ml-auto text-[11px]"
                 >
                   ¿Olvidaste tu contraseña?
                 </button>
@@ -171,7 +171,7 @@ export const LoginPage = () => {
                 <button
                   type="button"
                   onClick={() => { setMode('login'); setError(''); }}
-                  className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
+                  className="text-emerald-400 hover:text-emerald-300 font-bold transition-colors text-[11px]"
                 >
                   ← Volver al inicio de sesión
                 </button>
@@ -183,7 +183,7 @@ export const LoginPage = () => {
               type="submit"
               fullWidth
               loading={loading}
-              className="mt-2 text-sm font-bold"
+              className="mt-2 text-sm font-bold py-3"
             >
               {mode === 'login' ? 'Ingresar al Sistema' : 'Enviar Correo de Recuperación'}
             </Button>
@@ -191,18 +191,18 @@ export const LoginPage = () => {
           </form>
 
           {/* Aviso Informativo de Creación de Cuentas */}
-          <div className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-            <p className="text-[11px] text-slate-400 leading-snug">
-              🔒 <strong className="text-slate-300">Acceso restringido:</strong> Las cuentas son asignadas y creadas únicamente por los administradores de Zénit.
+          <div className="p-3.5 rounded-2xl bg-black/40 border border-white/10 text-center">
+            <p className="text-[11px] text-slate-400 leading-snug font-medium">
+              🔒 <strong className="text-slate-200">Acceso restringido:</strong> Las cuentas son asignadas y creadas únicamente por los administradores de Zénit.
             </p>
           </div>
 
           {/* Footer de Créditos */}
-          <div className="pt-2 border-t border-slate-800/80 text-center">
-            <p className="text-[11px] text-slate-500 font-medium">
-              Desarrollado por <span className="text-slate-300 font-bold">Wladimir Almeida</span>
+          <div className="pt-2 border-t border-white/10 text-center">
+            <p className="text-[11px] text-slate-400 font-medium">
+              Desarrollado por <span className="text-white font-bold">Wladimir Almeida</span>
             </p>
-            <p className="text-[10px] text-slate-600 mt-0.5">
+            <p className="text-[10px] text-slate-500 mt-0.5">
               Restaurante Zénit • Todos los derechos reservados
             </p>
           </div>

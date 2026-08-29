@@ -4,56 +4,109 @@
 
 @layer base {
   :root {
-    --brand-primary: #10b981;
-    --brand-dark: #0f172a;
+    --brand-primary: #30D158;
+    --brand-dark: #05070B;
   }
   
   html {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", Inter, system-ui, sans-serif;
     -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.011em;
   }
 
   body {
-    @apply bg-slate-950 text-slate-100 min-h-screen antialiased;
+    @apply bg-[#05070B] text-slate-100 min-h-screen antialiased selection:bg-emerald-500/30 selection:text-emerald-200;
     padding-bottom: env(safe-area-inset-bottom, 0px);
+    overflow-x: hidden;
   }
 }
 
-/* Custom Scrollbar */
+/* macOS & iOS Style Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: rgba(255, 255, 255, 0.28);
 }
 
-/* Animations & Glass effects */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
+/* Apple HIG Materials & Vibrancy Glass Effects */
+@layer components {
+  .apple-glass {
+    background: rgba(15, 18, 26, 0.72);
+    backdrop-filter: blur(24px) saturate(190%);
+    -webkit-backdrop-filter: blur(24px) saturate(190%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .apple-glass-card {
+    background: rgba(21, 25, 38, 0.65);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.32);
+  }
+
+  .apple-glass-sheet {
+    background: rgba(15, 18, 26, 0.88);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .apple-card-interactive {
+    @apply transition-all duration-200 ease-out hover:border-white/20 active:scale-[0.985] cursor-pointer;
+  }
+
+  /* Apple Haptic Spring Micro-Interactions */
+  .apple-btn {
+    @apply inline-flex items-center justify-center font-semibold rounded-2xl transition-all duration-150 ease-out active:scale-[0.97] select-none;
+  }
+
+  /* Inset Grouped Form Input */
+  .apple-input {
+    @apply block w-full rounded-2xl bg-slate-900/80 border border-white/10 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/80 transition-all text-sm py-2.5 px-3.5 shadow-inner;
+  }
+
+  /* Apple Pill Tag */
+  .apple-pill {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide transition-all;
+  }
 }
 
-.glass-card {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(51, 65, 85, 0.4);
-}
-
-/* PWA Mobile Touch Optimization */
-button, a, input, select {
+/* Touch Action Optimizations */
+button, a, input, select, textarea {
   touch-action: manipulation;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-apple-fade {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-apple-slide {
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

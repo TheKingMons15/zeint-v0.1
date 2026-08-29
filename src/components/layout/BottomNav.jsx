@@ -7,12 +7,14 @@ import {
   FileText, 
   Plus, 
   ArrowDownLeft, 
-  ArrowUpRight,
-  ShieldCheck,
+  ArrowUpRight, 
+  ShieldCheck, 
   Crown,
   UtensilsCrossed,
   ChefHat,
-  Wine
+  Wine,
+  Receipt,
+  BookOpen
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -23,16 +25,16 @@ export const BottomNav = ({ onOpenMovementModal }) => {
   const role = (user?.role || '').toUpperCase();
   const isSuperAdmin = user?.role === 'superadmin' || user?.isSuperAdmin || user?.email === 'master@zenit.com';
 
-  // 1. Barra inferior exclusiva para Bar (Marlon)
+  // 1. Barra inferior para Bar (Marlon)
   if (role === 'BAR') {
     return (
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-purple-500/30 lg:hidden px-4 py-2.5 shadow-2xl">
+      <nav className="fixed bottom-3 left-4 right-4 z-40 apple-glass-sheet rounded-3xl border border-white/15 lg:hidden px-4 py-2.5 shadow-apple-lg">
         <div className="flex items-center justify-center max-w-md mx-auto">
           <NavLink
             to="/bar"
-            className="flex items-center gap-2 py-2 px-6 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-500/40 font-black text-xs shadow-lg shadow-purple-950/50"
+            className="flex items-center gap-2 py-2 px-6 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold text-xs shadow-apple-glow-purple active:scale-95 transition-all"
           >
-            <Wine className="w-5 h-5 text-purple-400" />
+            <Wine className="w-4 h-4 text-purple-400" />
             <span>Pantalla KDS de Bar</span>
           </NavLink>
         </div>
@@ -47,19 +49,19 @@ export const BottomNav = ({ onOpenMovementModal }) => {
         {/* Mobile Quick Action Overlay */}
         {showQuickActions && (
           <div 
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden animate-fade-in"
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-md lg:hidden animate-apple-fade"
             onClick={() => setShowQuickActions(false)}
           >
-            <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex items-center gap-4 animate-slide-up">
+            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-4 animate-apple-slide">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowQuickActions(false);
                   onOpenMovementModal('ENTRY');
                 }}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-2xl shadow-emerald-950/80 active:scale-95 transition-all border border-emerald-400/40"
+                className="flex flex-col items-center gap-1.5 p-3.5 rounded-3xl bg-emerald-600 text-white font-bold text-xs shadow-apple-lg active:scale-95 transition-all border border-emerald-400/40 shadow-emerald-950/80"
               >
-                <div className="p-3 bg-white/20 rounded-xl">
+                <div className="p-3 bg-white/20 rounded-2xl">
                   <ArrowDownLeft className="w-6 h-6" />
                 </div>
                 <span>+ ENTRADA</span>
@@ -71,9 +73,9 @@ export const BottomNav = ({ onOpenMovementModal }) => {
                   setShowQuickActions(false);
                   onOpenMovementModal('EXIT');
                 }}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-rose-600 text-white font-bold text-xs shadow-2xl shadow-rose-950/80 active:scale-95 transition-all border border-rose-400/40"
+                className="flex flex-col items-center gap-1.5 p-3.5 rounded-3xl bg-rose-600 text-white font-bold text-xs shadow-apple-lg active:scale-95 transition-all border border-rose-400/40 shadow-rose-950/80"
               >
-                <div className="p-3 bg-white/20 rounded-xl">
+                <div className="p-3 bg-white/20 rounded-2xl">
                   <ArrowUpRight className="w-6 h-6" />
                 </div>
                 <span>- SALIDA</span>
@@ -82,63 +84,63 @@ export const BottomNav = ({ onOpenMovementModal }) => {
           </div>
         )}
 
-        <nav className="fixed bottom-0 left-0 right-0 z-30 bg-slate-900/95 backdrop-blur-lg border-t border-amber-500/30 lg:hidden px-3 py-2 shadow-2xl">
+        <nav className="fixed bottom-3 left-3 right-3 z-40 apple-glass-sheet rounded-3xl border border-white/15 lg:hidden px-2 py-1.5 shadow-apple-lg">
           <div className="flex items-center justify-around max-w-md mx-auto">
             <NavLink
               to="/cocina"
               className={({ isActive }) =>
-                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
-                  isActive ? 'text-amber-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                `flex flex-col items-center py-1.5 px-3 rounded-2xl transition-all active:scale-95 ${
+                  isActive ? 'text-amber-400 font-bold bg-amber-500/15 border border-amber-500/30' : 'text-slate-400 hover:text-slate-200'
                 }`
               }
             >
-              <ChefHat className="w-5 h-5" />
-              <span className="text-[10px] mt-0.5">Cocina</span>
+              <ChefHat className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5 font-medium">Cocina</span>
             </NavLink>
 
             <NavLink
               to="/movimientos"
               className={({ isActive }) =>
-                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
-                  isActive ? 'text-sky-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                `flex flex-col items-center py-1.5 px-3 rounded-2xl transition-all active:scale-95 ${
+                  isActive ? 'text-sky-400 font-bold bg-sky-500/15 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'
                 }`
               }
             >
-              <ArrowDownLeft className="w-5 h-5" />
-              <span className="text-[10px] mt-0.5">Movimientos</span>
+              <ArrowDownLeft className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5 font-medium">Stock</span>
             </NavLink>
 
             {/* Floating Action Button */}
             <button
               onClick={() => setShowQuickActions(!showQuickActions)}
-              className="relative -top-3 p-3.5 bg-gradient-to-tr from-amber-500 to-amber-400 text-slate-950 rounded-2xl shadow-xl shadow-amber-950/60 active:scale-95 transition-all border-2 border-slate-950"
+              className="p-3 bg-gradient-to-tr from-amber-500 to-amber-400 text-slate-950 rounded-2xl shadow-apple-glow-amber active:scale-90 transition-all border border-amber-300/40"
               aria-label="Registrar Movimiento"
             >
-              <Plus className={`w-6 h-6 stroke-[2.5] transition-transform duration-200 ${showQuickActions ? 'rotate-45' : ''}`} />
+              <Plus className={`w-5 h-5 stroke-[2.5] transition-transform duration-200 ${showQuickActions ? 'rotate-45' : ''}`} />
             </button>
 
             <NavLink
               to="/inventario"
               className={({ isActive }) =>
-                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
-                  isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                `flex flex-col items-center py-1.5 px-3 rounded-2xl transition-all active:scale-95 ${
+                  isActive ? 'text-emerald-400 font-bold bg-emerald-500/15 border border-emerald-500/30' : 'text-slate-400 hover:text-slate-200'
                 }`
               }
             >
-              <Package className="w-5 h-5" />
-              <span className="text-[10px] mt-0.5">Inventario</span>
+              <Package className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5 font-medium">Insumos</span>
             </NavLink>
 
             <NavLink
               to="/recetas"
               className={({ isActive }) =>
-                `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
-                  isActive ? 'text-indigo-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                `flex flex-col items-center py-1.5 px-3 rounded-2xl transition-all active:scale-95 ${
+                  isActive ? 'text-indigo-400 font-bold bg-indigo-500/15 border border-indigo-500/30' : 'text-slate-400 hover:text-slate-200'
                 }`
               }
             >
-              <FileText className="w-5 h-5" />
-              <span className="text-[10px] mt-0.5">Recetas</span>
+              <BookOpen className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5 font-medium">Recetas</span>
             </NavLink>
           </div>
         </nav>
@@ -146,16 +148,16 @@ export const BottomNav = ({ onOpenMovementModal }) => {
     );
   }
 
-  // 3. Barra inferior exclusiva para Meseros (Sala)
+  // 3. Barra inferior para Meseros (Sala)
   if (role === 'MESERO') {
     return (
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-emerald-500/30 lg:hidden px-4 py-2.5 shadow-2xl">
+      <nav className="fixed bottom-3 left-4 right-4 z-40 apple-glass-sheet rounded-3xl border border-white/15 lg:hidden px-4 py-2.5 shadow-apple-lg">
         <div className="flex items-center justify-center max-w-md mx-auto">
           <NavLink
             to="/mesero"
-            className="flex items-center gap-2 py-2 px-6 rounded-2xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-black text-xs shadow-lg shadow-emerald-950/50"
+            className="flex items-center gap-2 py-2 px-6 rounded-2xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-xs shadow-apple-glow-emerald active:scale-95 transition-all"
           >
-            <UtensilsCrossed className="w-5 h-5 text-emerald-400" />
+            <UtensilsCrossed className="w-4 h-4 text-emerald-400" />
             <span>Toma de Pedidos (Sala)</span>
           </NavLink>
         </div>
@@ -163,25 +165,25 @@ export const BottomNav = ({ onOpenMovementModal }) => {
     );
   }
 
-  // 4. Barra inferior para Administración y Dirección
+  // 4. Barra inferior estilo iOS Dock para Administración
   return (
     <>
       {/* Mobile Quick Action Overlay */}
       {showQuickActions && (
         <div 
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden animate-fade-in"
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-md lg:hidden animate-apple-fade"
           onClick={() => setShowQuickActions(false)}
         >
-          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex items-center gap-4 animate-slide-up">
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex items-center gap-4 animate-apple-slide">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setShowQuickActions(false);
                 onOpenMovementModal('ENTRY');
               }}
-              className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-2xl shadow-emerald-950/80 active:scale-95 transition-all border border-emerald-400/40"
+              className="flex flex-col items-center gap-1.5 p-3.5 rounded-3xl bg-emerald-600 text-white font-bold text-xs shadow-apple-lg active:scale-95 transition-all border border-emerald-400/40 shadow-emerald-950/80"
             >
-              <div className="p-3 bg-white/20 rounded-xl">
+              <div className="p-3 bg-white/20 rounded-2xl">
                 <ArrowDownLeft className="w-6 h-6" />
               </div>
               <span>+ ENTRADA</span>
@@ -193,9 +195,9 @@ export const BottomNav = ({ onOpenMovementModal }) => {
                 setShowQuickActions(false);
                 onOpenMovementModal('EXIT');
               }}
-              className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-rose-600 text-white font-bold text-xs shadow-2xl shadow-rose-950/80 active:scale-95 transition-all border border-rose-400/40"
+              className="flex flex-col items-center gap-1.5 p-3.5 rounded-3xl bg-rose-600 text-white font-bold text-xs shadow-apple-lg active:scale-95 transition-all border border-rose-400/40 shadow-rose-950/80"
             >
-              <div className="p-3 bg-white/20 rounded-xl">
+              <div className="p-3 bg-white/20 rounded-2xl">
                 <ArrowUpRight className="w-6 h-6" />
               </div>
               <span>- SALIDA</span>
@@ -204,66 +206,66 @@ export const BottomNav = ({ onOpenMovementModal }) => {
         </div>
       )}
 
-      {/* Main Bottom Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-30 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 lg:hidden px-3 py-2 shadow-2xl">
+      {/* iOS Floating Dock Navigation */}
+      <nav className="fixed bottom-3 left-3 right-3 z-40 apple-glass-sheet rounded-3xl border border-white/15 lg:hidden px-2 py-1.5 shadow-apple-lg">
         <div className="flex items-center justify-around max-w-md mx-auto">
           
           <NavLink
             to="/"
             end
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
-                isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center py-1.5 px-3 rounded-2xl transition-all active:scale-95 ${
+                isActive ? 'text-emerald-400 font-bold bg-emerald-500/15 border border-emerald-500/30' : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
-            <LayoutDashboard className="w-5 h-5" />
-            <span className="text-[10px] mt-0.5">Inicio</span>
+            <LayoutDashboard className="w-4 h-4" />
+            <span className="text-[10px] mt-0.5 font-medium">Inicio</span>
           </NavLink>
 
           <NavLink
             to="/cocina"
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
-                isActive ? 'text-amber-300 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center py-1.5 px-3 rounded-2xl transition-all active:scale-95 ${
+                isActive ? 'text-amber-400 font-bold bg-amber-500/15 border border-amber-500/30' : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
-            <ChefHat className="w-5 h-5" />
-            <span className="text-[10px] mt-0.5">Cocina</span>
+            <ChefHat className="w-4 h-4" />
+            <span className="text-[10px] mt-0.5 font-medium">Cocina</span>
           </NavLink>
 
-          {/* Floating Action Button for Quick Stock Movement */}
+          {/* Floating Central Action Button */}
           <button
             onClick={() => setShowQuickActions(!showQuickActions)}
-            className="relative -top-3 p-3.5 bg-gradient-to-tr from-emerald-600 to-teal-400 text-slate-950 rounded-2xl shadow-xl shadow-emerald-950/60 active:scale-95 transition-all border-2 border-slate-950"
+            className="p-3 bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 rounded-2xl shadow-apple-glow-emerald active:scale-90 transition-all border border-emerald-300/40"
             aria-label="Registrar Movimiento"
           >
-            <Plus className={`w-6 h-6 stroke-[2.5] transition-transform duration-200 ${showQuickActions ? 'rotate-45' : ''}`} />
+            <Plus className={`w-5 h-5 stroke-[2.5] transition-transform duration-200 ${showQuickActions ? 'rotate-45' : ''}`} />
           </button>
 
           <NavLink
             to="/bar"
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
-                isActive ? 'text-purple-300 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center py-1.5 px-3 rounded-2xl transition-all active:scale-95 ${
+                isActive ? 'text-purple-400 font-bold bg-purple-500/15 border border-purple-500/30' : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
-            <Wine className="w-5 h-5" />
-            <span className="text-[10px] mt-0.5">Bar</span>
+            <Wine className="w-4 h-4" />
+            <span className="text-[10px] mt-0.5 font-medium">Bar</span>
           </NavLink>
 
           <NavLink
             to="/inventario"
             className={({ isActive }) =>
-              `flex flex-col items-center py-1 px-2.5 rounded-xl transition-all ${
-                isActive ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+              `flex flex-col items-center py-1.5 px-3 rounded-2xl transition-all active:scale-95 ${
+                isActive ? 'text-emerald-400 font-bold bg-emerald-500/15 border border-emerald-500/30' : 'text-slate-400 hover:text-slate-200'
               }`
             }
           >
-            <Boxes className="w-5 h-5" />
-            <span className="text-[10px] mt-0.5">Stock</span>
+            <Boxes className="w-4 h-4" />
+            <span className="text-[10px] mt-0.5 font-medium">Stock</span>
           </NavLink>
 
         </div>

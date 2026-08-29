@@ -33,6 +33,7 @@ import { Modal } from '../components/common/Modal';
 import { DishIngredientsModal } from '../components/orders/DishIngredientsModal';
 import { BarProductModal } from '../components/bar/BarProductModal';
 import { BarMovementModal } from '../components/bar/BarMovementModal';
+import { SegmentedControl } from '../components/common/SegmentedControl';
 import { formatTime, formatDateTime } from '../utils/formatters';
 
 export const BarPage = () => {
@@ -105,69 +106,49 @@ export const BarPage = () => {
     });
   }, [barOrders, filterStatus, search]);
 
-  // Productos pertenecientes a la barra
+  // Filtrado de productos exclusivos de Bar
   const barProducts = useMemo(() => {
     return products.filter(p => {
-      const loc = (p.location || '').toLowerCase();
-      const cat = (p.category || '').toLowerCase();
-      return loc.includes('bar') || cat.includes('licor') || cat.includes('bebida') || cat.includes('coctel') || cat.includes('jarabe') || cat.includes('cristaleria') || cat.includes('cerveza') || cat.includes('vino');
+      const cat = (p.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return cat.includes('bebida') || cat.includes('coctel') || cat.includes('bar') || cat.includes('licor') || cat.includes('cafe') || p.location === 'Bar / Coctelería';
     });
   }, [products]);
 
-  // Productos de bar filtrados
-  const filteredBarProducts = useMemo(() => {
-    return barProducts.filter(p => {
-      if (barCategoryFilter !== 'ALL' && p.category !== barCategoryFilter) return false;
-      if (onlyLowStock && (Number(p.currentStock || 0) > Number(p.minStock || 0))) return false;
-
-      const q = search.toLowerCase().trim();
-      if (!q) return true;
-
-      return (
-        p.name?.toLowerCase().includes(q) ||
-        p.brand?.toLowerCase().includes(q) ||
-        p.category?.toLowerCase().includes(q) ||
-        p.presentation?.toLowerCase().includes(q)
-      );
-    });
-  }, [barProducts, barCategoryFilter, onlyLowStock, search]);
-
-  // Movimientos históricos de barra
+  // Movimientos de Bar
   const barMovements = useMemo(() => {
-    return (movements || []).filter(m => {
-      const cat = (m.category || '').toLowerCase();
-      const loc = (m.location || '').toLowerCase();
-      return loc.includes('bar') || cat.includes('licor') || cat.includes('bebida') || cat.includes('coctel');
+    return movements.filter(m => {
+      const cat = (m.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return cat.includes('bebida') || cat.includes('coctel') || cat.includes('bar') || cat.includes('licor') || cat.includes('cafe');
     });
   }, [movements]);
 
-  // Cambiar estado de la comanda en Bar
+  // Actualizar estado de comanda en Bar
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
       await orderService.updateOrderStatus(orderId, newStatus, user);
       if (newStatus === ORDER_STATUS.READY) {
-        showToast('¡Bebidas marcadas como LISTAS! El mesero ha sido notificado para retirar en Bar.', 'success');
+        showToast('¡Bebidas listas para retirar de barra! Mesero notificado.', 'success');
       } else if (newStatus === ORDER_STATUS.PREPARING) {
-        showToast('Comanda en preparación en Bar.', 'info');
-      } else if (newStatus === ORDER_STATUS.DELIVERED) {
-        showToast('Bebidas entregadas en mesa.', 'success');
+        showToast('Bebidas en preparación en coctelería.', 'info');
       }
     } catch (err) {
-      console.error(err);
-      showToast('Error al actualizar estado en bar', 'error');
+      showToast('Error al actualizar comanda de bar', 'error');
     }
   };
 
-  // Guardar nuevo producto o editar en Bar
+  // Guardar producto nuevo o editado de Bar
   const handleSaveBarProduct = async (productData) => {
     setModalLoading(true);
     try {
-      if (productData.id) {
-        await updateProduct(productData.id, productData);
-        showToast(`Producto "${productData.name}" actualizado correctamente.`, 'success');
+      if (editingProduct) {
+        await updateProduct(editingProduct.id, productData);
+        showToast(`Producto "${productData.name}" actualizado en el bar.`, 'success');
       } else {
-        await addProduct(productData);
-        showToast(`Botella/Insumo "${productData.name}" agregado al inventario de Bar.`, 'success');
+        await addProduct({
+          ...productData,
+          location: 'Bar / Coctelería'
+        });
+        showToast(`Producto "${productData.name}" agregado al bar exitosamente.`, 'success');
       }
       setIsProductModalOpen(false);
       setEditingProduct(null);
@@ -216,17 +197,17 @@ export const BarPage = () => {
   const getStatusCardStyle = (status) => {
     switch (status) {
       case ORDER_STATUS.PENDING:
-        return 'bg-purple-950/20 border-purple-500/50 shadow-purple-950/40 ring-1 ring-purple-500/30';
+        return 'apple-glass-card border-purple-500/40 shadow-apple-glow-purple';
       case ORDER_STATUS.PREPARING:
-        return 'bg-sky-950/20 border-sky-500/50 shadow-sky-950/40 ring-1 ring-sky-500/30';
+        return 'apple-glass-card border-sky-500/40 shadow-apple-glow-blue';
       case ORDER_STATUS.READY:
-        return 'bg-emerald-950/30 border-emerald-500/60 shadow-emerald-950/50 ring-2 ring-emerald-500/50';
+        return 'apple-glass-card border-emerald-500/40 shadow-apple-glow-emerald';
       case ORDER_STATUS.CANCELLED:
-        return 'bg-rose-950/30 border-rose-900/60 opacity-60';
+        return 'bg-black/50 border-rose-500/30 opacity-70';
       case ORDER_STATUS.DELIVERED:
-        return 'bg-slate-900/60 border-slate-800 opacity-60';
+        return 'apple-glass border-white/10 opacity-70';
       default:
-        return 'bg-slate-900 border-slate-800';
+        return 'apple-glass border-white/10';
     }
   };
 
@@ -239,86 +220,47 @@ export const BarPage = () => {
     });
   };
 
+  const barTabOptions = [
+    { value: 'kds', label: 'Comandas KDS', icon: Wine, count: pendingCount + preparingCount > 0 ? pendingCount + preparingCount : undefined },
+    { value: 'inventory', label: 'Inventario Barra', icon: Layers, count: barProducts.length },
+    { value: 'movements', label: 'Movimientos', icon: History, count: barMovements.length }
+  ];
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in pb-20">
+    <div className="space-y-6 max-w-7xl mx-auto animate-apple-fade pb-20">
       
       {/* Header Bar & Coctelería */}
-      <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 sm:p-7 rounded-3xl apple-glass-sheet border border-white/15 shadow-apple-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="p-3 rounded-2xl bg-purple-500/20 text-purple-400 border border-purple-500/40 shadow-lg shadow-purple-950/50">
-            <Wine className="w-7 h-7" />
+          <div className="p-3 rounded-2xl bg-purple-500/20 text-purple-300 border border-purple-500/30 shadow-apple-glow-purple">
+            <Wine className="w-6 h-6 text-purple-400" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
                 Módulo de Bar & Coctelería Zénit
               </h2>
-              <span className="px-2.5 py-0.5 text-[10px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/40 rounded-full">
+              <span className="px-2.5 py-0.5 text-[10px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full">
                 {user?.displayName || 'Marlon (Bar)'}
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-400 mt-0.5 font-medium">
               Gestión de pedidos en barra, coctelería y control integral de licores e insumos
             </p>
           </div>
         </div>
 
-        {/* Pestañas Principales: KDS vs Inventario Bar vs Historial */}
-        <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800 flex-wrap">
-          <button
-            onClick={() => {
-              setActiveTab('kds');
+        {/* Pestañas Principales: Apple Segmented Control */}
+        <div>
+          <SegmentedControl
+            options={barTabOptions}
+            value={activeTab}
+            onChange={(val) => {
+              setActiveTab(val);
               setSearch('');
             }}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'kds'
-                ? 'bg-purple-600 text-white font-black shadow-md'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Wine className="w-4 h-4" />
-            <span>Comandas KDS</span>
-            {pendingCount + preparingCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-purple-950 text-purple-200 text-[10px] font-black animate-pulse">
-                {pendingCount + preparingCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab('inventory');
-              setSearch('');
-            }}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'inventory'
-                ? 'bg-purple-600 text-white font-black shadow-md'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>Inventario de Barra ({barProducts.length})</span>
-            {lowStockCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px] font-black animate-bounce">
-                {lowStockCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab('movements');
-              setSearch('');
-            }}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'movements'
-                ? 'bg-purple-600 text-white font-black shadow-md'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <History className="w-4 h-4" />
-            <span>Movimientos ({barMovements.length})</span>
-          </button>
+            size="md"
+          />
         </div>
       </div>
 

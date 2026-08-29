@@ -3,13 +3,13 @@ import { FOOD_CATEGORIES, CATEGORY_META } from '../../utils/constants';
 
 export const CategoryFilterBar = ({ selectedCategory, onSelectCategory }) => {
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none no-scrollbar">
+    <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none no-scrollbar">
       <button
         onClick={() => onSelectCategory('ALL')}
-        className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+        className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-150 active:scale-95 ${
           selectedCategory === 'ALL'
-            ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20 font-bold'
-            : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            ? 'bg-emerald-500 text-slate-950 shadow-apple-glow-emerald font-black'
+            : 'apple-glass text-slate-400 hover:text-white hover:border-white/20'
         }`}
       >
         Todas
@@ -23,10 +23,10 @@ export const CategoryFilterBar = ({ selectedCategory, onSelectCategory }) => {
           <button
             key={category}
             onClick={() => onSelectCategory(category)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 active:scale-95 ${
               isSelected
-                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20 font-bold'
-                : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                ? 'bg-emerald-500 text-slate-950 shadow-apple-glow-emerald font-black'
+                : 'apple-glass text-slate-400 hover:text-white hover:border-white/20'
             }`}
           >
             {meta?.dotClass && !isSelected && (

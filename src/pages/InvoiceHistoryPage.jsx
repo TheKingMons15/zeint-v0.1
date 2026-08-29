@@ -33,6 +33,7 @@ import { isAuthorizedBillingUser, ALL_RESTAURANT_TABLES } from '../utils/constan
 import { getTodayDateString, formatTime, formatDate, formatDateTime, formatNumber } from '../utils/formatters';
 import { InvoiceDetailModal } from '../components/orders/InvoiceDetailModal';
 import { TableCheckoutModal } from '../components/orders/TableCheckoutModal';
+import { SegmentedControl } from '../components/common/SegmentedControl';
 import { StatCard } from '../components/common/StatCard';
 import { Button } from '../components/common/Button';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
@@ -596,56 +597,31 @@ export const InvoiceHistoryPage = () => {
         />
       </div>
 
-      {/* NAVEGACIÓN DE PESTAÑAS */}
-      <div className="flex border-b border-slate-800 p-1 bg-slate-950/60 rounded-2xl gap-1">
-        <button
-          onClick={() => setActiveTab('invoices')}
-          className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
-            activeTab === 'invoices'
-              ? 'bg-purple-600 text-white shadow-lg font-black'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-          }`}
-        >
-          <Receipt className="w-4 h-4" />
-          <span>Comandas y Facturas Emitidas ({finalFilteredOrders.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('tables')}
-          className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
-            activeTab === 'tables'
-              ? 'bg-purple-600 text-white shadow-lg font-black'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          <span>Consolidado por Mesa ({tableSummaryList.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('movements')}
-          className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
-            activeTab === 'movements'
-              ? 'bg-purple-600 text-white shadow-lg font-black'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-          }`}
-        >
-          <Layers className="w-4 h-4" />
-          <span>Movimientos de Inventario ({filteredMovements.length})</span>
-        </button>
+      {/* NAVEGACIÓN DE PESTAÑAS (Apple Segmented Control) */}
+      <div>
+        <SegmentedControl
+          options={[
+            { value: 'invoices', label: 'Comandas y Facturas', icon: Receipt, count: finalFilteredOrders.length },
+            { value: 'tables', label: 'Consolidado por Mesa', icon: Users, count: tableSummaryList.length },
+            { value: 'movements', label: 'Movimientos Inventario', icon: Layers, count: filteredMovements.length }
+          ]}
+          value={activeTab}
+          onChange={setActiveTab}
+          size="md"
+        />
       </div>
 
       {/* ============================================================ */}
       {/* VISTA 1: TABLA DE FACTURAS Y COMANDAS EMITIDAS                */}
       {/* ============================================================ */}
       {activeTab === 'invoices' && (
-        <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+        <div className="p-6 sm:p-7 rounded-3xl apple-glass-sheet border border-white/15 shadow-apple-lg space-y-4">
+          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <h3 className="text-sm sm:text-base font-extrabold text-white tracking-tight flex items-center gap-2">
               <Receipt className="w-5 h-5 text-purple-400" />
               Registro Histórico de Comandas y Facturas
             </h3>
-            <span className="text-xs text-slate-400">{finalFilteredOrders.length} registros encontrados</span>
+            <span className="text-xs text-slate-400 font-medium">{finalFilteredOrders.length} registros encontrados</span>
           </div>
 
           {finalFilteredOrders.length === 0 ? (
