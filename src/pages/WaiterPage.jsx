@@ -89,29 +89,22 @@ export const WaiterPage = () => {
     return () => unsub();
   }, [companyId]);
 
-  // Verificar disponibilidad de cada plato según stock real de inventario
+  // Todo el menú siempre activo y disponible para toma de pedidos
   const dishesWithAvailability = useMemo(() => {
     return recipes.map(dish => {
-      const isDrink = dish.category === 'Bebidas' || dish.category === 'Cócteles' || dish.category === 'Cócteles de Altura' || dish.destination === 'BAR';
+      const isDrink = dish.category === 'Bebidas' || 
+                      dish.category === 'Cócteles' || 
+                      dish.category === 'Cócteles de Altura' || 
+                      dish.destination === 'BAR';
       
-      if (isDrink) {
-        return {
-          ...dish,
-          destination: 'BAR',
-          isAvailable: true,
-          missing: []
-        };
-      }
-
-      const validation = orderService.validateAvailability([{ recipe: dish, quantity: 1 }], products);
       return {
         ...dish,
-        destination: 'KITCHEN',
-        isAvailable: validation.isAvailable,
-        missing: validation.missing
+        destination: isDrink ? 'BAR' : 'KITCHEN',
+        isAvailable: true,
+        missing: []
       };
     });
-  }, [recipes, products]);
+  }, [recipes]);
 
   // Filtrado de platos en pestaña Menú
   const filteredDishes = useMemo(() => {
@@ -154,13 +147,8 @@ export const WaiterPage = () => {
     });
   }, [liveOrders, orderStatusFilter, search]);
 
-  // Agregar plato al carrito
+  // Agregar plato al carrito (siempre activo y disponible)
   const addToCart = (dish) => {
-    if (!dish.isAvailable) {
-      showToast(`Este item no está disponible temporalmente por falta de insumos (${dish.missing?.map(m => m.productName).join(', ')}).`, 'error');
-      return;
-    }
-
     setCart(prev => {
       const existing = prev.find(item => item.id === dish.id && !item.notes);
       if (existing) {
@@ -245,13 +233,6 @@ export const WaiterPage = () => {
   const handleSendOrder = async () => {
     if (cart.length === 0) {
       showToast('El pedido está vacío. Agrega al menos un plato o bebida.', 'error');
-      return;
-    }
-
-    const validation = orderService.validateAvailability(cart, products);
-    if (!validation.isAvailable) {
-      const missingNames = validation.missing.map(m => `${m.productName} (Faltan ${(m.required - m.available).toFixed(2)} ${m.unit})`).join(', ');
-      showToast(`No es posible enviar el pedido. Insumos insuficientes: ${missingNames}`, 'error');
       return;
     }
 

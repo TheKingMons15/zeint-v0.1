@@ -69,38 +69,11 @@ export const orderService = {
     return Object.values(requiredIngredients);
   },
 
-  // 2. Validar disponibilidad de stock antes de enviar comanda
+  // 2. Validar disponibilidad de stock (todo el menú configurado siempre activo)
   validateAvailability(cartItems, inventoryProducts) {
-    // Solo validamos ingredientes de platos de cocina (los de bar y bebidas están con stock full)
-    const kitchenItems = cartItems.filter(item => {
-      const isBar = item.destination === 'BAR' || 
-                    item.category === 'Bebidas' || 
-                    item.category === 'Cócteles de Altura' || 
-                    (item.category || '').toLowerCase().includes('coctel');
-      return !isBar;
-    });
-
-    const required = this.calculateTotalIngredients(kitchenItems);
-    const missing = [];
-
-    required.forEach(req => {
-      const product = inventoryProducts.find(p => p.name?.toLowerCase() === req.productName?.toLowerCase());
-      const currentStock = Number(product?.currentStock || 0);
-      const needed = req.totalKg;
-
-      if (!product || currentStock < needed) {
-        missing.push({
-          productName: req.productName,
-          required: req.totalKg,
-          available: currentStock,
-          unit: product?.unit || 'kg'
-        });
-      }
-    });
-
     return {
-      isAvailable: missing.length === 0,
-      missing
+      isAvailable: true,
+      missing: []
     };
   },
 
