@@ -71,6 +71,30 @@ export const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="historial-facturas"
+          element={
+            <ProtectedRoute blockWaiters>
+              <InvoiceHistoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="facturas"
+          element={
+            <ProtectedRoute blockWaiters>
+              <InvoiceHistoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="facturacion"
+          element={
+            <ProtectedRoute blockWaiters>
+              <InvoiceHistoryPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Dashboard Administrativo (Bloqueado para meseros) */}
         <Route

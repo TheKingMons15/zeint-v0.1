@@ -35,10 +35,11 @@ import { InvoiceDetailModal } from '../components/orders/InvoiceDetailModal';
 import { TableCheckoutModal } from '../components/orders/TableCheckoutModal';
 import { StatCard } from '../components/common/StatCard';
 import { Button } from '../components/common/Button';
+import { LoadingSpinner } from '../components/common/LoadingSpinner';
 
 export const InvoiceHistoryPage = () => {
-  const { user } = useAuth();
-  const { products, movements } = useInventory();
+  const { user, loading: authLoading } = useAuth();
+  const { products = [], movements = [], loading: inventoryLoading } = useInventory() || {};
   const { showToast } = useToast();
 
   const isAuthorized = isAuthorizedBillingUser(user);
@@ -64,7 +65,7 @@ export const InvoiceHistoryPage = () => {
 
   React.useEffect(() => {
     const unsub = orderService.subscribeOrders(companyId, (liveOrders) => {
-      setOrders(liveOrders);
+      setOrders(liveOrders || []);
     });
     return () => unsub();
   }, [companyId]);
@@ -242,7 +243,7 @@ export const InvoiceHistoryPage = () => {
 
   // Movimientos de inventario filtrados por fecha
   const filteredMovements = useMemo(() => {
-    return movements.filter(m => {
+    return (movements || []).filter(m => {
       let movDate = m.date;
       if (!movDate && m.createdAt) {
         movDate = typeof m.createdAt === 'string' ? m.createdAt.split('T')[0] : '';
@@ -359,6 +360,10 @@ export const InvoiceHistoryPage = () => {
     printWindow.document.write(html);
     printWindow.document.close();
   };
+
+  if (authLoading) {
+    return <LoadingSpinner fullPage label="Cargando historial de facturación..." />;
+  }
 
   // Bloqueo estricto para usuarios no autorizados
   if (!isAuthorized) {
