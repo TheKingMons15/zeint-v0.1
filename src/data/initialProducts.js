@@ -1,94 +1,116 @@
 // Catálogo oficial verificado de alimentos e insumos para Inventario Zenit, Cocina y Bar
-// Todos los productos inician en stock 0.0 para ingreso real diario
+// Separación estricta entre Cocina y Bar / Coctelería
 export const ZENIT_INITIAL_PRODUCTS = [
-  // 1. Proteínas (Carnes, Aves, Mariscos, Embutidos)
-  { name: 'Carne molida de res', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Filete de res', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Tomahawk', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 3 },
-  { name: 'Filete de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Costilla de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 4 },
-  { name: 'Filete de pechuga de pollo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Chinchulines', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Camarón limpio (Porciones)', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Chorizo Rojo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Chorizo Blanco', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Morcilla', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 10 },
-  { name: 'Cuy', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 2 },
-  { name: 'Cuerito', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3 },
+  // =========================================================================
+  // 1. STOCK DE COCINA - PROTEÍNAS (Carnes, Aves, Cerdo, Mariscos, Embutidos)
+  // =========================================================================
+  { name: 'Carne de hamburguesa', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 10, location: 'Cocina' },
+  { name: 'Carne para bandeja paisa', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 4, location: 'Cocina' },
+  { name: 'Camarón limpio (Porciones)', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Chinchulines', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Chicharrón', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 4, location: 'Cocina' },
+  { name: 'Costilla de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 4, location: 'Cocina' },
+  { name: 'Cuerito', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Filete de res', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Tomahawk', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Filete de cerdo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Filete de pechuga de pollo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Chorizo Rojo', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Chorizo Blanco', category: 'Proteínas', unit: 'kg', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Morcilla', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 10, location: 'Cocina' },
+  { name: 'Cuy', category: 'Proteínas', unit: 'UND', initialStock: 0, minStock: 2, location: 'Cocina' },
 
-  // 2. Papas y carbohidratos
-  { name: 'Papa super chola', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 10 },
-  { name: 'Papa amarilla', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 10 },
-  { name: 'Plátano maduro', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Maíz', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Arroz', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 10 },
-  { name: 'Fréjol rojo seco', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Arepas pequeñas', category: 'Papas y carbohidratos', unit: 'unidad', initialStock: 0, minStock: 15 },
+  // =========================================================================
+  // 2. STOCK DE COCINA - PAPAS Y CARBOHIDRATOS
+  // =========================================================================
+  { name: 'Papa super chola', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 10, location: 'Cocina' },
+  { name: 'Papa amarilla', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 10, location: 'Cocina' },
+  { name: 'Plátano maduro', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Maíz', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Arroz', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 10, location: 'Cocina' },
+  { name: 'Fréjol rojo seco', category: 'Papas y carbohidratos', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Arepas pequeñas', category: 'Papas y carbohidratos', unit: 'unidad', initialStock: 0, minStock: 15, location: 'Cocina' },
 
-  // 3. Verduras y Legumbres
-  { name: 'Plátano Verde', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 8 },
-  { name: 'Tomate riñón', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
-  { name: 'Tomates cherry', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 0.5 },
-  { name: 'Cebolla blanca/perla', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
-  { name: 'Cebolla colorada', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15 },
-  { name: 'Cebolla larga', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 1 },
-  { name: 'Zanahoria', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 1 },
-  { name: 'Pimiento', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 10 },
-  { name: 'Lechuga crespa', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 6 },
-  { name: 'Pepinillo', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 6 },
-  { name: 'Champiñones', category: 'Verduras', unit: 'paquete', initialStock: 0, minStock: 2 },
-  { name: 'Ají rocoto', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 2 },
-  { name: 'Ajo pelado', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 2 },
-  { name: 'Cilantro', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 3 },
-  { name: 'Perejil', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 3 },
-  { name: 'Romero', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 1 },
+  // =========================================================================
+  // 3. STOCK DE COCINA - VERDURAS Y LEGUMBRES
+  // =========================================================================
+  { name: 'Plátano Verde', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 8, location: 'Cocina' },
+  { name: 'Tomate riñón', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15, location: 'Cocina' },
+  { name: 'Tomates cherry', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 0.5, location: 'Cocina' },
+  { name: 'Cebolla blanca/perla', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15, location: 'Cocina' },
+  { name: 'Cebolla colorada', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 15, location: 'Cocina' },
+  { name: 'Cebolla larga', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
+  { name: 'Zanahoria', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
+  { name: 'Pimiento', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 10, location: 'Cocina' },
+  { name: 'Lechuga crespa', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 6, location: 'Cocina' },
+  { name: 'Pepinillo', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 6, location: 'Cocina' },
+  { name: 'Champiñones', category: 'Verduras', unit: 'paquete', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Ají rocoto', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Ajo pelado', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Cilantro', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Perejil', category: 'Verduras', unit: 'UND', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Romero', category: 'Verduras', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
 
-  // 4. Frutas
-  { name: 'Aguacate', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 4 },
-  { name: 'Tomate de árbol', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Limón sutil', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Naranja', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Manzana verde', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 1 },
+  // =========================================================================
+  // 4. STOCK DE COCINA - FRUTAS
+  // =========================================================================
+  { name: 'Aguacate', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 4, location: 'Cocina' },
+  { name: 'Tomate de árbol', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Limón sutil', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Naranja', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Manzana verde', category: 'Frutas', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
 
-  // 5. Lácteos
-  { name: 'Queso mozzarella', category: 'Lácteos', unit: 'kg', initialStock: 0, minStock: 4 },
-  { name: 'Queso amasado', category: 'Lácteos', unit: 'kg', initialStock: 0, minStock: 4 },
-  { name: 'Crema de leche', category: 'Lácteos', unit: 'litro', initialStock: 0, minStock: 2 },
-  { name: 'Leche', category: 'Lácteos', unit: 'litro', initialStock: 0, minStock: 5 },
+  // =========================================================================
+  // 5. STOCK DE COCINA - LÁCTEOS
+  // =========================================================================
+  { name: 'Queso mozzarella', category: 'Lácteos', unit: 'kg', initialStock: 0, minStock: 4, location: 'Cocina' },
+  { name: 'Queso amasado', category: 'Lácteos', unit: 'kg', initialStock: 0, minStock: 4, location: 'Cocina' },
+  { name: 'Crema de leche', category: 'Lácteos', unit: 'litro', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Leche', category: 'Lácteos', unit: 'litro', initialStock: 0, minStock: 5, location: 'Cocina' },
 
-  // 6. Aceites y Grasas
-  { name: 'Mantequilla', category: 'Aceites y grasas', unit: 'kg', initialStock: 0, minStock: 2 },
-  { name: 'Manteca de cerdo', category: 'Aceites y grasas', unit: 'kg', initialStock: 0, minStock: 2 },
-  { name: 'Aceite', category: 'Aceites y grasas', unit: 'litro', initialStock: 0, minStock: 5 },
+  // =========================================================================
+  // 6. STOCK DE COCINA - ACEITES Y GRASAS
+  // =========================================================================
+  { name: 'Mantequilla', category: 'Aceites y grasas', unit: 'kg', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Manteca de cerdo', category: 'Aceites y grasas', unit: 'kg', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Aceite', category: 'Aceites y grasas', unit: 'litro', initialStock: 0, minStock: 5, location: 'Cocina' },
 
-  // 7. Salsas y Aderezos
-  { name: 'Vinagre', category: 'Salsas', unit: 'litro', initialStock: 0, minStock: 2 },
-  { name: 'Salsa de tomate', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Mostaza', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 2 },
-  { name: 'Jarabe de frutilla', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 1 },
+  // =========================================================================
+  // 7. STOCK DE COCINA - SALSAS Y ADEREZOS
+  // =========================================================================
+  { name: 'Vinagre', category: 'Salsas', unit: 'litro', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Salsa de tomate', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Mostaza', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Jarabe de frutilla', category: 'Salsas', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
 
-  // 8. Secos y Condimentos
-  { name: 'Aliño completo en polvo', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 2 },
-  { name: 'Cocoa', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 0.5 },
-  { name: 'Cobertura de chocolate', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
-  { name: 'Maní en pasta', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Achiote', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 2 },
-  { name: 'Sal', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 5 },
-  { name: 'Sal gruesa', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 3 },
-  { name: 'Pimienta negra', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
-  { name: 'Comino', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
-  { name: 'Orégano', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
-  { name: 'Ají seco', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1 },
+  // =========================================================================
+  // 8. STOCK DE COCINA - SECOS Y CONDIMENTOS
+  // =========================================================================
+  { name: 'Aliño completo en polvo', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Cocoa', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 0.5, location: 'Cocina' },
+  { name: 'Cobertura de chocolate', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
+  { name: 'Maní en pasta', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Achiote', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Sal', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Sal gruesa', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 3, location: 'Cocina' },
+  { name: 'Pimienta negra', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
+  { name: 'Comino', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
+  { name: 'Orégano', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
+  { name: 'Ají seco', category: 'Secos y condimentos', unit: 'kg', initialStock: 0, minStock: 1, location: 'Cocina' },
 
-  // 9. Otros e Insumos Operativos
-  { name: 'Huevos', category: 'Otros', unit: 'UND', initialStock: 0, minStock: 30 },
-  { name: 'Carbón', category: 'Otros', unit: 'bolsa', initialStock: 0, minStock: 5 },
-  { name: 'Alcohol', category: 'Otros', unit: 'litro', initialStock: 0, minStock: 2 },
-  { name: 'Algodón', category: 'Otros', unit: 'paquete', initialStock: 0, minStock: 2 },
-  { name: 'Papel aluminio', category: 'Otros', unit: 'rollo', initialStock: 0, minStock: 2 },
-  { name: 'Hojas de achira', category: 'Otros', unit: 'paquete', initialStock: 0, minStock: 3 },
+  // =========================================================================
+  // 9. STOCK DE COCINA - OTROS / OPERATIVOS
+  // =========================================================================
+  { name: 'Huevos', category: 'Otros', unit: 'UND', initialStock: 0, minStock: 30, location: 'Cocina' },
+  { name: 'Carbón', category: 'Otros', unit: 'bolsa', initialStock: 0, minStock: 5, location: 'Cocina' },
+  { name: 'Alcohol', category: 'Otros', unit: 'litro', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Algodón', category: 'Otros', unit: 'paquete', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Papel aluminio', category: 'Otros', unit: 'rollo', initialStock: 0, minStock: 2, location: 'Cocina' },
+  { name: 'Hojas de achira', category: 'Otros', unit: 'paquete', initialStock: 0, minStock: 3, location: 'Cocina' },
 
-  // 10. Cervezas Artesanales & Bar (Catálogo Oficial Zénit según PDF)
+  // =========================================================================
+  // 10. STOCK DE BAR - CERVEZAS ARTESANALES
+  // =========================================================================
   { 
     name: 'WHITE IPA 500ML', 
     category: 'Vinos & Cervezas', 
@@ -205,6 +227,31 @@ export const ZENIT_INITIAL_PRODUCTS = [
     description: 'Barril 30 Litros de cerveza Honey Strong artesanal (Servicio en Vaso 500ml a $5.00 y Jarra 1L a $7.00).',
     location: 'Bar / Coctelería',
     presentation: 'Barril 30 Litros'
-  }
+  },
+
+  // =========================================================================
+  // 11. STOCK DE BAR - AGUAS, GASEOSAS Y REFRESCOS
+  // =========================================================================
+  { name: 'Agua Mineral con Gas', category: 'Aguas, Gaseosas & Bebidas', unit: 'botella', initialStock: 24, minStock: 12, location: 'Bar / Coctelería', presentation: '500ml', price: 1.50 },
+  { name: 'Agua sin Gas', category: 'Aguas, Gaseosas & Bebidas', unit: 'botella', initialStock: 24, minStock: 12, location: 'Bar / Coctelería', presentation: '500ml', price: 1.50 },
+  { name: 'Coca Cola Original 300ml', category: 'Aguas, Gaseosas & Bebidas', unit: 'botella', initialStock: 24, minStock: 12, location: 'Bar / Coctelería', presentation: '300ml', price: 2.00 },
+  { name: 'Coca Cola Sin Azúcar 300ml', category: 'Aguas, Gaseosas & Bebidas', unit: 'botella', initialStock: 12, minStock: 6, location: 'Bar / Coctelería', presentation: '300ml', price: 2.00 },
+  { name: 'Sprite 300ml', category: 'Aguas, Gaseosas & Bebidas', unit: 'botella', initialStock: 12, minStock: 6, location: 'Bar / Coctelería', presentation: '300ml', price: 2.00 },
+  { name: 'Agua Tónica 300ml', category: 'Aguas, Gaseosas & Bebidas', unit: 'botella', initialStock: 12, minStock: 6, location: 'Bar / Coctelería', presentation: '300ml', price: 2.50 },
+  { name: 'Ginger Ale 300ml', category: 'Aguas, Gaseosas & Bebidas', unit: 'botella', initialStock: 12, minStock: 6, location: 'Bar / Coctelería', presentation: '300ml', price: 2.50 },
+  { name: 'Red Bull Energy Drink', category: 'Aguas, Gaseosas & Bebidas', unit: 'lata', initialStock: 12, minStock: 6, location: 'Bar / Coctelería', presentation: '250ml', price: 3.50 },
+
+  // =========================================================================
+  // 12. STOCK DE BAR - LICORES, DESTILADOS Y VINOS
+  // =========================================================================
+  { name: 'Whisky Johnnie Walker Black Label', category: 'Licores & Destilados', unit: 'botella', initialStock: 3, minStock: 2, location: 'Bar / Coctelería', presentation: '750ml' },
+  { name: 'Whisky Old Parr 12 Años', category: 'Licores & Destilados', unit: 'botella', initialStock: 2, minStock: 1, location: 'Bar / Coctelería', presentation: '750ml' },
+  { name: 'Ron Abuelo Añejo', category: 'Licores & Destilados', unit: 'botella', initialStock: 4, minStock: 2, location: 'Bar / Coctelería', presentation: '750ml' },
+  { name: 'Gin Tanqueray', category: 'Licores & Destilados', unit: 'botella', initialStock: 3, minStock: 1, location: 'Bar / Coctelería', presentation: '750ml' },
+  { name: 'Vodka Absolut', category: 'Licores & Destilados', unit: 'botella', initialStock: 3, minStock: 1, location: 'Bar / Coctelería', presentation: '750ml' },
+  { name: 'Tequila José Cuervo Especial', category: 'Licores & Destilados', unit: 'botella', initialStock: 3, minStock: 1, location: 'Bar / Coctelería', presentation: '750ml' },
+  { name: 'Aguardiente Antioqueño', category: 'Licores & Destilados', unit: 'botella', initialStock: 4, minStock: 2, location: 'Bar / Coctelería', presentation: '750ml' },
+  { name: 'Vino Tinto Cabernet Sauvignon', category: 'Vinos & Cervezas', unit: 'botella', initialStock: 6, minStock: 3, location: 'Bar / Coctelería', presentation: '750ml' },
+  { name: 'Vino Blanco Sauvignon Blanc', category: 'Vinos & Cervezas', unit: 'botella', initialStock: 4, minStock: 2, location: 'Bar / Coctelería', presentation: '750ml' }
 ];
 

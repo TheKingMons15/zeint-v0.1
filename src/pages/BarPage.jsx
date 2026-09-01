@@ -35,6 +35,7 @@ import { BarProductModal } from '../components/bar/BarProductModal';
 import { BarMovementModal } from '../components/bar/BarMovementModal';
 import { SegmentedControl } from '../components/common/SegmentedControl';
 import { formatTime, formatDateTime } from '../utils/formatters';
+import { isBarProduct } from '../utils/constants';
 
 export const BarPage = () => {
   const { user } = useAuth();
@@ -106,13 +107,25 @@ export const BarPage = () => {
     });
   }, [barOrders, filterStatus, search]);
 
-  // Filtrado de productos exclusivos de Bar
+  // Filtrado de productos exclusivos de Bar (Licores, Vinos, Cervezas, Aguas, Gaseosas, etc.)
   const barProducts = useMemo(() => {
-    return products.filter(p => {
-      const cat = (p.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      return cat.includes('bebida') || cat.includes('coctel') || cat.includes('bar') || cat.includes('licor') || cat.includes('cafe') || p.location === 'Bar / Coctelería';
-    });
+    return products.filter(isBarProduct);
   }, [products]);
+
+  // Productos de Bar filtrados por categoría, bajo stock y buscador
+  const filteredBarProducts = useMemo(() => {
+    return barProducts.filter(p => {
+      if (barCategoryFilter !== 'ALL' && p.category !== barCategoryFilter) return false;
+      if (onlyLowStock && Number(p.currentStock || 0) > Number(p.minStock || 0)) return false;
+      const q = search.toLowerCase().trim();
+      if (!q) return true;
+      return (
+        p.name?.toLowerCase().includes(q) ||
+        p.category?.toLowerCase().includes(q) ||
+        p.unit?.toLowerCase().includes(q)
+      );
+    });
+  }, [barProducts, barCategoryFilter, onlyLowStock, search]);
 
   // Movimientos de Bar
   const barMovements = useMemo(() => {

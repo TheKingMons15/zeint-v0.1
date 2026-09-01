@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { 
   ChefHat, 
   Flame, 
@@ -16,7 +17,9 @@ import {
   Eye,
   Search,
   X,
-  AlertTriangle
+  AlertTriangle,
+  Boxes,
+  Layers
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useInventory } from '../hooks/useInventory';
@@ -26,18 +29,28 @@ import { Button } from '../components/common/Button';
 import { ProductFormModal } from '../components/products/ProductFormModal';
 import { DishIngredientsModal } from '../components/orders/DishIngredientsModal';
 import { SegmentedControl } from '../components/common/SegmentedControl';
-import { formatTime, formatDateTime } from '../utils/formatters';
+import { ProductCard } from '../components/products/ProductCard';
+import { CategoryFilterBar } from '../components/products/CategoryFilterBar';
+import { formatTime, formatDateTime, formatNumber } from '../utils/formatters';
+import { KITCHEN_CATEGORIES, isKitchenProduct } from '../utils/constants';
 
 export const KitchenPage = () => {
   const { user } = useAuth();
-  const { addProduct } = useInventory();
+  const { products, addProduct, updateProduct, deleteProduct } = useInventory();
   const { showToast } = useToast();
+  const { handleOpenMovementModal } = useOutletContext() || {};
+
+  // Modo de pantalla: 'ORDERS' (KDS Comandas) | 'STOCK' (Inventario de Cocina)
+  const [kitchenMode, setKitchenMode] = useState('ORDERS');
 
   const [orders, setOrders] = useState([]);
   const [filterStatus, setFilterStatus] = useState('ACTIVE'); // 'ACTIVE' | 'PENDING' | 'PREPARING' | 'READY' | 'ALL'
   const [search, setSearch] = useState('');
+  const [stockSearch, setStockSearch] = useState('');
+  const [stockCategory, setStockCategory] = useState('ALL');
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [inspectingDish, setInspectingDish] = useState(null);
   const [inspectingOrderContext, setInspectingOrderContext] = useState(null);
 
@@ -157,6 +170,61 @@ export const KitchenPage = () => {
     { value: 'ALL', label: 'Historial', count: kitchenOrders.length }
   ];
 
+  // Insumos exclusivos de Cocina
+  const kitchenProducts = useMemo(() => {
+    return products.filter(isKitchenProduct);
+  }, [products]);
+
+  // Insumos de Cocina filtrados por categoría y buscador
+  const filteredKitchenProducts = useMemo(() => {
+    return kitchenProducts.filter(p => {
+      const matchCat = stockCategory === 'ALL' || p.category === stockCategory;
+      const q = stockSearch.toLowerCase().trim();
+      const matchSearch = !q ||
+        p.name?.toLowerCase().includes(q) ||
+        p.category?.toLowerCase().includes(q) ||
+        p.unit?.toLowerCase().includes(q) ||
+        p.notes?.toLowerCase().includes(q);
+      return matchCat && matchSearch;
+    });
+  }, [kitchenProducts, stockCategory, stockSearch]);
+
+  const handleEditProduct = (product) => {
+    setEditingProduct(product);
+    setIsProductModalOpen(true);
+  };
+
+  const handleDeleteProduct = async (product) => {
+    if (window.confirm(`¿Eliminar "${product.name}" del inventario de cocina?`)) {
+      await deleteProduct(product.id, product.name);
+      showToast(`Insumo "${product.name}" eliminado`, 'info');
+    }
+  };
+
+  const handleProductSubmit = async (formData) => {
+    setModalLoading(true);
+    try {
+      if (editingProduct) {
+        await updateProduct(editingProduct.id, formData);
+        showToast(`Insumo "${formData.name}" actualizado.`, 'success');
+      } else {
+        await addProduct(formData);
+        showToast(`Insumo "${formData.name}" registrado en cocina.`, 'success');
+      }
+      setIsProductModalOpen(false);
+      setEditingProduct(null);
+    } catch (err) {
+      showToast(err.message || 'Error al guardar insumo', 'error');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const mainTabs = [
+    { value: 'ORDERS', label: 'Comandas KDS', icon: ChefHat, count: kitchenOrders.length },
+    { value: 'STOCK', label: 'Stock de Cocina', icon: Boxes, count: kitchenProducts.length }
+  ];
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-apple-fade pb-20">
       
@@ -170,94 +238,111 @@ export const KitchenPage = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-                  Pantalla Cocina KDS
+                  Estación de Cocina & Parrilla
                 </h2>
                 <span className="px-2.5 py-0.5 text-[10px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full">
                   {user?.displayName || 'Cocina Zénit'}
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5 font-medium">
-                Despacho en tiempo real de platos y parrilla
+                Despacho de comandas en tiempo real y control de existencias de cocina
               </p>
             </div>
           </div>
         </div>
 
-        {/* Acciones de Insumo y Filtros */}
+        {/* Selector de Modo Principal (Comandas KDS vs Stock de Cocina) y Botón de Agregar */}
         <div className="flex items-center gap-3 flex-wrap">
+          <SegmentedControl
+            options={mainTabs}
+            value={kitchenMode}
+            onChange={setKitchenMode}
+            size="md"
+          />
+
           <Button
             size="sm"
             variant="amber"
-            onClick={() => setIsProductModalOpen(true)}
+            onClick={() => {
+              setEditingProduct(null);
+              setIsProductModalOpen(true);
+            }}
             icon={PackagePlus}
-            className="text-xs font-black"
+            className="text-xs font-black shadow-apple-glow-amber"
           >
             + Insumo Cocina
           </Button>
-
-          <SegmentedControl
-            options={filterOptions}
-            value={filterStatus}
-            onChange={setFilterStatus}
-            size="sm"
-          />
         </div>
       </div>
 
-      {/* Buscador Rápido de Cocina */}
-      <div className="p-3.5 rounded-2xl apple-glass-card border border-white/10 flex items-center gap-3">
-        <Search className="w-4 h-4 text-slate-400 shrink-0" />
-        <input
-          type="text"
-          placeholder="Buscar por mesa (ej: Mesa 3), plato o instrucción..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 bg-transparent text-xs text-slate-100 placeholder-slate-500 focus:outline-none font-medium"
-        />
-        {search && (
-          <button onClick={() => setSearch('')} className="p-1 text-slate-400 hover:text-white rounded-full bg-white/10">
-            <X className="w-3.5 h-3.5" />
-          </button>
-        )}
-      </div>
+      {/* ========================================================================= */}
+      {/* MODO 1: COMANDAS KDS                                                      */}
+      {/* ========================================================================= */}
+      {kitchenMode === 'ORDERS' && (
+        <div className="space-y-5">
+          {/* Sub-Header con Filtros de Estado y Buscador de Comandas */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <SegmentedControl
+              options={filterOptions}
+              value={filterStatus}
+              onChange={setFilterStatus}
+              size="sm"
+            />
 
-      {/* Grid de Tickets KDS de Cocina */}
-      {filteredOrders.length === 0 ? (
-        <div className="p-16 text-center rounded-3xl bg-slate-900/40 border border-slate-800 space-y-3">
-          <ChefHat className="w-12 h-12 mx-auto text-slate-600 stroke-[1.5]" />
-          <h3 className="text-base font-bold text-slate-300">
-            No hay comandas pendientes en Cocina
-          </h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Cuando los meseros envíen platos desde sala, los tickets aparecerán aquí automáticamente con alertas sonoras.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredOrders.map(order => {
-            const isPending = order.status === ORDER_STATUS.PENDING;
-            const isPreparing = order.status === ORDER_STATUS.PREPARING;
-            const isReady = order.status === ORDER_STATUS.READY;
-            const isDelivered = order.status === ORDER_STATUS.DELIVERED;
-            const isCancelled = order.status === ORDER_STATUS.CANCELLED;
+            <div className="p-2.5 px-3.5 rounded-2xl apple-glass-card border border-white/10 flex items-center gap-2.5 flex-1 max-w-md">
+              <Search className="w-4 h-4 text-slate-400 shrink-0" />
+              <input
+                type="text"
+                placeholder="Buscar por mesa (ej: Mesa 3), plato o instrucción..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="flex-1 bg-transparent text-xs text-slate-100 placeholder-slate-500 focus:outline-none font-medium"
+              />
+              {search && (
+                <button onClick={() => setSearch('')} className="p-1 text-slate-400 hover:text-white rounded-full bg-white/10">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
 
-            return (
-              <div
-                key={order.id}
-                className={`p-5 rounded-3xl border transition-all flex flex-col justify-between gap-4 shadow-xl ${getStatusCardStyle(order.status)}`}
-              >
-                <div className="space-y-3.5">
-                  
-                  {/* Encabezado del Ticket: Mesa, Mesero y Hora */}
-                  <div className="flex items-start justify-between gap-2 border-b border-slate-800/80 pb-3">
-                    <div>
-                      <span className="text-2xl font-black text-white tracking-tight block">
-                        {order.table}
-                      </span>
-                      <span className="text-xs text-slate-400">
-                        Mesero: <strong className="text-slate-200">{order.waiterName || 'Sala'}</strong>
-                      </span>
-                    </div>
+          {/* Grid de Tickets KDS de Cocina */}
+          {filteredOrders.length === 0 ? (
+            <div className="p-16 text-center rounded-3xl bg-slate-900/40 border border-slate-800 space-y-3">
+              <ChefHat className="w-12 h-12 mx-auto text-slate-600 stroke-[1.5]" />
+              <h3 className="text-base font-bold text-slate-300">
+                No hay comandas pendientes en Cocina
+              </h3>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                Cuando los meseros envíen platos desde sala, los tickets aparecerán aquí automáticamente con alertas sonoras.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredOrders.map(order => {
+                const isPending = order.status === ORDER_STATUS.PENDING;
+                const isPreparing = order.status === ORDER_STATUS.PREPARING;
+                const isReady = order.status === ORDER_STATUS.READY;
+                const isDelivered = order.status === ORDER_STATUS.DELIVERED;
+                const isCancelled = order.status === ORDER_STATUS.CANCELLED;
+
+                return (
+                  <div
+                    key={order.id}
+                    className={`p-5 rounded-3xl border transition-all flex flex-col justify-between gap-4 shadow-xl ${getStatusCardStyle(order.status)}`}
+                  >
+                    <div className="space-y-3.5">
+                      
+                      {/* Encabezado del Ticket: Mesa, Mesero y Hora */}
+                      <div className="flex items-start justify-between gap-2 border-b border-slate-800/80 pb-3">
+                        <div>
+                          <span className="text-2xl font-black text-white tracking-tight block">
+                            {order.table}
+                          </span>
+                          <span className="text-xs text-slate-400">
+                            Mesero: <strong className="text-slate-200">{order.waiterName || 'Sala'}</strong>
+                          </span>
+                        </div>
 
                     <div className="text-right">
                       <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono justify-end">
@@ -388,6 +473,98 @@ export const KitchenPage = () => {
           })}
         </div>
       )}
+    </div>
+  )}
+
+      {/* ========================================================================= */}
+      {/* MODO 2: STOCK E INVENTARIO DIRECTO DE COCINA                              */}
+      {/* ========================================================================= */}
+      {kitchenMode === 'STOCK' && (
+        <div className="space-y-5 animate-apple-fade">
+          
+          {/* Barra de Búsqueda Rápida de Stock de Cocina */}
+          <div className="p-4 rounded-3xl apple-glass-card border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+            <div className="flex items-center gap-2.5 flex-1">
+              <Search className="w-4 h-4 text-slate-400 shrink-0" />
+              <input
+                type="text"
+                placeholder="🔍 Buscar proteína o insumo (ej: camarón, costilla, carne de hamburguesa, chinchulines, cuerito)..."
+                value={stockSearch}
+                onChange={(e) => setStockSearch(e.target.value)}
+                className="flex-1 bg-transparent text-xs text-slate-100 placeholder-slate-500 focus:outline-none font-medium"
+              />
+              {stockSearch && (
+                <button 
+                  onClick={() => setStockSearch('')} 
+                  className="p-1 text-slate-400 hover:text-white rounded-full bg-white/10"
+                  title="Limpiar"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <Button
+              size="sm"
+              variant="amber"
+              onClick={() => {
+                setEditingProduct(null);
+                setIsProductModalOpen(true);
+              }}
+              icon={Plus}
+              className="text-xs font-black shrink-0"
+            >
+              + Agregar Insumo Faltante
+            </Button>
+          </div>
+
+          {/* Filtro de Categorías de Cocina */}
+          <CategoryFilterBar
+            selectedCategory={stockCategory}
+            onSelectCategory={setStockCategory}
+            categories={KITCHEN_CATEGORIES}
+          />
+
+          {/* Grid de Insumos de Cocina con Botones de Entrada y Salida */}
+          {filteredKitchenProducts.length === 0 ? (
+            <div className="p-16 text-center rounded-3xl bg-slate-900/40 border border-slate-800 space-y-3">
+              <Boxes className="w-12 h-12 mx-auto text-slate-600 stroke-[1.5]" />
+              <h3 className="text-base font-bold text-slate-300">
+                No se encontraron insumos de cocina
+              </h3>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                No hay productos en esta categoría o búsqueda. Puedes agregar uno nuevo ahora mismo.
+              </p>
+              <Button
+                variant="amber"
+                size="sm"
+                onClick={() => {
+                  setEditingProduct(null);
+                  setIsProductModalOpen(true);
+                }}
+                icon={Plus}
+                className="mt-2"
+              >
+                + Crear Insumo en Cocina
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {filteredKitchenProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onEdit={handleEditProduct}
+                  onDelete={handleDeleteProduct}
+                  onQuickEntry={(p) => handleOpenMovementModal && handleOpenMovementModal('ENTRY', p.id)}
+                  onQuickExit={(p) => handleOpenMovementModal && handleOpenMovementModal('EXIT', p.id)}
+                />
+              ))}
+            </div>
+          )}
+
+        </div>
+      )}
 
       {/* Modal para ver ingredientes y preparación de un plato */}
       {inspectingDish && (
@@ -399,25 +576,18 @@ export const KitchenPage = () => {
         />
       )}
 
-      {/* Modal para que Cocina registre un nuevo insumo */}
+      {/* Modal para que Cocina registre o edite un insumo */}
       {isProductModalOpen && (
         <ProductFormModal
           isOpen={isProductModalOpen}
-          onClose={() => setIsProductModalOpen(false)}
+          onClose={() => {
+            setIsProductModalOpen(false);
+            setEditingProduct(null);
+          }}
+          initialData={editingProduct}
           loading={modalLoading}
           defaultLocation="Cocina"
-          onSubmit={async (formData) => {
-            setModalLoading(true);
-            try {
-              await addProduct(formData);
-              setIsProductModalOpen(false);
-              showToast(`Insumo "${formData.name}" registrado exitosamente en el inventario central.`, 'success');
-            } catch (err) {
-              showToast(err.message || 'Error al registrar insumo', 'error');
-            } finally {
-              setModalLoading(false);
-            }
-          }}
+          onSubmit={handleProductSubmit}
         />
       )}
 

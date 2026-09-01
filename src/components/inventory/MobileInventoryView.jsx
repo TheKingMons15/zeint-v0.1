@@ -9,6 +9,7 @@ export const MobileInventoryView = ({
   products = [],
   selectedCategory,
   onSelectCategory,
+  categories,
   onEditProduct,
   onDeleteProduct,
   onQuickEntry,
@@ -21,6 +22,7 @@ export const MobileInventoryView = ({
       <CategoryFilterBar
         selectedCategory={selectedCategory}
         onSelectCategory={onSelectCategory}
+        categories={categories}
       />
 
       {/* Product Card List */}

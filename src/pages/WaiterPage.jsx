@@ -34,6 +34,7 @@ import { recipeService } from '../services/recipeService';
 import { orderService, ORDER_STATUS } from '../services/orderService';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
+import { SegmentedControl } from '../components/common/SegmentedControl';
 import { ItemCustomizationModal } from '../components/orders/ItemCustomizationModal';
 import { DishIngredientsModal } from '../components/orders/DishIngredientsModal';
 import { OrderCancellationModal } from '../components/orders/OrderCancellationModal';

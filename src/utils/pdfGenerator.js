@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { formatNumber, formatQuantityWithUnit, formatDate, formatDateTime, formatTime } from './formatters';
+import { formatNumber, formatQuantityWithUnit, formatDate, formatDateTime, formatTime, getTodayDateString } from './formatters';
 
 /**
  * Genera y descarga el Reporte Diario de Inventario en formato PDF

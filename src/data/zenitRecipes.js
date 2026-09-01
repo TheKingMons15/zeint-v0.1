@@ -204,7 +204,7 @@ export const ZENIT_RECIPES = [
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Filete de res', grams: 200 },
-      { productName: 'Carne molida de res', grams: 180 },
+      { productName: 'Filete de cerdo', grams: 180 },
       { productName: 'Costilla de cerdo', grams: 280 },
       { productName: 'Chorizo Rojo', grams: 60 },
       { productName: 'Chorizo Blanco', grams: 60 },
@@ -462,8 +462,9 @@ export const ZENIT_RECIPES = [
     description: 'Chicharrón, chorizo, carne (molida o lomo al barril res/cerdo/pollo), maduro frito, arroz, huevo frito, aguacate, frijolada y arepa.',
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Carne molida de res', grams: 90 },
-      { productName: 'Cuerito', grams: 70 },
+      { productName: 'Carne para bandeja paisa', grams: 90 },
+      { productName: 'Chicharrón', grams: 70 },
+      { productName: 'Cuerito', grams: 50 },
       { productName: 'Chorizo Rojo', grams: 55 },
       { productName: 'Fréjol rojo seco', grams: 100 },
       { productName: 'Arroz', grams: 90 },
@@ -488,7 +489,7 @@ export const ZENIT_RECIPES = [
     description: 'Hamburguesa casera con mermelada de tocino, champiñones, queso derretido y papas a la francesa.',
     image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80',
     ingredients: [
-      { productName: 'Carne molida de res', grams: 100 },
+      { productName: 'Carne de hamburguesa', grams: 120 },
       { productName: 'Champiñones', grams: 30 },
       { productName: 'Papa super chola', grams: 120 },
       { productName: 'Queso mozzarella', grams: 30 }
@@ -569,7 +570,7 @@ export const ZENIT_RECIPES = [
     image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     ingredients: [
       { productName: 'Plátano maduro', grams: 155 },
-      { productName: 'Carne molida de res', grams: 60 },
+      { productName: 'Filete de res', grams: 60 },
       { productName: 'Chorizo Rojo', grams: 50 },
       { productName: 'Queso mozzarella', grams: 40 }
     ],

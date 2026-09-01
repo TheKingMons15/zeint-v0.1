@@ -19,6 +19,8 @@ export const DesktopInventoryView = ({
   products = [],
   selectedCategory,
   onSelectCategory,
+  categories,
+  areaFilter,
   onEditProduct,
   onDeleteProduct,
   onQuickEntry,
@@ -57,13 +59,14 @@ export const DesktopInventoryView = ({
   return (
     <div className="space-y-4">
       {/* Category selector slider */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <CategoryFilterBar
           selectedCategory={selectedCategory}
           onSelectCategory={onSelectCategory}
+          categories={categories}
         />
-        <Button size="sm" onClick={onAddProduct} icon={Plus}>
-          Nuevo Producto
+        <Button size="sm" onClick={onAddProduct} icon={Plus} className="whitespace-nowrap font-bold shrink-0">
+          {areaFilter === 'BAR' ? '+ Nueva Botella' : '+ Nuevo Insumo'}
         </Button>
       </div>
 

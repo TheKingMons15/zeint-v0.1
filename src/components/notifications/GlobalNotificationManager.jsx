@@ -9,7 +9,8 @@ import {
   MessageSquare,
   Sparkles,
   Volume2,
-  Smartphone
+  Smartphone,
+  AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { orderService, ORDER_STATUS } from '../../services/orderService';

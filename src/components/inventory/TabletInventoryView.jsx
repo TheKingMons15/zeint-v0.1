@@ -11,6 +11,7 @@ export const TabletInventoryView = ({
   allProducts = [],
   selectedCategory,
   onSelectCategory,
+  categories,
   onEditProduct,
   onDeleteProduct,
   onQuickEntry,
@@ -24,6 +25,7 @@ export const TabletInventoryView = ({
         <CategoryFilterBar
           selectedCategory={selectedCategory}
           onSelectCategory={onSelectCategory}
+          categories={categories}
         />
       </div>
 

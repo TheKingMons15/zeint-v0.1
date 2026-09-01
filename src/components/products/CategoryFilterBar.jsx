@@ -1,7 +1,7 @@
 import React from 'react';
 import { FOOD_CATEGORIES, CATEGORY_META } from '../../utils/constants';
 
-export const CategoryFilterBar = ({ selectedCategory, onSelectCategory }) => {
+export const CategoryFilterBar = ({ selectedCategory, onSelectCategory, categories = FOOD_CATEGORIES }) => {
   return (
     <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none no-scrollbar">
       <button
@@ -15,7 +15,7 @@ export const CategoryFilterBar = ({ selectedCategory, onSelectCategory }) => {
         Todas
       </button>
 
-      {FOOD_CATEGORIES.map((category) => {
+      {categories.map((category) => {
         const isSelected = selectedCategory === category;
         const meta = CATEGORY_META[category];
 
